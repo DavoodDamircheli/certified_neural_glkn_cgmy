@@ -32,7 +32,10 @@ from cgmy_cert.provenance import provenance  # noqa: E402
 
 N, NT, R = 512, 240, 48
 DATA = ROOT / "data"; RES = ROOT / "results"; CK = ROOT / "checkpoints"
-EPS = tuple(1e-3 * f for f in (0.1, 0.3, 1, 3, 10))
+EPS_V8 = tuple(1e-3 * f for f in (0.1, 0.3, 1, 3, 10))
+_PC = Path(__file__).resolve().parents[1] / "results" / "PRODUCTION_CONFIG.json"
+EPS_N_SWEEP = tuple(json.loads(_PC.read_text())["eps_sweep"]) if _PC.exists() else ()
+EPS = tuple(sorted(set(EPS_V8) | set(EPS_N_SWEEP)))
 PARTITION = "CYm:3x3x2"
 TRAIN_PARTITION = "rC:2x2"
 
@@ -125,7 +128,11 @@ def main():
                          "eps = 1e-3, graded eps_Q, allowance, no tightening); reduced_tightened = same / c_mu; "
                          "banded_AI / exact_AI = full-order with the exact operator, no allowance. projection and "
                          "pod_galerkin are reference candidates on the same basis.",
-                         eps_sweep=list(EPS), done_when_eps_provisional=1e-3, partition=PARTITION,
+                         eps_sweep=list(EPS), eps_v8_sweep=list(EPS_V8), eps_N_sweep=list(EPS_N_SWEEP),
+                         eps_N_note="eps_N (results/PRODUCTION_CONFIG.json) is calibrated at the production N = 1024; "
+                                    "this evaluation is at N = 512 (the sweep's resolution), so the eps_N columns are "
+                                    "indicative only",
+                         done_when_eps_provisional=1e-3, partition=PARTITION,
                          training_loss_partition=TRAIN_PARTITION, wall_s=time.time() - t0,
                          provenance=provenance()),
                done_when=dict(rule="median certified bound on validation30 <= eps (1e-3 provisional) for at least one "
