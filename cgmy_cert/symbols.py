@@ -296,8 +296,20 @@ class ToeplitzOp:
     Also exposes the entries t_m for -(n+extra) <= m <= n+extra (used for the lifting columns)."""
 
     def __init__(self, sym_vals: np.ndarray, n: int, extra: int = 0):
+        self._set_lags(fourier_coefficients(sym_vals, n + extra), n, extra)
+
+    @classmethod
+    def from_lags(cls, t: np.ndarray, n: int, extra: int = 0) -> "ToeplitzOp":
+        """Operator from its entries t_m, m = -(n+extra-1) .. (n+extra-1) (e.g. a sum of
+        precomputed first columns, as in the affine/EIM operator)."""
+        op = cls.__new__(cls)
+        op._set_lags(np.asarray(t), n, extra)
+        return op
+
+    def _set_lags(self, t: np.ndarray, n: int, extra: int) -> None:
+        if t.size != 2 * (n + extra) - 1:
+            raise ValueError(f"need 2(n+extra)-1 = {2 * (n + extra) - 1} lags, got {t.size}")
         self.n = n
-        t = fourier_coefficients(sym_vals, n + extra)
         self.t = t                           # lags -(n+extra-1) .. (n+extra-1)
         self.lag0 = n + extra - 1            # index of t_0 in self.t
         col = t[self.lag0:self.lag0 + n]     # t_0 .. t_{n-1}

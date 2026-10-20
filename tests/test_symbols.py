@@ -12,6 +12,7 @@ from cgmy_cert.symbols import (bspline_ft_sq, alias_sum, mass_symbol, drift_symb
                                legacy_principal_period_free, eps_K_fractional, eps_K_full, symbols)
 
 V8 = ROOT / "v8_frozen"
+needs_v8 = pytest.mark.skipif(not V8.is_dir(), reason="v8_frozen/ (read-only v8 reference) not present in this checkout")
 
 
 def test_bspline_ft_sq():
@@ -45,6 +46,7 @@ def test_mass_stiffness_entries_closed_form():
     assert abs(T[3, 1] - 1 / 120) < 1e-14 and abs(T[3, 3] - 66 / 120) < 1e-14
 
 
+@needs_v8
 def test_mass_and_derivative_match_v8_quadrature():
     """Regression against the frozen vendor assembly (quadrature over Omega): free blocks identical."""
     sys.path.insert(0, str(V8 / "numerics" / "vendor"))
@@ -111,6 +113,7 @@ def test_truncation_error_below_eps_K(realline):
             assert err >= 0.05 * fs.eps_K, ("tail bound unexpectedly loose", key, K, err, fs.eps_K)
 
 
+@needs_v8
 def test_fractional_blocks_vs_v8_quadpack(realline):
     """The four audit queries of v8's coefficient-convention run: our 40-digit fractional block
     entries vs v8's double-precision QUADPACK real-line integrals (compensated convention
@@ -137,6 +140,7 @@ def test_fractional_blocks_vs_v8_quadpack(realline):
     print("worst absolute difference vs QUADPACK (entries are O(1)):", worst)
 
 
+@needs_v8
 def test_legacy_regression_audit459(populations):
     """K = 0 (principal period, v8 rule) reproduces v8's audit lambda_min(S_I) at all 459 coordinates."""
     P = pd.read_csv(V8 / "runs" / "20261007T175335Z_m6_audit459" / "audit_free" / "positivity.csv")
@@ -151,6 +155,7 @@ def test_legacy_regression_audit459(populations):
     assert abs(min(vert) - 0.01038) < 1e-5                             # v8 Table 3 vertex minimum
 
 
+@needs_v8
 def test_legacy_vs_exact_relative_difference(realline):
     """The principal-period matrix differs from the exact one by 0.33-0.41 in operator norm
     (v8 Table 9, 'Real line' rows), and our exact matrix reproduces v8's QUADPACK-based numbers."""

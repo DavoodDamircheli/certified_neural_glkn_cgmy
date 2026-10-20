@@ -30,7 +30,7 @@ def test_payoff_projection_and_lifting():
     b0 = payoff_load_vector(msh, q.K)
     # partition of unity: sum_k int phi_k psi = h^{-1/2} int psi  (quadrature check on an exact integral)
     x = np.linspace(msh.x_min, np.log(q.K), 200001)
-    exact = np.trapezoid(np.maximum(q.K - np.exp(x), 0.0), x)
+    exact = getattr(np, "trapezoid", getattr(np, "trapz", None))(np.maximum(q.K - np.exp(x), 0.0), x)
     assert abs(b0.sum() - exact / np.sqrt(msh.h)) < 1e-6 * exact
     bL = lifting(q, msh, np.array([0.0, 0.5]))
     assert abs(bL[0] - q.K * np.sqrt(msh.h)) < 1e-14 and abs(bL[1] - q.K * np.exp(-0.025) * np.sqrt(msh.h)) < 1e-12
