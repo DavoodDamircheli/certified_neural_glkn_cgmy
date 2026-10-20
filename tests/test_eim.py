@@ -121,3 +121,27 @@ def test_affine_free_system(eim64):
     v = np.random.default_rng(2).standard_normal(fs.n)
     assert norm(fs_Q.A.matvec(v) - fs.A.matvec(v)) <= info["eps_Q"] * norm(v)
     assert abs(fs_Q.A.entry(fs.n + 1) - fs.A.entry(fs.n + 1).real) <= info["eps_Q"]
+
+
+# ---------------------------------------------------------------- follow-up 2: 2b (N-independent eps_Q), 2d
+
+@pytest.mark.parametrize("which", ["eim64", "eim512"])
+def test_eps_Q_graded_dominates_assembled_difference(which, request):
+    """eps_Q on the N-independent node set bounds scale * max_{L-grid} |e| (which bounds ||A_I - A_Q||_2 by the
+    compression argument) and the dense 2-norm at N = 64."""
+    e = request.getfixturevalue(which)
+    for i, q in enumerate(eim_test_queries(200 if FULL else 25)):
+        old = e.eps_Q(q)
+        new = e.eps_Q_graded(q, ell=old["ell"])
+        assert new["eps_Q"] >= old["grid"], q
+        assert new["n_nodes"] == 161
+        if e.N == 64 and i < 10:
+            A = free_matrices(q, 64).A.dense()
+            assert norm(A - e.A_Q(q, ell=old["ell"]).dense(), 2) <= new["eps_Q"]
+
+
+def test_Q_for_target_monotone(eim512):
+    q = eim_test_queries(3)[1]
+    qs = [eim512.Q_for_target(q, eps) for eps in (1e-2, 1e-3, 1e-4)]
+    assert qs == sorted(qs) and qs[0] <= qs[-1] <= eim512.magic.size
+    assert eim512.meta is not None and eim512.test_err[37] <= 1e-11

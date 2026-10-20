@@ -53,7 +53,8 @@ TRAIN_SHAPE = (16, 16, 16)
 TEST_SEED = 2026
 N_TEST = 1000
 TOL_DEFAULT = 1e-9
-TOL_SWEEP = (1e-4, 1e-5, 1e-6, 1e-7, 1e-8, 1e-9, 1e-10)
+TOL_SWEEP = (1e-4, 1e-5, 1e-6, 1e-7, 1e-8, 1e-9, 1e-10, 1e-11)
+GRADED_L0, GRADED_NFINE = 96, 32          # N-independent node set of eps_Q_graded (161 nodes)
 
 
 # ------------------------------------------------------------------ family evaluation
@@ -248,6 +249,56 @@ class EIM:
             out.append(scale * (np.max(np.abs(phi - I)) + (pi / self.L) * np.max(np.abs(dphi - dI))))
         return np.array(out)
 
+    # -------------------------------------------------------------- N-independent eps_Q (follow-up 2, 2b)
+    def graded(self, L0: int = GRADED_L0, n_fine: int = GRADED_NFINE) -> "GradedNodes":
+        """Query-independent node set and precomputed alias data for eps_Q_graded (cached)."""
+        key = (L0, n_fine)
+        cache = self.__dict__.setdefault("_graded", {})
+        if key not in cache:
+            cache[key] = GradedNodes(self, L0, n_fine)
+        return cache[key]
+
+    def eps_Q_graded(self, q: Query, Q: int | None = None, ell: np.ndarray | None = None,
+                     L0: int = GRADED_L0, n_fine: int = GRADED_NFINE) -> dict:
+        """eps_Q(mu) from a rigorous bound on sup_theta |e_nu(theta)| over the N-independent node set
+        (cell-wise derivative margin, as in spectral._grid_extreme), cost O(n_nodes K), independent of N.
+        Valid for the assembled matrices (sup over theta >= max over the L-grid, compression argument) and
+        for the continuous symbol."""
+        Q = self.Q if Q is None else Q
+        nu = (q.G, q.M, q.Y)
+        if ell is None:
+            ell = self.ell(nu, Q)
+        g = self.graded(L0, n_fine)
+        sup = g.sup_error(nu, ell)
+        scale = abs(q.C * q.gammaY) * self.h ** (-q.Y)
+        return dict(eps_Q=scale * sup, scale=scale, ell=ell, n_nodes=g.theta.size)
+
+    def eps_Q_graded_curve(self, q: Query, Qs, **kw) -> np.ndarray:
+        nu = (q.G, q.M, q.Y)
+        ell = self.ell(nu, max(Qs))
+        g = self.graded(**kw)
+        scale = abs(q.C * q.gammaY) * self.h ** (-q.Y)
+        v, dv = g.symbol(nu)
+        return np.array([scale * g.sup_from(v, dv, ell[:Q]) for Q in Qs])
+
+    def Q_for_target(self, q: Query, eps: float, cbar_norm: float | None = None, alpha: float | None = None,
+                     T: float | None = None, safety: float = 10.0) -> int:
+        """Smallest stored Q with eps_Q(mu) ||cbar||_2 sqrt(T / alpha) <= eps / safety (follow-up 2, 2d).
+        Defaults (a selection heuristic; the certificate itself always uses the actual allowance):
+        cbar_norm = 1.1 ||c_raw^0||_2 (the payoff dominates the raw coefficient norm), alpha = r min m
+        (a rigorous lower bound of alpha_lb since s_mu - r m >= 0).  Returns q_max if none suffices."""
+        from .direct import initial_raw_coefficients
+        from .symbols import mass_symbol
+        T = q.T if T is None else T
+        if cbar_norm is None:
+            cbar_norm = 1.1 * float(np.linalg.norm(initial_raw_coefficients(q, Mesh(N=self.N, p=self.p))))
+        if alpha is None:
+            alpha = q.r * float(np.min(mass_symbol(np.linspace(-pi, pi, 2001))))
+        Qs = list(range(1, self.magic.size + 1))
+        curve = self.eps_Q_graded_curve(q, Qs)
+        ok = [Q for Q, e in zip(Qs, curve) if e * cbar_norm * np.sqrt(T / alpha) <= eps / safety]
+        return ok[0] if ok else self.magic.size
+
     def set_Q(self, Q: int, **why) -> None:
         """Raise/lower the operational rank (e.g. after the operator-norm check of scripts/run_eim.py)."""
         self.meta.setdefault("Q_tol", self.Q)
@@ -380,6 +431,78 @@ def build_eim(N: int, K: int = 100, q_max: int = 50, tol: float = TOL_DEFAULT, n
     return EIM(N=N, K=K, L=L, p=p, n=n, extra=extra, magic=magic, B=B, xi=xi, dxi=dxi, lags=lags, nus=nus,
                rec=rec, rho=rho, sc=sc, Q=Q, tol=tol, train_err=np.array(train_err), test_err=test_err,
                sv=sv, meta=meta)
+
+
+class GradedNodes:
+    """N-independent node set for eps_Q: symmetric, contains +-pi as one-sided limits, uniform L0 grid plus a
+    geometric refinement on the scale h * min_box min(G, M) = h near theta = 0 (the same construction as
+    spectral.graded_theta_grid, but query-independent so that the EIM basis can be precomputed on it).
+    Query-independent alias data theta_k, |N^(theta_k)|^2 and its derivative are stored; online only
+    (delta +- i theta_k)^Y is evaluated, in real arithmetic.  Symmetrisation pairs node i with node
+    n-1-i; node 0 / n-1 carry the one-sided limits at -pi / +pi, and the L-grid's convention value at
+    theta = -pi (Re of the unsymmetrised value) is bounded separately."""
+
+    def __init__(self, eim: "EIM", L0: int, n_fine: int, lo: float = 1e-4, hi: float = 400.0):
+        h, K = eim.h, eim.K
+        d = h * min(BOX["G"][0], BOX["M"][0])
+        pos = np.arange(1, L0 // 2 + 1) * 2 * pi / L0                       # (0, pi], pi included
+        fine = np.geomspace(d * lo, min(pi * 0.999, hi * d), n_fine)
+        pos = np.unique(np.concatenate([pos, fine]))
+        self.theta = np.concatenate([-pos[::-1], [0.0], pos])
+        self.L0, self.n_fine, self.K, self.h = L0, n_fine, K, h
+        k = np.arange(-K, K + 1)
+        self.tt = self.theta[None, :] + 2 * pi * k[:, None]
+        self.tt2 = self.tt ** 2
+        self.w = bspline_ft_sq(self.tt)
+        self.wp = bspline_ft_sq_prime(self.tt)
+        self.width = np.diff(self.theta)
+        # EIM basis on the nodes (all stored terms), by the greedy recursion
+        Qm = eim.magic.size
+        self.xi = np.zeros((Qm, self.theta.size), dtype=complex); self.dxi = np.zeros_like(self.xi)
+        self.xi_conv = np.zeros(Qm)                                         # Re xi(-pi) unsymmetrised
+        for qi in range(Qm):
+            v, dv = self._raw(tuple(eim.nus[qi]))
+            ph, dph = self._sym(v, dv)
+            self.xi[qi] = (ph / eim.sc[qi] - eim.rec[qi, :qi] @ self.xi[:qi]) / eim.rho[qi]
+            self.dxi[qi] = (dph / eim.sc[qi] - eim.rec[qi, :qi] @ self.dxi[:qi]) / eim.rho[qi]
+            self.xi_conv[qi] = (v[0].real / eim.sc[qi] - eim.rec[qi, :qi] @ self.xi_conv[:qi]) / eim.rho[qi]
+
+    def _half(self, d: float, Y: float, sign: int):
+        r2 = d * d + self.tt2
+        mag = np.exp(0.5 * Y * np.log(r2))
+        ph = Y * np.arctan2(sign * self.tt, d)
+        pr, pim = mag * np.cos(ph), mag * np.sin(ph)
+        zr, zi = d / r2, -sign * self.tt / r2                     # 1/z
+        qr, qi = pr * zr - pim * zi, pr * zi + pim * zr           # z^Y / z
+        dr, di = -sign * Y * qi, sign * Y * qr                    # i sign Y z^Y / z
+        v = (self.w * pr).sum(0) + 1j * (self.w * pim).sum(0)
+        dv = (self.wp * pr + self.w * dr).sum(0) + 1j * (self.wp * pim + self.w * di).sum(0)
+        return v, dv
+
+    def _raw(self, nu):
+        G, M, Y = nu
+        a, da = self._half(G * self.h, Y, +1)
+        b, db = self._half(M * self.h, Y, -1)
+        return a + b, da + db
+
+    @staticmethod
+    def _sym(v, dv):
+        return 0.5 * (v + np.conj(v[::-1])), 0.5 * (dv - np.conj(dv[::-1]))
+
+    def symbol(self, nu):
+        return self._raw(nu)
+
+    def sup_from(self, v, dv, ell) -> float:
+        Q = ell.size
+        ph, dph = self._sym(v, dv)
+        e = np.abs(ph - ell @ self.xi[:Q]); de = np.abs(dph - ell @ self.dxi[:Q])
+        cell = np.maximum(e[:-1], e[1:]) + 0.5 * self.width * np.maximum(de[:-1], de[1:])
+        conv = abs(v[0].real - ell @ self.xi_conv[:Q])
+        return float(max(cell.max(), conv))
+
+    def sup_error(self, nu, ell) -> float:
+        v, dv = self._raw(nu)
+        return self.sup_from(v, dv, ell)
 
 
 def eim_path(N: int, K: int = 100) -> Path:

@@ -167,6 +167,43 @@ def do_validate(res, nproc, Ns=(64, 512), n_queries=1000, n_dense_512=50):
         save(res)
 
 
+# ---------------------------------------------------------------- follow-up 2, 2d
+
+def do_retol(res, Ns):
+    """Q vs tolerance down to 1e-11 from the stored test-error curves (no rebuild: the greedy already stored
+    every term down to a training error of 1e-13)."""
+    for N in Ns:
+        e = load_eim(N, build_if_missing=False)
+        qv = {f"{t:g}": (int(np.nonzero(e.test_err <= t)[0][0]) if np.any(e.test_err <= t) else None) for t in TOL_SWEEP}
+        res["build"][str(N)]["Q_vs_tol"] = qv
+        print(f"N={N}: q_max={e.magic.size}, Q vs tol {qv}", flush=True)
+    save(res)
+
+
+def _qtarget(args):
+    qd, eps = args
+    from cgmy_cert.params import Query
+    e = load_eim(512, build_if_missing=False)
+    return e.Q_for_target(Query(**qd), eps)
+
+
+def do_qtarget(res, nproc, eps_sweep=(1e-4, 3e-4, 1e-3, 3e-3, 1e-2)):
+    """Q matched to the target eps (eps_Q ||cbar||_2 sqrt(T/alpha) <= eps/10, default ||cbar|| and alpha of
+    EIM.Q_for_target) for the validation30 queries at N = 512."""
+    from cgmy_cert.params import load_queries_json
+    qs = load_queries_json(ROOT / "tests" / "fixtures" / "queries.json")["validation30"]
+    out = {}
+    with Pool(nproc) as pool:
+        for eps in eps_sweep:
+            Qs = pool.map(_qtarget, [(q.as_dict(), eps) for q in qs])
+            out[f"{eps:g}"] = dict(median_Q=float(np.median(Qs)), max_Q=int(max(Qs)), min_Q=int(min(Qs)), Q=Qs)
+            print(f"eps={eps:g}: Q median {np.median(Qs)} max {max(Qs)}", flush=True)
+    res["Q_for_target"] = dict(N=512, population="validation30", rule="smallest stored Q with eps_Q_graded(mu) "
+                               "* 1.1||c_raw^0||_2 * sqrt(T / (r min m)) <= eps / 10", per_eps=out,
+                               q_max=int(load_eim(512, build_if_missing=False).magic.size), provenance=provenance())
+    save(res)
+
+
 # ---------------------------------------------------------------- figure F4
 
 def do_figure(res):
@@ -222,6 +259,10 @@ def main():
         do_build(a.N, a.nproc, res)
     if "select" in a.steps:
         do_select(a.N, res, a.nproc, a.n_queries)
+    if "retol" in a.steps:
+        do_retol(res, a.N)
+    if "qtarget" in a.steps:
+        do_qtarget(res, a.nproc)
     if "validate" in a.steps:
         do_validate(res, a.nproc, a.N, a.n_queries)
     if "figure" in a.steps:
