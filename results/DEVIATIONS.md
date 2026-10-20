@@ -240,3 +240,58 @@ N-independent online certificate.
 * Reduced tensors are built for Q_max = 42: the leading block columns of R are the R-factor of the leading
   columns, so one tensor serves every Q <= 42 (tested).
 * Validation30 at N = 512: target-matched Q median / max = eps=0.0001: 32.0 / 38; eps=0.0003: 31.0 / 34; eps=0.001: 30.5 / 32; eps=0.003: 28.0 / 31; eps=0.01: 26.0 / 31.
+
+
+# Follow-up 3
+
+## 2.5 DeepONet retrain dropped: the two reasons (verbatim, as accepted)
+
+1. "train_final_models.py -> generate_production_dataset.build_val_set regenerates the validation set with
+   the v8 trusted solver generate_one_sample(mode='toeplitz'), i.e. the principal-period assembly; running it
+   unchanged violates CLAUDE_PHASE2.md rule 2"
+2. "load_all_train_samples reads v8's HDF5 schema (data.dataset.read_trajectory, raw 66-dof coefficients incl.
+   boundary rows); the new references are npz free-coefficient files, so the script cannot read them unchanged"
+
+## Item 1. The remaining N-dependence of the online certificate, and its removal
+
+* **Profile** (cProfile, one thread, N = 4096, Q = 29, r = 48; `results/E2_3_reduced_cert.json` -> timing_v3).
+  Before: per_step 14.8 ms, tensordot 6.3 ms and the eps_Q kernel 6.1 ms per call.
+  The first two scale with m = min(n_free, (Q+2)(r+1)), the row count of the stable R-factor (254 / 510 / 1022 /
+  1519 at N = 256 / 512 / 1024 / 4096). No length-N_h array is touched online: alpha^0, beta_0 and the boundary
+  couplings V^T T_q e_bd, V^T M_I e_bd were already offline constants (the boundary couplings are the (r+1)-th
+  column of every block of R).
+* **Why not the plan's O(Q^2 r^2) Gram form:** it is numerically unusable for good candidates (2.3 entry
+  above, eps * kappa^2 ~ O(1)).
+* **Fix: rigorous SVD compression of R (offline, per cell, per operational Q).** R = U S W^T; keep the
+  k rows S_k W_k^T = U_k^T R with sigma_(k+1) <= 1e-12 sigma_1; online ||R w|| <= ||U_k^T R w|| + sigma_(k+1) ||w||
+  with ||w|| <= ||x_n|| + ||theta|| ||y_n||; the tail term is added to the rounding term. It is still an
+  orthogonal transform, hence equally stable. k ~ 350-420 at every N >= 512 (Q = 29), so the online cost is
+  O(min(n_free, k)).
+* **After:** per_step 2.1 ms, tensordot 1.8 ms, eps_Q kernel 4.8 ms. Timed call (ell + eps_Q on the 161 fixed nodes
+  + certificate), one thread, measured while the 2.4 sweep occupied ~24 threads (not idle):
+
+  | N | rows before | rows after | before | after | max bound inflation |
+  |---|---|---|---|---|---|
+  | 256 | 254 | 254-254 | 10.4 ms | 10.4 ms | 0.0e+00 |
+  | 512 | 510 | 349-404 | 13.1 ms | 11.6 ms | 3.6e-04 |
+  | 1024 | 1022 | 366-419 | 23.1 ms | 12.2 ms | 4.1e-04 |
+  | 4096 | 1519 | 404-416 | 32.4 ms | 11.5 ms | 7.6e-04 |
+
+  The call is flat in N to within noise. The absolute values are inflated ~3-4x by the sweep (the same
+  eps_Q kernel took 1.6 ms on a less loaded machine). The < 5 ms idle target must be confirmed in Phase 3
+  (E2) on an idle machine.
+* Compression is Q-specific: a tensor that serves every Q <= Q_max cannot be compressed (with Q_max = 42 at
+  N = 512, k = m = 510). Stored: the general uncompressed Q_max = 42 tensor (evaluation at any Q), plus compressed
+  `..._Q29c.npz` (k = 345-398, 4.6 MB/cell) and `..._Q37c.npz` (k = 481-506, 7.4 MB/cell). The tensor for the
+  eps_N-matched Q is built once 3.1 fixes eps_N.
+
+## Item 2. beta-bar exact in (C, G, M), grid only in Y
+
+* beta_mu = C beta~(G, M, Y), and beta~ is nonincreasing in G and in M (Lemma 2.6; Remark 4.3 of the paper).
+  On a CYm cell the infimum over (C, G, M) is therefore attained at C = C_min and at the largest admissible
+  (G, M) with min(G, M) in the cell: (m_hi, M_max) and (G_max, m_hi) for the lower min(G, M) cell, and
+  (G_max, M_max) for the upper one (`reduced_cert.cell_gm_corners`). Only the minimum over Y is a grid minimum
+  (33 points, endpoints included), with the 0.99 factor (`reduced_cert.beta_bar_rigorous`).
+* Check: in all 18 cells the old table-based minimum equals the corner value (old / corner = 1.000 to 5 digits;
+  never below 0.99 x corner). beta-bar is unchanged. The minimum sits at the cell's lowest Y and at (sqrt 5, 9)
+  or (5, 9). Tensors were rebuilt with the corner rule; the file names are unchanged.

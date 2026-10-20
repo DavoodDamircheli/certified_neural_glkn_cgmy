@@ -258,6 +258,68 @@ def do_timing(res, Ns=(256, 1024, 4096), Q=29, n_train=20, n_q=10, partition="CY
     save(res)
 
 
+def do_timing_v3(res, Ns=(256, 512, 1024, 4096), Q=29, n_train=20, n_q=10, partition="CYm:3x3x2", svd_tol=1e-12):
+    """Follow-up 3, item 1: the timed online call (certificate form + eps_Q on the fixed nodes + ell) before
+    (uncompressed R, m = min(n_free, (Q+2)(r+1)) rows) and after (SVD-compressed, k rows, rigorous tail) the
+    compression, same queries and conditions; cProfile of one variant at the largest N."""
+    import cProfile, io, pstats, random
+    from cgmy_cert.reduced_cert import Partition
+    assert os.environ.get("OMP_NUM_THREADS") == "1", "run with OMP_NUM_THREADS=1"
+    cells_res = json.loads((RES / "E2_3_cells.json").read_text())
+    cp = {k: (v["rbar"], v["betabar"]) for k, v in cells_res["corner_betabar"]["cells"].items()}
+    P = Partition(partition)
+    train = sobol_queries(n_train, seed=11); qs = sobol_queries(n_q, seed=12)
+    out = {}
+    for Nn in Ns:
+        e = load_eim(Nn, build_if_missing=False); e.Q = Q
+        S = np.hstack([reference_trajectory(t, Nn, NT, solver="gmres")[2].Z for t in train])
+        V, _ = pod_basis(S, free_matrices(train[0], Nn), R)
+        rcs = {"before": ReducedCertificate.build(V, e, cp, Q=Q, partition=partition),
+               "after": ReducedCertificate.build(V, e, cp, Q=Q, partition=partition, svd_tol=svd_tol)}
+        rom = AffineROM(V, e, Q=Q)
+        rows = {k: [] for k in rcs}; rel = []
+        for q in qs:
+            cid = P.cell_of(q)
+            info = e.eps_Q_graded(q, Q)
+            sol = rom.solve(q, rcs["before"].alpha0(), NT, ell=info["ell"])
+            calls = {k: (lambda rc=rc: (e.ell((q.G, q.M, q.Y), Q), e.eps_Q_graded(q, Q, ell=info["ell"]),
+                                        rc.certify(q, sol.alpha, sol.dt, sol.bL, info["ell"], info["eps_Q"], cid=cid)))
+                     for k, rc in rcs.items()}
+            for f in calls.values():
+                f()
+            order = list(calls.items()); random.Random(hash(q.query_id) % 2 ** 32).shuffle(order)
+            for k, f in order:
+                rows[k].append(_median_time(f, 5, 20)[0])
+            b0 = calls["before"]()[2]["eta_aug"]; b1 = calls["after"]()[2]["eta_aug"]
+            rel.append(b1 / b0 - 1)
+        out[str(Nn)] = dict(n_free=Mesh(N=Nn).n_free, Q=Q, rows_before=int(next(iter(rcs["before"].cells.values())).R.shape[1]),
+                            rows_after_range=[int(min(c.R.shape[1] for c in rcs["after"].cells.values())),
+                                              int(max(c.R.shape[1] for c in rcs["after"].cells.values()))],
+                            median_ms={k: float(np.median(v) * 1e3) for k, v in rows.items()},
+                            bound_inflation_after=dict(median=float(np.median(rel)), max=float(np.max(rel))))
+        print(f"N={Nn}: {out[str(Nn)]}", flush=True)
+        if Nn == max(Ns):
+            prof = {}
+            for k, rc in rcs.items():
+                q = qs[0]; cid = P.cell_of(q); info = e.eps_Q_graded(q, Q)
+                sol = rom.solve(q, rc.alpha0(), NT, ell=info["ell"])
+                pr = cProfile.Profile(); pr.enable()
+                for _ in range(50):
+                    e.ell((q.G, q.M, q.Y), Q); e.eps_Q_graded(q, Q, ell=info["ell"])
+                    rc.certify(q, sol.alpha, sol.dt, sol.bL, info["ell"], info["eps_Q"], cid=cid)
+                pr.disable()
+                st = pstats.Stats(pr); st.sort_stats("tottime")
+                top = sorted(((v[2], f"{fn[0].split('/')[-1]}:{fn[1]}({fn[2]})") for fn, v in st.stats.items()), reverse=True)[:6]
+                prof[k] = [dict(function=f, tottime_ms_per_call=t / 50 * 1e3) for t, f in top]
+            out["profile_N%d" % max(Ns)] = prof
+    res["timing_v3"] = dict(per_N=out, partition=partition, svd_tol=svd_tol,
+                            note="timed call = ell(nu) + eps_Q on the fixed 161 nodes + certificate form; one thread; "
+                                 "measured while the 2.4 training sweep occupied ~24 threads (not idle)",
+                            protocol="warm-up, 5 repetitions x 20, shuffled variant order, median of per-query medians",
+                            provenance=provenance())
+    save(res)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("steps", nargs="*", default=["cells", "build", "check", "graded", "timing"])
@@ -276,6 +338,8 @@ def main():
         do_graded(res)
     if "timing" in a.steps:
         do_timing(res)
+    if "timing_v3" in a.steps:
+        do_timing_v3(res)
 
 
 if __name__ == "__main__":

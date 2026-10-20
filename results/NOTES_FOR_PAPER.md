@@ -74,3 +74,12 @@
     sentence for the paper: "eps_Q(mu) is evaluated on a fixed node set of 161 points with a cell-wise
     derivative margin; it bounds the continuous sup-norm of the EIM error and hence, by Remark 2.9, the
     assembled operator difference, at a cost independent of N."
+
+13. **beta-bar per cell (Remark 4.3).** Since beta_mu = C beta~(G, M, Y) and beta~ is nonincreasing in G and in M
+    (Lemma 2.6: I_a(xi) decreases in a), the cell infimum over (C, G, M) is attained exactly at
+    (C_min, G_max, M_max). With the min(G, M) split, these are the corners (m_hi, M_max) / (G_max, m_hi), or
+    (G_max, M_max). Only the one-dimensional minimum over Y is taken on a grid (33 points) with the factor 0.99.
+    In all 18 cells of the 3 x 3 x 2 partition this reproduces the earlier 9 x 10 x 13 table minimum exactly.
+14. **Online cost.** The R-factor form is compressed offline by an SVD with a rigorous tail term
+    sigma_(k+1) ||w||, keeping k ~ 350-420 rows (Q = 29, r = 48) at every N >= 512. The online certificate
+    therefore costs O((Q+2) k r + k r N_T), independent of N, with a bound inflation <= 8e-4 (measured).

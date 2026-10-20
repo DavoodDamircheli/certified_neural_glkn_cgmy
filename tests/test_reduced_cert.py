@@ -88,3 +88,45 @@ def test_new_cells_valid_and_tighter():
         assert v["n_below_1"] == 0 and v["min_c_mu"] >= 1.0, spec
     s = res["effectivity"]["summary"]
     assert s["CYm:3x3x2"]["median_over_etaX"] <= 2.0 < s["rC:2x2"]["median_over_etaX"]
+
+
+# ---------------------------------------------------------------- follow-up 3: compression (item 1), corners (item 2)
+
+COMP = ROOT / "data" / "redcert_N512_r48_n800_CYm_3x3x2_Q29c.npz"
+
+
+@pytest.mark.skipif(not COMP.exists(), reason="run scripts/run_cells.py --build CYm:3x3x2 --Q 29")
+def test_svd_compression_brackets_full_value():
+    """Per step: ||U_k^T R w|| <= ||R w|| <= ||U_k^T R w|| + sigma_{k+1} ||w|| (+ rounding), on POD-Galerkin and
+    perturbed candidates; the compressed tensor has k < m rows."""
+    from cgmy_cert.reduced_cert import load_rc, ReducedCertificate, Partition
+    from cgmy_cert.eim import load_eim
+    from cgmy_cert.pod import AffineROM
+    from cgmy_cert.params import Query
+    rc = load_rc(COMP)
+    e = load_eim(512, build_if_missing=False)
+    V = np.load(ROOT / "data" / "pod_N512_NT240_seed0_800.npz")["V"][:, :48]
+    for q in (Query(0.3, 2.0, 7.0, 1.6, 0.04, T=0.6), Query(0.07, 4.6, 2.4, 1.15, 0.012, T=0.2)):
+        cid = Partition(rc.partition).cell_of(q)
+        c = rc.cells[cid]
+        assert c.R.shape[1] < 510 and c.sigma_tail > 0
+        full = ReducedCertificate.build(V, e, {cid: (c.rbar, c.betabar)}, Q=29, partition=rc.partition)
+        ell = e.ell((q.G, q.M, q.Y), 29)
+        sol = AffineROM(V, e, Q=29).solve(q, rc.alpha0(), 240, ell=ell)
+        for a in (sol.alpha, sol.alpha + 1e-3 * np.random.default_rng(3).standard_normal(sol.alpha.shape)):
+            X = np.vstack([(a[:, 1:] - a[:, :-1]) / sol.dt, ((sol.bL[1:] - sol.bL[:-1]) / sol.dt)[None]])
+            Y = np.vstack([0.5 * (a[:, 1:] + a[:, :-1]), (0.5 * (sol.bL[1:] + sol.bL[:-1]))[None]])
+            th = rc.theta(q, ell)
+            uc, rnd_c = rc.per_step(cid, th, X, Y, with_rounding=True)
+            uf, rnd_f = full.per_step(cid, th, X, Y, with_rounding=True)
+            assert np.all(np.sqrt(uc) <= np.sqrt(uf) + rnd_f)
+            assert np.all(np.sqrt(uf) <= np.sqrt(uc) + rnd_c)
+
+
+def test_corner_betabar_matches_and_dominates_table():
+    """beta-bar from the exact (C_min, G_max, M_max) corner(s) with a 33-point Y grid: no old table minimum below
+    0.99 x the corner value (follow-up 3, item 2)."""
+    res = json.loads((ROOT / "results" / "E2_3_cells.json").read_text())["corner_betabar"]
+    assert res["all_old_ok"] and res["nY"] >= 33 and len(res["cells"]) == 18
+    for v in res["cells"].values():
+        assert v["old_over_corner"] >= 0.99

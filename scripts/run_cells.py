@@ -168,23 +168,55 @@ def do_effect(res, nproc):
     save(res)
 
 
-def do_build(res, spec, sets=(800, 4000)):
+def do_corners(res, nproc, spec="CYm:3x3x2"):
+    """Follow-up 3, item 2: beta-bar from the exact (C_min, G_max, M_max) corner(s) and a 33-point Y grid;
+    compare with the table-based values (old grid minima must not be below 0.99 x the corner value)."""
+    from cgmy_cert.reduced_cert import beta_bar_rigorous
+    old = cell_params(res, spec)
+    out = {}
+    for c in Partition(spec).cells():
+        r = beta_bar_rigorous(c, N, nY=33, nproc=nproc)
+        old_bt = old[c["id"]][1] / (0.99 * c["C"][0])                 # table min of beta~ over the cell
+        r.update(rbar=RBAR, old_table_beta_tilde_min=old_bt, old_over_corner=old_bt / r["beta_tilde_min"],
+                 old_ok=bool(old_bt >= 0.99 * r["beta_tilde_min"]))
+        out[c["id"]] = r
+        print(c["id"], {k: (round(v, 5) if isinstance(v, float) else v) for k, v in r.items() if k != "corners"}, flush=True)
+    res["corner_betabar"] = dict(partition=spec, cells=out, nY=33, rule="betabar = 0.99 C_min min_{Y grid} "
+                                 "min_{(G,M) corners} beta~(G, M, Y); exact in (C, G, M) by monotonicity of beta~ "
+                                 "(nonincreasing in G and M, Lemma 2.6), grid only in Y",
+                                 all_old_ok=all(v["old_ok"] for v in out.values()), provenance=provenance(nproc=nproc))
+    save(res)
+
+
+def corner_params(res):
+    return {k: (v["rbar"], v["betabar"]) for k, v in res["corner_betabar"]["cells"].items()}
+
+
+def do_build(res, spec, sets=(800, 4000), Q=None, svd_tol=None):
+    """Q = None: the general tensor (Q_max = all stored EIM terms, uncompressed, serves every Q). Q given with
+    svd_tol: a compressed tensor for that operational Q (follow-up 3, item 1)."""
     man = json.loads(MANIFEST.read_text())
     e = load_eim(N, build_if_missing=False)
-    cp = cell_params(res, spec)
+    cp = corner_params(res) if spec == res.get("corner_betabar", {}).get("partition") else cell_params(res, spec)
     res.setdefault("build", {})
     for n in sets:
         V = np.load(DATA / f"pod_N{N}_NT{NT}_seed0_{n}.npz")["V"][:, :R]
-        rc = ReducedCertificate.build(V, e, cp, Q=int(e.magic.size), partition=spec)
-        path = DATA / f"redcert_N{N}_r{R}_n{n}_{spec.replace(':', '_')}.npz"
+        Qb = int(e.magic.size) if Q is None else int(Q)
+        rc = ReducedCertificate.build(V, e, cp, Q=Qb, partition=spec, svd_tol=svd_tol)
+        suffix = "" if Q is None else f"_Q{Qb}" + ("c" if svd_tol else "")
+        path = DATA / f"redcert_N{N}_r{R}_n{n}_{spec.replace(':', '_')}{suffix}.npz"
         save_rc(rc, path)
         mb = rc.cells[next(iter(rc.cells))].R.nbytes / 2 ** 20
         man["files"][path.name] = dict(file=str(path.relative_to(ROOT)), sha256=sha256(path), N=N, r=R, Q_max=rc.Q,
                                        partition=spec, cells={k: list(v) for k, v in cp.items()},
                                        basis=f"pod_N{N}_NT{NT}_seed0_{n}.npz", provenance=provenance())
-        res["build"][f"{spec}|{n}"] = dict(file=path.name, Q_max=rc.Q, n_cells=len(rc.cells), MB_per_cell=mb,
+        res["build"][f"{spec}|{n}{suffix}"] = dict(file=path.name, Q=rc.Q, n_cells=len(rc.cells), MB_per_cell=mb,
+                                          svd_tol=svd_tol, rows_k={k: int(c.R.shape[1]) for k, c in rc.cells.items()},
+                                          betabar_rule="corner (follow-up 3, item 2)" if "corner_betabar" in res else "table",
                                           total_MB=path.stat().st_size / 2 ** 20, offline_s=rc.time_offline_s)
-        print(spec, n, res["build"][f"{spec}|{n}"], flush=True)
+        b = res["build"][f"{spec}|{n}{suffix}"]
+        print(spec, n, suffix, {k: v for k, v in b.items() if k != "rows_k"}, "rows k range",
+              min(b["rows_k"].values()), max(b["rows_k"].values()), flush=True)
     MANIFEST.write_text(json.dumps(man, indent=1))
     save(res)
 
@@ -194,15 +226,22 @@ def main():
     ap.add_argument("steps", nargs="*", default=["table", "partitions", "validity", "effect"])
     ap.add_argument("--nproc", type=int, default=8)
     ap.add_argument("--build", default=None, help="partition spec to build tensors for")
+    ap.add_argument("--Q", type=int, nargs="*", default=None, help="operational Q values (compressed tensors)")
+    ap.add_argument("--svd-tol", type=float, default=1e-12)
     a = ap.parse_args()
     res = load()
     res["meta"] = dict(description="Follow-up 2, 2c: comparison-norm cells for the reduced certificate", N=N,
                        partitions=list(PARTITIONS), rbar=RBAR)
     for st in a.steps:
         dict(table=lambda: do_table(res, a.nproc), partitions=lambda: do_partitions(res),
-             validity=lambda: do_validity(res, a.nproc), effect=lambda: do_effect(res, a.nproc))[st]()
+             validity=lambda: do_validity(res, a.nproc), effect=lambda: do_effect(res, a.nproc),
+             corners=lambda: do_corners(res, a.nproc))[st]()
     if a.build:
-        do_build(res, a.build)
+        if a.Q:
+            for Qv in a.Q:
+                do_build(res, a.build, Q=Qv, svd_tol=a.svd_tol)
+        else:
+            do_build(res, a.build)
 
 
 if __name__ == "__main__":

@@ -110,6 +110,46 @@ class Partition:
                 for i in range(e["C"].size - 1) for j in range(e["Y"].size - 1) for k in range(e["m"].size - 1)]
 
 
+def cell_gm_corners(cell: dict) -> list[tuple]:
+    """(G, M) points where beta~ attains its infimum over a CYm cell's (G, M)-region, given that beta~ is
+    nonincreasing in G and in M (Lemma 2.6 / Remark 4.3 of the paper): the largest admissible G and M with
+    min(G, M) <= m_hi, i.e. (m_hi, M_max) and (G_max, m_hi), or the box corner (G_max, M_max) if
+    min(G_max, M_max) <= m_hi.  Points outside the box are clipped (then not admissible and dropped)."""
+    Gmax, Mmax = BOX["G"][1], BOX["M"][1]
+    mhi = cell["m"][1]
+    if min(Gmax, Mmax) <= mhi * (1 + 1e-12):
+        return [(Gmax, Mmax)]
+    out = []
+    for G, M in ((mhi, Mmax), (Gmax, mhi)):
+        if BOX["G"][0] <= G <= Gmax and BOX["M"][0] <= M <= Mmax:
+            out.append((float(G), float(M)))
+    return out
+
+
+def beta_bar_rigorous(cell: dict, N: int = 512, nY: int = 33, safety: float = 0.99, nproc: int = 1) -> dict:
+    """beta-bar = safety * C_min * min over a >= 33-point Y grid (endpoints included) and the (G, M) corners of
+    beta~(G, M, Y) = spectral_data(q with C = 1).beta.  The (C, G, M) part is exact by monotonicity; only the
+    one-dimensional minimum over Y is a grid minimum (covered by the safety factor)."""
+    Ys = np.linspace(cell["Y"][0], cell["Y"][1], nY)
+    pts = [(G, M, float(Y)) for (G, M) in cell_gm_corners(cell) for Y in Ys]
+    qs = [Query(C=1.0, G=G, M=M, Y=Y, r=0.05).as_dict() for G, M, Y in pts]
+    if nproc > 1:
+        from multiprocessing import Pool
+        with Pool(nproc) as pool:
+            b = pool.map(_beta_c1, [(qd, N) for qd in qs])
+    else:
+        b = [_beta_c1((qd, N)) for qd in qs]
+    b = np.array(b)
+    j = int(np.argmin(b))
+    return dict(betabar=safety * cell["C"][0] * float(b[j]), beta_tilde_min=float(b[j]), argmin=pts[j],
+                corners=cell_gm_corners(cell), nY=nY)
+
+
+def _beta_c1(args):
+    qd, N = args
+    return spectral_data(Query(**qd), N).beta
+
+
 def cell_beta_queries(cell: dict) -> list[Query]:
     """5 x 5 (r, C) grid of the cell (geometric, corners and interior) x 3 x 3 x 3 (G, M, Y) (min, mid, max)."""
     rr = np.geomspace(*cell["r"], 5); cc = np.geomspace(*cell["C"], 5)
@@ -171,8 +211,9 @@ class CellGram:
     rbar: float
     betabar: float
     xbar_min: float
-    R: np.ndarray            # (Q+2, m, r+1): R-factor column blocks
+    R: np.ndarray            # (Q+2, k, r+1): (compressed) R-factor column blocks
     R_fro: np.ndarray        # (Q+2,) Frobenius norms of the blocks (rounding term)
+    sigma_tail: float = 0.0  # sigma_{k+1} of the discarded singular directions (0: no compression)
 
 
 @dataclass
@@ -204,7 +245,7 @@ class ReducedCertificate:
 
     @classmethod
     def build(cls, V: np.ndarray, eim, cell_params: dict, Q: int | None = None,
-              partition: str = "rC:2x2") -> "ReducedCertificate":
+              partition: str = "rC:2x2", svd_tol: float | None = None) -> "ReducedCertificate":
         """cell_params: {cell id: (rbar, betabar)}.  Q may exceed the EIM's operational Q (up to the stored
         q_max): the leading block columns of R are the R-factor of the leading columns of W, so a tensor built
         for Q_max serves every Q <= Q_max (pass ell of length Q; the remaining theta entries are zero)."""
@@ -228,9 +269,19 @@ class ReducedCertificate:
             Lb = cholesky_banded(ab[bw:], lower=True)            # lower band storage, X-bar = L L^T
             W = solve_banded((bw, 0), Lb, Fm)                    # L^{-1} F
             Rm = np.linalg.qr(W, mode="r")                       # m x (Q+2)(r+1)
+            sig_tail = 0.0
+            if svd_tol is not None:
+                # rigorous compression (follow-up 3, item 1): R = U S Wt, keep k rows S_k Wt_k = U_k^T R; then
+                # ||R w|| <= ||S_k Wt_k w|| + sigma_{k+1} ||w||, and the online cost is O(k), k ~ 350-420 for
+                # every N >= 512 at tol 1e-12, instead of O(m), m = min(n_free, (Q+2)(r+1)).
+                _, sv, Wt = np.linalg.svd(Rm, full_matrices=False)
+                k = int(np.sum(sv > svd_tol * sv[0]))
+                if k < sv.size:
+                    sig_tail = float(sv[k])
+                    Rm = sv[:k, None] * Wt[:k]
             Rb = Rm.reshape(Rm.shape[0], Q + 2, r + 1).transpose(1, 0, 2).copy()
             rc.cells[cid] = CellGram(cell=cid, rbar=rbar, betabar=betabar, xbar_min=xbar_min(rbar, betabar, p),
-                                     R=Rb, R_fro=np.sqrt(np.sum(Rb ** 2, axis=(1, 2))))
+                                     R=Rb, R_fro=np.sqrt(np.sum(Rb ** 2, axis=(1, 2))), sigma_tail=sig_tail)
         rc.time_offline_s = time.time() - t0
         return rc
 
@@ -263,6 +314,8 @@ class ReducedCertificate:
         g = m * 2.0 ** -53 / (1 - m * 2.0 ** -53)
         rth_fro = float(np.sqrt(np.sum(Rth ** 2)) + g * np.dot(np.abs(theta), c.R_fro))
         rnd = g * (c.R_fro[0] * np.linalg.norm(X, axis=0) + rth_fro * np.linalg.norm(Yv, axis=0))
+        if c.sigma_tail > 0:          # discarded singular directions: sigma_{k+1} ||w_n||, w_n = [x_n; 0] + theta (x) y_n
+            rnd = rnd + c.sigma_tail * (np.linalg.norm(X, axis=0) + np.sqrt(theta @ theta) * np.linalg.norm(Yv, axis=0))
         return u, rnd
 
     def certify(self, q: Query, alpha: np.ndarray, dt: float, bL: np.ndarray, ell: np.ndarray,
@@ -302,7 +355,7 @@ def save_rc(rc: ReducedCertificate, path):
     arrs = dict(N=rc.N, r=rc.r, Q=rc.Q, h=rc.h, p=rc.p, VtV=rc.VtV, beta0_proj=rc.beta0_proj,
                 Vt_Mz0=rc._Vt_Mz0, cell_ids=np.array(list(rc.cells)), partition=rc.partition)
     for cid, c in rc.cells.items():
-        arrs[f"{cid}|R"] = c.R; arrs[f"{cid}|scal"] = np.array([c.rbar, c.betabar, c.xbar_min])
+        arrs[f"{cid}|R"] = c.R; arrs[f"{cid}|scal"] = np.array([c.rbar, c.betabar, c.xbar_min, c.sigma_tail])
     np.savez(path, **arrs)
 
 
@@ -313,7 +366,8 @@ def load_rc(path) -> ReducedCertificate:
     rc._Vt_Mz0 = d["Vt_Mz0"]
     rc.partition = str(d["partition"]) if "partition" in d.files else "rC:2x2"
     for cid in d["cell_ids"]:
-        cid = str(cid); rb, bb, xm = d[f"{cid}|scal"]; Rb = d[f"{cid}|R"]
+        cid = str(cid); sc = d[f"{cid}|scal"]; Rb = d[f"{cid}|R"]
+        rb, bb, xm = sc[:3]; st = float(sc[3]) if sc.size > 3 else 0.0
         rc.cells[cid] = CellGram(cell=cid, rbar=float(rb), betabar=float(bb), xbar_min=float(xm), R=Rb,
-                                 R_fro=np.sqrt(np.sum(Rb ** 2, axis=(1, 2))))
+                                 R_fro=np.sqrt(np.sum(Rb ** 2, axis=(1, 2))), sigma_tail=st)
     return rc

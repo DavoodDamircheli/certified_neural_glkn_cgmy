@@ -1506,5 +1506,151 @@
    "git_sha": "9e354d10e39cd1e85bf7ac7df5b47838e47e3cae-dirty",
    "timestamp": "2026-10-20T16:44:20-0500"
   }
+ },
+ "timing_v3": {
+  "per_N": {
+   "256": {
+    "n_free": 254,
+    "Q": 29,
+    "rows_before": 254,
+    "rows_after_range": [
+     254,
+     254
+    ],
+    "median_ms": {
+     "before": 10.368922539055347,
+     "after": 10.417989874258637
+    },
+    "bound_inflation_after": {
+     "median": 0.0,
+     "max": 0.0
+    }
+   },
+   "512": {
+    "n_free": 510,
+    "Q": 29,
+    "rows_before": 510,
+    "rows_after_range": [
+     349,
+     404
+    ],
+    "median_ms": {
+     "before": 13.055721670389175,
+     "after": 11.646482930518687
+    },
+    "bound_inflation_after": {
+     "median": 0.00017187050786426905,
+     "max": 0.00035690688482814537
+    }
+   },
+   "1024": {
+    "n_free": 1022,
+    "Q": 29,
+    "rows_before": 1022,
+    "rows_after_range": [
+     366,
+     419
+    ],
+    "median_ms": {
+     "before": 23.11812487896532,
+     "after": 12.15105610899627
+    },
+    "bound_inflation_after": {
+     "median": 6.86688717193018e-05,
+     "max": 0.0004127059344543049
+    }
+   },
+   "4096": {
+    "n_free": 4094,
+    "Q": 29,
+    "rows_before": 1519,
+    "rows_after_range": [
+     404,
+     416
+    ],
+    "median_ms": {
+     "before": 32.44398469105363,
+     "after": 11.462658597156405
+    },
+    "bound_inflation_after": {
+     "median": 0.00012216413357468703,
+     "max": 0.0007597680053470501
+    }
+   },
+   "profile_N4096": {
+    "before": [
+     {
+      "function": "reduced_cert.py:304(per_step)",
+      "tottime_ms_per_call": 14.774321720000001
+     },
+     {
+      "function": "numeric.py:932(tensordot)",
+      "tottime_ms_per_call": 6.28694514
+     },
+     {
+      "function": "eim.py:470(_half)",
+      "tottime_ms_per_call": 6.130249040000001
+     },
+     {
+      "function": "~:0(<method 'reduce' of 'numpy.ufunc' objects>)",
+      "tottime_ms_per_call": 1.3149612800000001
+     },
+     {
+      "function": "eim.py:62(half_alias)",
+      "tottime_ms_per_call": 1.21636048
+     },
+     {
+      "function": "symbols.py:32(bspline_ft_sq)",
+      "tottime_ms_per_call": 0.46857388
+     }
+    ],
+    "after": [
+     {
+      "function": "eim.py:470(_half)",
+      "tottime_ms_per_call": 4.83091486
+     },
+     {
+      "function": "reduced_cert.py:304(per_step)",
+      "tottime_ms_per_call": 2.0896448000000003
+     },
+     {
+      "function": "numeric.py:932(tensordot)",
+      "tottime_ms_per_call": 1.7735131400000002
+     },
+     {
+      "function": "eim.py:62(half_alias)",
+      "tottime_ms_per_call": 1.1562610800000002
+     },
+     {
+      "function": "symbols.py:32(bspline_ft_sq)",
+      "tottime_ms_per_call": 0.45108524000000005
+     },
+     {
+      "function": "~:0(<method 'reduce' of 'numpy.ufunc' objects>)",
+      "tottime_ms_per_call": 0.2594212
+     }
+    ]
+   }
+  },
+  "partition": "CYm:3x3x2",
+  "svd_tol": 1e-12,
+  "note": "timed call = ell(nu) + eps_Q on the fixed 161 nodes + certificate form; one thread; measured while the 2.4 training sweep occupied ~24 threads (not idle)",
+  "protocol": "warm-up, 5 repetitions x 20, shuffled variant order, median of per-query medians",
+  "provenance": {
+   "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+   "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+   "cpu_count": 24,
+   "affinity_cpus": 1,
+   "thread_env": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1"
+   },
+   "python": "3.10.12",
+   "numpy": "1.26.4",
+   "scipy": "1.15.3",
+   "git_sha": "e0993fd29130b132508c2cde90503ee2c4001401-dirty",
+   "timestamp": "2026-10-20T18:17:07-0500"
+  }
  }
 }
