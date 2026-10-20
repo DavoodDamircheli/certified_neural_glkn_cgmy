@@ -146,6 +146,92 @@
     "git_sha": "e3ba0d32d8738d3fb9cc67ffed8e894cad0883c8-dirty",
     "timestamp": "2026-10-20T14:15:19-0500"
    }
+  },
+  "redcert_N512_r48_n800.npz": {
+   "file": "data/redcert_N512_r48_n800.npz",
+   "sha256": "9d8826dd0c316a80beb59885377d4d54af4d349d1d687acb6e5e49da33fa4d26",
+   "N": 512,
+   "r": 48,
+   "Q": 29,
+   "basis": "pod_N512_NT240_seed0_800.npz",
+   "cells": {
+    "r0C0": [
+     0.01,
+     2.0471780140728595
+    ],
+    "r0C1": [
+     0.01,
+     9.155258403019868
+    ],
+    "r1C0": [
+     0.03162277660168379,
+     2.047178014072859
+    ],
+    "r1C1": [
+     0.03162277660168379,
+     9.155258403019868
+    ]
+   },
+   "wall_s": 0.23582029342651367,
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "1",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "bbebc1b3871cdff78149bd84e4902028382a570f",
+    "timestamp": "2026-10-20T14:25:55-0500"
+   }
+  },
+  "redcert_N512_r48_n4000.npz": {
+   "file": "data/redcert_N512_r48_n4000.npz",
+   "sha256": "8b66426f94c519e6e898a7aabce0b5726a60f78572440aa4600301a3b0d61d32",
+   "N": 512,
+   "r": 48,
+   "Q": 29,
+   "basis": "pod_N512_NT240_seed0_4000.npz",
+   "cells": {
+    "r0C0": [
+     0.01,
+     2.0471780140728595
+    ],
+    "r0C1": [
+     0.01,
+     9.155258403019868
+    ],
+    "r1C0": [
+     0.03162277660168379,
+     2.047178014072859
+    ],
+    "r1C1": [
+     0.03162277660168379,
+     9.155258403019868
+    ]
+   },
+   "wall_s": 0.21091341972351074,
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "1",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "bbebc1b3871cdff78149bd84e4902028382a570f",
+    "timestamp": "2026-10-20T14:25:56-0500"
+   }
   }
  }
 }

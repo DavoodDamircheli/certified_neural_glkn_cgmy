@@ -74,3 +74,54 @@ Each entry: what the plan says, what was done, the best achieved value, and wher
   This clone has neither the tag nor commit 2dd5f4f, no other local repository has them, and fetching
   from origin needs GitHub credentials. 2.2-2.4 do not touch `v8_frozen/`, so they went ahead; the restore
   and the 4 regression tests follow as soon as the tag is fetched.
+
+## 2.3 R-factor form of the reduced certificate instead of the Gram tensor
+
+* **Plan:** offline G_{qq'} = R_q^T X-bar^{-1} R_q', online quadratic form with C = sum_n w^n (w^n)^T.
+* **Finding:** for good candidates the residual is ~1e-8 of its individual terms (kappa ~ 5e7 for
+  POD-Galerkin at r = 48), and the Gram form loses eps * kappa^2 = O(1) relative accuracy. Measured on 3
+  queries: per-step errors up to 100% and eta^2 errors of 0.5%. The Gram form can therefore
+  *under*-estimate the bound.
+* **Done:** offline banded Cholesky X-bar = L L^T, W = L^{-1} F, economy QR W = Q_W R, storing R
+  (m x (Q+2)(r+1), m = min(n, (Q+2)(r+1))). Online: u_n = ||R_M x_n + (sum_k theta_k R_k) y_n||^2.
+  The error is eps * kappa, and a rigorous dot-product rounding term is added to sqrt(u_n) (it is at most
+  1.4e-3 of sqrt(u_n)). Online cost 0.55 / 1.95 / 2.99 ms (numpy, one thread) at N = 256 / 1024 / 4096: it
+  grows with m until m saturates at (Q+2)(r+1) = 1519, so it is bounded independently of N.
+
+## 2.3 Equality to 1e-10: met for O(1) residuals; floor ~1.4e-10 for POD-Galerkin candidates
+
+* Online vs full-order (rho^T X-bar^{-1} rho)^{1/2} on validation30[:20]: perturbed candidates <= 1.2e-15;
+  POD-Galerkin candidates <= 1.44e-10 (per step <= 2.3e-7). Against an extended-precision (long double)
+  reference for the worst query, the online value is off by 1.1e-10 and the double-precision full-order
+  value by 3.3e-11. This is the eps * kappa floor. The strict 1e-10 test for POD-Galerkin candidates is
+  kept as `xfail`; a 3e-10 test passes. The bound itself is safe because of the rounding term.
+
+## 2.3 Online time: the quadratic form is N-independent, the per-query symbol work is not (eps_Q)
+
+* Single thread, r = 48, Q = 29 (median over 10 queries; `results/E2_3_reduced_cert.json` -> timing):
+
+  | N | form | reduced solve | ell(nu) | eps_Q | conversion c_mu |
+  |---|---|---|---|---|---|
+  | 256 | 0.55 ms | 0.98 ms | 1.09 ms | 29 ms | 58 ms |
+  | 1024 | 1.95 ms | 0.98 ms | 1.10 ms | 123 ms | 103 ms |
+  | 4096 | 2.99 ms | 0.98 ms | 1.14 ms | 530 ms | 199 ms |
+
+* The plan's < 5 ms (compiled) / < 50 ms (numpy) holds for the certificate's quadratic form and for the
+  reduced solve. It does not hold for the two candidate-independent per-query quantities. eps_Q needs the
+  exact symbol on the L-grid (O(N K); it is also what makes the compression argument of Remark 2.9 apply).
+  The conversion factor c_mu = min (s_mu - eps)/x-bar needs one graded-grid symbol evaluation. Both are
+  computed once per query, whatever the candidate. At N = 512 they total about 0.2 s, which is the cost of
+  one direct GMRES solve (0.19 s). This changes the cost story and must be in the paper's cost model (2.6).
+* c_mu uses an adaptive alias count K' in {10, 20, 40, 100}: the smallest K' whose tail bound eps_{K'} is
+  <= 2% of min x-bar. It is rigorous for the exact symbol, loses <= 1.1% of c_mu, and is 3-8x cheaper than
+  K = 100. A fixed K' = 10 is not robust (c_mu < 0 at N = 4096).
+* No compiled (numba/torch.compile) timing: the form already meets 5 ms in numpy.
+
+## 2.3 Cells: beta-bar does not depend on r
+
+* beta_mu = 0.99 min (s - r m)/g1 does not depend on r, because the lambda_0 m part of s contains r m.
+  The r0 and r1 cells therefore have identical beta-bar (2.07 for C <= 0.224, 9.15 for C >= 0.224), and
+  splitting in r only changes r-bar. Within a cell beta ranges from 2.1 to 25.6 (median), driven by
+  (G, M, Y). With this X-bar the reduced certificate has median effectivity 51 on POD-Galerkin r = 48 (the
+  full-order eta^X with the query's own beta has 18). Cells in (C, Y) or (C, M) would tighten it.
+  The plan fixes the (r, C) cells, so this is reported, not changed.
