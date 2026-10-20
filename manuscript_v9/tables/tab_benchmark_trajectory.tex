@@ -1,0 +1,23 @@
+\begin{table}[!htbp]
+\centering\small
+\caption{Trajectory benchmark: 120 queries at $N=64$,
+target $\eta_{\rm aug}\le10^{-3}$. Times are medians of query repetition
+medians (seconds); ratios to dense LU are geometric means with 95\%
+query-bootstrap intervals. Every solver time includes certification.}
+\label{tab:benchmark-trajectory}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+Method & verified & cold s & cold ratio [CI] & verified & reuse s & reuse ratio [CI]\\
+\midrule
+Dense LU & 120/120 & $0.843$ & 1 & 120/120 & $0.271$ & 1\\
+GMRES & 120/120 & $0.905$ & 1.08 [1.07, 1.08] & 120/120 & $0.335$ & 1.24 [1.23, 1.25]\\
+Iterative reference & 120/120 & $1.487$ & 1.77 [1.77, 1.78] & 120/120 & $0.926$ & 3.45 [3.42, 3.48]\\
+Neural candidate & 0/120 & $0.649$ & -- & 0/120 & $0.078$ & --\\
+Neural warm-start GMRES & 120/120 & $0.927$ & 1.10 [1.10, 1.10] & 120/120 & $0.358$ & 1.33 [1.32, 1.33]\\
+Neural workflow & 120/120 & $0.995$ & 1.18 [1.18, 1.19] & 120/120 & $0.425$ & 1.58 [1.57, 1.59]\\
+POD $r=32$ & 120/120 & $0.950$ & 1.10 [1.08, 1.11] & 120/120 & $0.380$ & 1.25 [1.16, 1.34]\\
+POD $r=48$ & 120/120 & $0.651$ & 0.78 [0.77, 0.78] & 120/120 & $0.080$ & 0.30 [0.30, 0.30]\\
+\bottomrule
+\end{tabular}}
+\end{table}

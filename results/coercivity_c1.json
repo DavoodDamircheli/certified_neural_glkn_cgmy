@@ -1,0 +1,22 @@
+{
+ "c1_numerical": 0.00014022215462090146,
+ "xi_at_min": 0.0,
+ "mu_at_min": [
+  1.0,
+  5.0,
+  9.0,
+  1.8,
+  0.01
+ ],
+ "c1_analytic_remark33": 0.00014022215462262315,
+ "mu_at_min_analytic": [
+  0.05,
+  5.0,
+  9.0,
+  1.8,
+  0.01
+ ],
+ "v8_c1": 1.6e-08,
+ "n_queries": 544,
+ "xi_grid": "0 and 20001 geometric points in [1e-4, 1e6]"
+}

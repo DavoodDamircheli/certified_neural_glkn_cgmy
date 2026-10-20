@@ -1,0 +1,11 @@
+% Corollary 4.2 of the note: cheap certificate
+\begin{corollary}[Cheap certificate]\label{cor:cheap}
+In Theorem~\ref{thm:fully-discrete-certificate} and Proposition~\ref{prop:two-stage} replace
+$\norm{\rr^{n+1/2}}_{\Sh^{-1}}^2$ by $\rho^\top X_I^{-1}\rho$.  The resulting
+$\eta^{X}_{\rm aug}=(\beta_0^2+(\eta^X)^2)^{1/2}$ with
+$(\eta^X)^2=\dt\sum_n(\rr^{n+1/2})^\top X_I^{-1}\rr^{n+1/2}$
+is a rigorous upper bound with effectivity at most
+$\sqrt{\Thmu}$ times that of the exact estimator $\eta^S_{\rm aug}$, and costs one banded
+Cholesky factorisation plus $N_T$ banded solves ($O(N_TN_h)$ operations).
+No Riesz solve, no spectral estimate and no bracket are needed.
+\end{corollary}

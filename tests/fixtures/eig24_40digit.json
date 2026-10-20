@@ -1,0 +1,270 @@
+{
+ "description": "lambda_min(S_I) at N=64 of the exact-assembly free matrix (K=100, double entries) and of the v8 principal-period matrix, both by mpmath eigsy at 40 digits; v8 values from alpha_check.csv.",
+ "dps": 40,
+ "rows": [
+  {
+   "query_id": "Q_audit_0139",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.0429825172754027026907544836552805275169",
+   "lambda_min_principal_period_40digit": "0.04297635377569123781058942063284325051567",
+   "v8_lambda_min_mp": 0.0429763537756916,
+   "v8_alpha": 0.042976353775675,
+   "eps_K": 2.239504007209067e-09,
+   "seconds": 1.618016004562378
+  },
+  {
+   "query_id": "Q_audit_0140",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.1120980575876340647161006885477830055988",
+   "lambda_min_principal_period_40digit": "0.112063008089372422570973936019918710733",
+   "v8_lambda_min_mp": 0.1120630080893758,
+   "v8_alpha": 0.1120630080892891,
+   "eps_K": 1.4277486874811453e-08,
+   "seconds": 1.585728645324707
+  },
+  {
+   "query_id": "Q_audit_0141",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.07756603256641941642184665023596298633004",
+   "lambda_min_principal_period_40digit": "0.07754772129703820285888495788668636731918",
+   "v8_lambda_min_mp": 0.0775477212970388,
+   "v8_alpha": 0.077547721296983,
+   "eps_K": 6.562739025309799e-09,
+   "seconds": 1.584360122680664
+  },
+  {
+   "query_id": "Q_audit_0142",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.06573689315979551916129259184571188355233",
+   "lambda_min_principal_period_40digit": "0.06565410989497811651055091506575296319092",
+   "v8_lambda_min_mp": 0.0656541098949773,
+   "v8_alpha": 0.0656541098947311,
+   "eps_K": 1.8599117531847524e-07,
+   "seconds": 1.5648338794708252
+  },
+  {
+   "query_id": "Q_audit_0143",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.05588941773960117806434446046962266458289",
+   "lambda_min_principal_period_40digit": "0.05583611844352593547345855146114915827841",
+   "v8_lambda_min_mp": 0.0558361184435318,
+   "v8_alpha": 0.0558361184433769,
+   "eps_K": 6.95913468229451e-08,
+   "seconds": 1.5604636669158936
+  },
+  {
+   "query_id": "Q_audit_0144",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.0757642840740324782341480410941485494656",
+   "lambda_min_principal_period_40digit": "0.07574855738326344938841605608927309414846",
+   "v8_lambda_min_mp": 0.0757485573832635,
+   "v8_alpha": 0.0757485573832177,
+   "eps_K": 4.48440688488367e-09,
+   "seconds": 1.5338695049285889
+  },
+  {
+   "query_id": "Q_audit_0145",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.1175066764352097175971052075534925131173",
+   "lambda_min_principal_period_40digit": "0.1174551144211311217469221954046668599724",
+   "v8_lambda_min_mp": 0.117455114421133,
+   "v8_alpha": 0.1174551144209842,
+   "eps_K": 4.17418605563312e-08,
+   "seconds": 1.3642914295196533
+  },
+  {
+   "query_id": "Q_audit_0146",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.05219068364164546714028144585468313742736",
+   "lambda_min_principal_period_40digit": "0.05218427480308497522582544600499716776459",
+   "v8_lambda_min_mp": 0.0521842748030846,
+   "v8_alpha": 0.052184274803069,
+   "eps_K": 2.7078668680932436e-09,
+   "seconds": 1.6971304416656494
+  },
+  {
+   "query_id": "Q_audit_0395",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.01154165225769244357212502739475928754476",
+   "lambda_min_principal_period_40digit": "0.01153934995498155428294748495399882845225",
+   "v8_lambda_min_mp": 0.0115393499549814,
+   "v8_alpha": 0.0115393499549772,
+   "eps_K": 2.9076206957063686e-10,
+   "seconds": 1.6441593170166016
+  },
+  {
+   "query_id": "Q_audit_0396",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.04095470257625270110529986040723896318487",
+   "lambda_min_principal_period_40digit": "0.04091004299423719548322509259610691440411",
+   "v8_lambda_min_mp": 0.0409100429942277,
+   "v8_alpha": 0.0409100429941423,
+   "eps_K": 5.815241391412737e-09,
+   "seconds": 1.5278396606445312
+  },
+  {
+   "query_id": "Q_audit_0397",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.01078878307761740597010455927175697948365",
+   "lambda_min_principal_period_40digit": "0.01078753631522504987629365331963850882513",
+   "v8_lambda_min_mp": 0.010787536315225,
+   "v8_alpha": 0.0107875363152215,
+   "eps_K": 2.9101518722636437e-10,
+   "seconds": 1.5924134254455566
+  },
+  {
+   "query_id": "Q_audit_0398",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.02589524403011538142963929535539548528294",
+   "lambda_min_principal_period_40digit": "0.02587117448888743770809387821510056493914",
+   "v8_lambda_min_mp": 0.0258711744888845,
+   "v8_alpha": 0.0258711744888094,
+   "eps_K": 5.820303744527287e-09,
+   "seconds": 1.6519627571105957
+  },
+  {
+   "query_id": "Q_audit_0399",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.01113699663250732186577271400661455948359",
+   "lambda_min_principal_period_40digit": "0.0111352372245168580622474134042430406084",
+   "v8_lambda_min_mp": 0.0111352372245169,
+   "v8_alpha": 0.0111352372245138,
+   "eps_K": 2.9120506923055885e-10,
+   "seconds": 1.5972943305969238
+  },
+  {
+   "query_id": "Q_audit_0400",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.03286149511046760627794984987582344652961",
+   "lambda_min_principal_period_40digit": "0.03282765867258550860280725115731927826829",
+   "v8_lambda_min_mp": 0.032827658672584,
+   "v8_alpha": 0.0328276586725205,
+   "eps_K": 5.824101384611176e-09,
+   "seconds": 1.4389386177062988
+  },
+  {
+   "query_id": "Q_audit_0401",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.01038332653148973820832833028212028072363",
+   "lambda_min_principal_period_40digit": "0.01038267256290828673832948376408034737778",
+   "v8_lambda_min_mp": 0.0103826725629085,
+   "v8_alpha": 0.010382672562906,
+   "eps_K": 2.9145818688628636e-10,
+   "seconds": 1.2712225914001465
+  },
+  {
+   "query_id": "Q_audit_0402",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.01778515141632902477200528694115104892764",
+   "lambda_min_principal_period_40digit": "0.01777263846618899724055262965569629334901",
+   "v8_lambda_min_mp": 0.0177726384661934,
+   "v8_alpha": 0.0177726384661424,
+   "eps_K": 5.829163737725726e-09,
+   "seconds": 1.1899828910827637
+  },
+  {
+   "query_id": "Q_audit_0000",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.07993359984326239901098476039808678145986",
+   "lambda_min_principal_period_40digit": "0.07990572810266157539742844554299081429938",
+   "v8_lambda_min_mp": 0.0799057281026628,
+   "v8_alpha": 0.0799057281025925,
+   "eps_K": 1.268381057724995e-08,
+   "seconds": 1.4561805725097656
+  },
+  {
+   "query_id": "Q_audit_0001",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.104206131590014771161951001932843991963",
+   "lambda_min_principal_period_40digit": "0.1041104114859846075133085036872112703109",
+   "v8_lambda_min_mp": 0.1041104114859832,
+   "v8_alpha": 0.1041104114857195,
+   "eps_K": 8.750662367799851e-08,
+   "seconds": 1.5708034038543701
+  },
+  {
+   "query_id": "Q_audit_0002",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.0908352515619950374844080074474422729513",
+   "lambda_min_principal_period_40digit": "0.09071757674057956411690390847889172305358",
+   "v8_lambda_min_mp": 0.0907175767405815,
+   "v8_alpha": 0.0907175767402747,
+   "eps_K": 1.7903827339088723e-07,
+   "seconds": 1.5329010486602783
+  },
+  {
+   "query_id": "Q_audit_0003",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.1093676895259036254358311755929678840177",
+   "lambda_min_principal_period_40digit": "0.1093023876842677839124948882039035320695",
+   "v8_lambda_min_mp": 0.1093023876842709,
+   "v8_alpha": 0.1093023876840963,
+   "eps_K": 7.146861529699657e-08,
+   "seconds": 1.5469553470611572
+  },
+  {
+   "query_id": "Q_audit_0004",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.04852170538448001133116701959743474361467",
+   "lambda_min_principal_period_40digit": "0.04850447598165080336706303233910827932994",
+   "v8_lambda_min_mp": 0.0485044759816511,
+   "v8_alpha": 0.048504475981602,
+   "eps_K": 3.50092527336698e-08,
+   "seconds": 1.492210865020752
+  },
+  {
+   "query_id": "Q_audit_0005",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.03806833824102232106585271150047251061439",
+   "lambda_min_principal_period_40digit": "0.03803647708574802509841402142205502431047",
+   "v8_lambda_min_mp": 0.0380364770857505,
+   "v8_alpha": 0.0380364770856729,
+   "eps_K": 2.2797078757841212e-08,
+   "seconds": 1.501706838607788
+  },
+  {
+   "query_id": "Q_audit_0006",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.0348677029277386638159746264551759300158",
+   "lambda_min_principal_period_40digit": "0.03485698947044147500261943486002098203795",
+   "v8_lambda_min_mp": 0.034856989470438,
+   "v8_alpha": 0.0348569894704183,
+   "eps_K": 1.782335058679564e-09,
+   "seconds": 1.57328200340271
+  },
+  {
+   "query_id": "Q_audit_0007",
+   "N": 64,
+   "K": 100,
+   "lambda_min_exact_assembly_40digit": "0.0738370218203938039579788235205792909272",
+   "lambda_min_principal_period_40digit": "0.07378517137810444087864309592197774137494",
+   "v8_lambda_min_mp": 0.0737851713781053,
+   "v8_alpha": 0.0737851713779644,
+   "eps_K": 6.648635494897297e-08,
+   "seconds": 1.5540874004364014
+  }
+ ]
+}

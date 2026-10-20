@@ -1,0 +1,20 @@
+% Theorem 3.2 of the note: rigorous spectral lower bound
+\begin{theorem}[Rigorous spectral lower bound]\label{thm:spectral}
+For exact assembly and every $N$,
+\begin{equation}
+ \lambda_{\min}(S_I)\ \ge\ \smin(\mu):=\min_{\vartheta}\sym{s}_\mu(\vartheta)
+ \ \ge\ \rf\,m_{\min},
+ \qquad S_I\succeq \rf\,M_I .
+ \label{eq:spectral}
+\end{equation}
+For the truncated assembly with $K$ aliases the same bounds hold for
+$\Tn{N_h}{\sym{s}_{\mu,K}}$ with $\min\sym{s}_{\mu,K}$ in place of $\smin$, and both
+matrices satisfy $\lambda_{\min}\ge\alpha_{\rm lb}(\mu):=\min\sym{s}_{\mu,K}-\varepsilon_K(\mu)$.
+All bounds are parameter-explicit and valid for $Y\in(0,2)\setminus\{1\}$.
+\end{theorem}
+\begin{proof}
+$\sym{s}_\mu=\sum_k|\widehat N_p(\vartheta_k)|^2\Real A_\mu(\vartheta_k/h)\ge \rf\,\sym{m}(\vartheta)$
+by Lemma~\ref{lem:LK}; apply Lemma~\ref{lem:toeplitz}.  For the truncated
+symbol use $|\sym{s}_\mu-\sym{s}_{\mu,K}|\le\varepsilon_K$ (Lemma~\ref{lem:tail}) and
+$\norm{\Tn{N_h}{\sym{s}_\mu}-\Tn{N_h}{\sym{s}_{\mu,K}}}_2\le\varepsilon_K$.
+\end{proof}

@@ -1,0 +1,31 @@
+% Theorem 5.2 of the note: certificate with an affine surrogate operator
+\begin{theorem}[Certificate with an affine surrogate operator]\label{thm:eim-cert}
+Let the candidate trajectory be produced by any method (e.g.\ the reduced
+system $V^\top A_Q(\mu)V$), and let $\rho_Q^{n+1/2}$ be its residual
+evaluated with $A_Q$.  Then its residual with respect to the true assembled
+system satisfies
+\[
+ \norm{\rr^{n+1/2}}_{S_I^{-1}}\ \le\ \norm{\rho_Q^{n+1/2}}_{S_I^{-1}}
+ +\varepsilon_Q(\mu)\,\alpha_{\rm lb}^{-1/2}\,\norm{\overline{\cc}_\theta^{\,n+1/2}}_2,
+ \qquad \alpha_{\rm lb}=\smin(\mu),
+\]
+and Theorem~\ref{thm:fully-discrete-certificate} holds with
+$\eta^2=\beta_0^2+\dt\sum_n(\norm{\rho_Q}_{S^{-1}}+\varepsilon_Q\alpha_{\rm lb}^{-1/2}\norm{\overline{\cc}_\theta}_2)^2$.
+The same holds with $X_I$ in place of $S_I$ and $\min_\vartheta \sym{x}_\mu(\vartheta)\ (\ge \rf\,m_{\min})$ in place of $\alpha_{\rm lb}$.
+\end{theorem}
+\begin{proof}
+$\rho=\rho_Q+(\Ah-A_Q)\overline{\cc}_\theta$; bound the second term by
+$\norm{(\Ah-A_Q)\overline{\cc}}_2\lambda_{\min}(S_I)^{-1/2}$ and use
+Theorem~\ref{thm:spectral}.  This is exactly the allowance structure of
+Remark~\ref{rem:arithmetic-scope}, with $d_n$ now explicit.
+\end{proof}
+\begin{remark}[Reduced online certificate]\label{rem:reduced-online}
+With a fixed comparison norm $\bar X=\Tn{}{\bar{\sym{x}}}$ (one per cell of a coarse
+partition of the $(\rf,C)$ range) and the affine $A_Q$, the standard
+offline/online decomposition of the residual norm applies: the online cost of
+$\eta^{\bar X}$ for a rank-$r$ candidate is $Q^2(2r+1)^2$ operations,
+independent of $N_h$, and
+$\rho^\top S_I^{-1}\rho\le\bigl(\inf_\vartheta \sym{s}_\mu/\bar{\sym{x}}\bigr)^{-1}\rho^\top\bar X^{-1}\rho$
+by Lemma~\ref{lem:toeplitz}, the infimum being again an explicit
+one-dimensional computation at the query.
+\end{remark}

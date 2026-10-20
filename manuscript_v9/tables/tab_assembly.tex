@@ -1,0 +1,38 @@
+\begin{table}[!htbp]
+\centering\small
+\caption{Independent 40-digit assembly comparisons: quadrature of the
+principal-period convention and exact real-line Galerkin coefficients.
+Relative errors; ten cost-study queries for $N\le256$, three for $N=512$.
+The eigenvalue column is maximum relative change in $\lambda_{\min}(S_I)$.}
+\label{tab:assembly}
+\textit{Evolution-matrix differences.}\par\smallskip
+\begin{tabular}{lrrrr}
+\toprule
+Comparator & $N$ & Queries & Max entry $A$ & Operator norm med./max\\
+\midrule
+Principal period & 64 & 10 & $1.03\times10^{-3}$ & $6.95\times10^{-3}$ / $0.0135$\\
+Principal period & 128 & 10 & $2.59\times10^{-4}$ & $3.26\times10^{-3}$ / $6.23\times10^{-3}$\\
+Principal period & 256 & 10 & $6.34\times10^{-5}$ & $1.55\times10^{-3}$ / $2.92\times10^{-3}$\\
+Principal period & 512 & 3 & $1.22\times10^{-5}$ & $1.00\times10^{-3}$ / $1.11\times10^{-3}$\\
+Real line & 64 & 10 & $0.108$ & $0.382$ / $0.412$\\
+Real line & 128 & 10 & $0.105$ & $0.371$ / $0.408$\\
+Real line & 256 & 10 & $0.102$ & $0.358$ / $0.405$\\
+Real line & 512 & 3 & $0.101$ & $0.333$ / $0.402$\\
+\bottomrule
+\end{tabular}
+\par\smallskip\textit{Mass matrix and positivity.}\par\smallskip
+\begin{tabular}{lrrrrr}
+\toprule
+Comparator & $N$ & Queries & Max entry $M$ & Eigenvalue change & Positivity agrees\\
+\midrule
+Principal period & 64 & 10 & $4.0\times10^{-16}$ & $4.1\times10^{-7}$ & 10/10\\
+Principal period & 128 & 10 & $4.0\times10^{-16}$ & $6.0\times10^{-8}$ & 10/10\\
+Principal period & 256 & 10 & $3.0\times10^{-15}$ & $8.3\times10^{-9}$ & 10/10\\
+Principal period & 512 & 3 & $7.9\times10^{-15}$ & $9.4\times10^{-10}$ & 3/3\\
+Real line & 64 & 10 & $4.0\times10^{-16}$ & $8.9\times10^{-4}$ & 10/10\\
+Real line & 128 & 10 & $4.0\times10^{-16}$ & $4.4\times10^{-4}$ & 10/10\\
+Real line & 256 & 10 & $3.0\times10^{-15}$ & $2.2\times10^{-4}$ & 10/10\\
+Real line & 512 & 3 & $7.9\times10^{-15}$ & $1.1\times10^{-4}$ & 3/3\\
+\bottomrule
+\end{tabular}
+\end{table}
