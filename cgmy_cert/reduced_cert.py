@@ -26,7 +26,8 @@ Bound (rigorous): with the EIM allowance d_n = eps_Q ||cbar_raw^n||_2 / sqrt(xba
 factor c_mu = min_theta (s_mu - eps_K) / x-bar  (S_I >= c_mu X-bar, exact matrix included),
     eta^{X-bar} = ( dt sum_n (sqrt(u_n) + d_n)^2 / c_mu )^{1/2},   eta_aug = (beta_0^2 + eta^2)^{1/2}.
 ||cbar_raw||_2^2 = ybar^T (V^T V) ybar + (p-1) b-bar^2 uses the stored r x r Gram V^T V; beta_0 =
-||z_h^0 - V alpha^0||_{M} is precomputed (z_h^0 depends on the strike only, which is fixed).
+||z_h^0 - V alpha^0||_{M} by Pythagoras from the precomputed projection error (z_h^0 depends on the strike
+only, which is fixed).
 c_mu needs one symbol evaluation on the graded grid of `spectral.py` (N-independent size).
 """
 
@@ -139,7 +140,7 @@ class ReducedCertificate:
     h: float
     p: int
     VtV: np.ndarray          # r x r
-    beta0_sq_const: float    # ||z_h^0||_M^2 (the strike is fixed)
+    beta0_proj: float        # ||z_h^0 - V alpha0_proj||_M, computed at full order (the strike is fixed)
     cells: dict = field(default_factory=dict)      # id -> CellGram
     time_offline_s: float = 0.0
 
@@ -170,8 +171,11 @@ class ReducedCertificate:
         z0 = initial_free_vector(Query(0.5, 3.0, 5.0, 1.5, 0.05), msh)
         Me = _poly_entries(lambda t: mass_symbol(t, p), p)
         Mz0 = banded_sym_matvec(Me, z0)
-        rc = cls(N=eim.N, r=r, Q=Q, h=eim.h, p=p, VtV=V.T @ V, beta0_sq_const=float(z0 @ Mz0))
-        rc._Vt_Mz0 = V.T @ Mz0
+        a0 = V.T @ Mz0
+        d0 = z0 - V @ a0
+        rc = cls(N=eim.N, r=r, Q=Q, h=eim.h, p=p, VtV=V.T @ V,
+                 beta0_proj=float(np.sqrt(max(d0 @ banded_sym_matvec(Me, d0), 0.0))))
+        rc._Vt_Mz0 = a0
         for cid, (rbar, betabar) in cell_params.items():
             ab = banded_from_toeplitz(xbar_entries(rbar, betabar, p), n, bw)
             Lb = cholesky_banded(ab[bw:], lower=True)            # lower band storage, X-bar = L L^T
@@ -189,9 +193,10 @@ class ReducedCertificate:
         return self._Vt_Mz0.copy()
 
     def beta0(self, alpha0: np.ndarray) -> float:
-        """||z_h^0 - V alpha^0||_M for an M-orthonormal V."""
-        d = self.beta0_sq_const - 2 * alpha0 @ self._Vt_Mz0 + alpha0 @ alpha0
-        return float(np.sqrt(max(d, 0.0)))
+        """||z_h^0 - V alpha^0||_M for an M-orthonormal V, by Pythagoras (no cancellation):
+        beta0^2 = ||z_h^0 - V alpha0_proj||_M^2 + ||alpha^0 - alpha0_proj||^2."""
+        da = alpha0 - self._Vt_Mz0
+        return float(np.sqrt(self.beta0_proj ** 2 + da @ da))
 
     def theta(self, q: Query, ell: np.ndarray) -> np.ndarray:
         cg = q.C * q.gammaY * self.h ** (-q.Y)
@@ -242,7 +247,7 @@ class ReducedCertificate:
 # ---------------------------------------------------------------- io
 
 def save_rc(rc: ReducedCertificate, path):
-    arrs = dict(N=rc.N, r=rc.r, Q=rc.Q, h=rc.h, p=rc.p, VtV=rc.VtV, beta0_sq_const=rc.beta0_sq_const,
+    arrs = dict(N=rc.N, r=rc.r, Q=rc.Q, h=rc.h, p=rc.p, VtV=rc.VtV, beta0_proj=rc.beta0_proj,
                 Vt_Mz0=rc._Vt_Mz0, cell_ids=np.array(list(rc.cells)))
     for cid, c in rc.cells.items():
         arrs[f"{cid}|R"] = c.R; arrs[f"{cid}|scal"] = np.array([c.rbar, c.betabar, c.xbar_min])
@@ -252,7 +257,7 @@ def save_rc(rc: ReducedCertificate, path):
 def load_rc(path) -> ReducedCertificate:
     d = np.load(path)
     rc = ReducedCertificate(N=int(d["N"]), r=int(d["r"]), Q=int(d["Q"]), h=float(d["h"]), p=int(d["p"]),
-                            VtV=d["VtV"], beta0_sq_const=float(d["beta0_sq_const"]))
+                            VtV=d["VtV"], beta0_proj=float(d["beta0_proj"]))
     rc._Vt_Mz0 = d["Vt_Mz0"]
     for cid in d["cell_ids"]:
         cid = str(cid); rb, bb, xm = d[f"{cid}|scal"]; Rb = d[f"{cid}|R"]

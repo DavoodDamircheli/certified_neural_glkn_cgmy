@@ -125,3 +125,22 @@ Each entry: what the plan says, what was done, the best achieved value, and wher
   (G, M, Y). With this X-bar the reduced certificate has median effectivity 51 on POD-Galerkin r = 48 (the
   full-order eta^X with the query's own beta has 18). Cells in (C, Y) or (C, M) would tighten it.
   The plan fixes the (r, C) cells, so this is reported, not changed.
+
+## 2.4 POD-NN: parameter count, precision, selection metric
+
+* **Parameter count.** The specified MLP 6 -> 256 -> 256 -> 256 -> r N_T (r = 48, N_T = 240) has 3.09 M
+  parameters, not "~0.5 M": the 11520-wide output layer alone has 2.96 M. The architecture is kept as
+  specified.
+* **float64.** float32 is unusable for a certified candidate. With |alpha| ~ 1e2 the quantisation noise
+  (~1e-5) is amplified by 1/dt and by the operator in the residual to ~1e-3 in eta, the target tolerance.
+* **Checkpoint selection** every 10 epochs on the median *rigorous* reduced bound eta_aug on validation30
+  (beta_0, allowance, 1/c_mu and the rounding term included); the relative-LS validation loss is logged too.
+* **Reference points for the done-when (reduced certificate, validation30, r = 48):** the exact projection
+  of the references has median eta_aug 5.4e-3 (0/30 <= 1e-3), and POD-Galerkin 6.4e-3 (0/30). A POD-NN
+  can pass eps = 1e-3 with this certificate only if the residual term drives it below the projection's
+  residual.
+* **beta_0 fix (2.3 code).** beta_0 was computed as sqrt(||z0||^2 - 2 a.Vt M z0 + |a|^2), which cancels
+  (||z0||_M = 254, beta_0 = 2.2e-5). It is now computed by Pythagoras from the full-order projection error.
+  The redcert files were rebuilt and the E2_3 check rerun (MANIFEST updated).
+* **Compute.** n = 4000 with lambda_R > 0 takes 17.5 s/epoch (4 threads, 6 runs in parallel), i.e. ~10 h per
+  2000-epoch run; the full sweep (2 x 4 x 3 = 24 runs) takes about a day.

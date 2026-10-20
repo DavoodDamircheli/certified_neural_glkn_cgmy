@@ -149,7 +149,7 @@
   },
   "redcert_N512_r48_n800.npz": {
    "file": "data/redcert_N512_r48_n800.npz",
-   "sha256": "9d8826dd0c316a80beb59885377d4d54af4d349d1d687acb6e5e49da33fa4d26",
+   "sha256": "601973ef79792df4dd2d38f54c77e54d709e345ac709e14ed3c8ab9c9686a399",
    "N": 512,
    "r": 48,
    "Q": 29,
@@ -172,7 +172,7 @@
      9.155258403019868
     ]
    },
-   "wall_s": 0.23582029342651367,
+   "wall_s": 0.2178502082824707,
    "provenance": {
     "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
     "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
@@ -186,13 +186,13 @@
     "python": "3.10.12",
     "numpy": "1.26.4",
     "scipy": "1.15.3",
-    "git_sha": "bbebc1b3871cdff78149bd84e4902028382a570f",
-    "timestamp": "2026-10-20T14:25:55-0500"
+    "git_sha": "1e487f79db290f2ae8cacdd980dd1c7a0802c168-dirty",
+    "timestamp": "2026-10-20T14:40:11-0500"
    }
   },
   "redcert_N512_r48_n4000.npz": {
    "file": "data/redcert_N512_r48_n4000.npz",
-   "sha256": "8b66426f94c519e6e898a7aabce0b5726a60f78572440aa4600301a3b0d61d32",
+   "sha256": "e3256d04835d121fc65da5947a2e5652f603130997b49885c3181d23a9a46cd6",
    "N": 512,
    "r": 48,
    "Q": 29,
@@ -215,7 +215,7 @@
      9.155258403019868
     ]
    },
-   "wall_s": 0.21091341972351074,
+   "wall_s": 0.1974010467529297,
    "provenance": {
     "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
     "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
@@ -229,8 +229,8 @@
     "python": "3.10.12",
     "numpy": "1.26.4",
     "scipy": "1.15.3",
-    "git_sha": "bbebc1b3871cdff78149bd84e4902028382a570f",
-    "timestamp": "2026-10-20T14:25:56-0500"
+    "git_sha": "1e487f79db290f2ae8cacdd980dd1c7a0802c168-dirty",
+    "timestamp": "2026-10-20T14:40:11-0500"
    }
   }
  }
