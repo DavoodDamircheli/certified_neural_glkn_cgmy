@@ -172,12 +172,43 @@ def _median_time(fn, reps=5, inner=20):
     return float(np.median(ts)), ts
 
 
-def do_timing(res, Ns=(256, 1024, 4096), Q=29, n_train=20, n_q=10):
-    """Online time of the reduced certificate at r = 48, Q = 29: the quadratic form (N-independent), and
-    separately eps_Q (L-grid, O(N K)) and the conversion factor c_mu (graded grid, N-independent size)."""
+def do_graded(res, Ns=(64, 256, 512, 1024, 4096), n_q=200):
+    """Follow-up 2, 2b: eps_Q on the N-independent node set (GRADED_L0 + GRADED_NFINE refinement) vs the
+    L-grid version: rigour (graded >= scale * max over the L-grid of |e|, the quantity that bounds
+    ||A_I - A_Q||_2) and loss of tightness."""
+    from cgmy_cert.eim import eim_test_queries, GRADED_L0, GRADED_NFINE
+    qs = eim_test_queries(n_q)
+    out = {}
+    for Nn in Ns:
+        e = load_eim(Nn, build_if_missing=False)
+        if Nn >= 512:
+            e.Q = 29
+        g = e.graded()
+        rg, ro = [], []
+        for q in qs:
+            old = e.eps_Q(q); new = e.eps_Q_graded(q, ell=old["ell"])
+            rg.append(new["eps_Q"] / old["grid"]); ro.append(new["eps_Q"] / old["eps_Q"])
+        rg, ro = np.array(rg), np.array(ro)
+        out[str(Nn)] = dict(Q=e.Q, n_nodes=int(g.theta.size), min_graded_over_Lgrid_max=float(rg.min()),
+                            median_graded_over_old_epsQ=float(np.median(ro)), max_graded_over_old_epsQ=float(ro.max()))
+        print(f"N={Nn}: {out[str(Nn)]}", flush=True)
+    res["graded_eps_Q"] = dict(per_N=out, L0=GRADED_L0, n_fine=GRADED_NFINE, n_queries=n_q,
+                               population="eim_test_queries (sobol seed 2026)",
+                               rule="sup_theta |e| bounded cell-wise on the node set (endpoint values + half "
+                                    "width x max endpoint |e'|), +-pi as one-sided limits plus the L-grid "
+                                    "convention value at -pi", provenance=provenance())
+    save(res)
+
+
+def do_timing(res, Ns=(256, 1024, 4096), Q=29, n_train=20, n_q=10, partition="CYm:3x3x2"):
+    """Online time of the reduced certificate at r = 48, Q = 29 (follow-up 2, 2b): the quadratic form, ell(nu),
+    eps_Q on the N-independent node set, and the optional tightening factor c_mu; all should be flat in N."""
     import random
+    from cgmy_cert.reduced_cert import Partition
     assert os.environ.get("OMP_NUM_THREADS") == "1", "run with OMP_NUM_THREADS=1"
-    cp = cell_params(res)
+    cells_res = json.loads((RES / "E2_3_cells.json").read_text())
+    cp = {k: (v["rbar"], v["betabar"]) for k, v in cells_res["partitions"][partition].items()}
+    P = Partition(partition)
     res.setdefault("timing", {})
     train = sobol_queries(n_train, seed=11)
     qs = sobol_queries(n_q, seed=12)
@@ -189,33 +220,39 @@ def do_timing(res, Ns=(256, 1024, 4096), Q=29, n_train=20, n_q=10):
         fs0 = free_matrices(train[0], Nn)
         S = np.hstack([reference_trajectory(t, Nn, NT, solver="gmres")[2].Z for t in train])
         V, _ = pod_basis(S, fs0, R)
-        rc = ReducedCertificate.build(V, e, cp, Q=Q)
+        rc = ReducedCertificate.build(V, e, cp, Q=Q, partition=partition)
         rom = AffineROM(V, e, Q=Q)
         rows = []
         for q in qs:
-            info = e.eps_Q(q, Q)
+            info = e.eps_Q_graded(q, Q)
             sol = rom.solve(q, rc.alpha0(), NT, ell=info["ell"])
-            cid = cell_of(q)
-            c_mu = conversion_factor(q, Nn, *cp[cid])
-            f_form = lambda: rc.certify(q, sol.alpha, sol.dt, sol.bL, info["ell"], info["eps_Q"], c_mu=c_mu, cid=cid)
+            cid = P.cell_of(q)
+            f_form = lambda: rc.certify(q, sol.alpha, sol.dt, sol.bL, info["ell"], info["eps_Q"], cid=cid)
             f_solve = lambda: rom.solve(q, rc.alpha0(), NT, ell=info["ell"])
-            f_eps = lambda: e.eps_Q(q, Q)
+            f_eps = lambda: e.eps_Q_graded(q, Q, ell=info["ell"])
             f_ell = lambda: e.ell((q.G, q.M, q.Y), Q)
             f_conv = lambda: conversion_factor(q, Nn, *cp[cid])
             f_form(); f_solve()                                  # warm-up
             order = [("form", f_form, 20), ("reduced_solve", f_solve, 20), ("ell", f_ell, 20),
-                     ("eps_Q", f_eps, 1), ("conversion", f_conv, 1)]
+                     ("eps_Q_graded", f_eps, 20), ("c_mu_optional", f_conv, 1)]
             random.Random(hash(q.query_id) % 2 ** 32).shuffle(order)
             row = {}
             for name, fn, inner in order:
                 row[name] = _median_time(fn, 5, inner)[0]
             rows.append(row)
         med = {k: float(np.median([r[k] for r in rows])) for k in rows[0]}
-        res["timing"][str(Nn)] = dict(N=Nn, n_free=Mesh(N=Nn).n_free, r=R, Q=Q, rows_m=int(rc.cells["r0C0"].R.shape[1]),
+        med["total_online_certificate"] = med["form"] + med["ell"] + med["eps_Q_graded"]
+        res.setdefault("timing_v2", {})
+        res["timing_v2"][str(Nn)] = dict(N=Nn, partition=partition, n_free=Mesh(N=Nn).n_free, r=R, Q=Q,
+                                         rows_m=int(next(iter(rc.cells.values())).R.shape[1]),
                                       median_s=med, per_query=rows, n_queries=n_q,
                                       basis=f"POD of {n_train} trajectories (sobol seed 11) at N={Nn}")
         print(f"N={Nn}: " + ", ".join(f"{k} {v * 1e3:.2f} ms" for k, v in med.items()), flush=True)
-    res["timing_meta"] = dict(protocol="OMP_NUM_THREADS=1, one warm-up per query, 5 repetitions (inner loops of 20 "
+    res["timing_v2_meta"] = dict(note="follow-up 2, 2b: eps_Q on the N-independent node set, new cells, c_mu "
+                                 "optional (not part of the default online path); the earlier 'timing' block "
+                                 "(L-grid eps_Q, rC cells, c_mu always) is kept for comparison",
+                                 load_note="measured while the 2.4 training sweep occupied ~24 threads; Phase 3 "
+                                           "(E2) repeats on an idle machine", protocol="OMP_NUM_THREADS=1, one warm-up per query, 5 repetitions (inner loops of 20 "
                               "for the fast parts), shuffled order, median of per-query medians",
                               implementation="numpy (no compilation)", provenance=provenance())
     save(res)
@@ -223,7 +260,7 @@ def do_timing(res, Ns=(256, 1024, 4096), Q=29, n_train=20, n_q=10):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("steps", nargs="*", default=["cells", "build", "check", "timing"])
+    ap.add_argument("steps", nargs="*", default=["cells", "build", "check", "graded", "timing"])
     ap.add_argument("--nproc", type=int, default=20)
     a = ap.parse_args()
     res = load()
@@ -235,6 +272,8 @@ def main():
         do_build(res)
     if "check" in a.steps:
         do_check(res, a.nproc)
+    if "graded" in a.steps:
+        do_graded(res)
     if "timing" in a.steps:
         do_timing(res)
 

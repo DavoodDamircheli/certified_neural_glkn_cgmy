@@ -155,3 +155,88 @@ Each entry: what the plan says, what was done, the best achieved value, and wher
 * Retraining is dropped. The v8 training script cannot run unchanged against the new references: its
   validation set is regenerated with the principal-period assembly (forbidden by rule 2), and its loader
   reads v8's HDF5 schema, not the new npz files.
+
+
+# Follow-up 2 (review of 2.2-2.3): changes 2a-2d
+
+The earlier entries stand as accepted by the review: raw-vector allowance, R-factor form with rounding
+term and the 1e-10 xfail (extended-precision evidence now in `results/E2_3_reduced_cert.json` ->
+check.extended_precision_evidence, script `scripts/check_reduced_cert_longdouble.py`), the beta_0 fix, and the
+r = 48 sanity check. The 2.3 timing table above is superseded by 2b.
+
+## 2a. The full-order certificate uses A_I (no allowance)
+
+`results/E2_2_pod.json` now stores, for every rank and query, `variants.with_AI` (residual with A_I and f_I,
+no allowance: the full-order certificate proper) and `variants.with_AQ_allowance` (the 2.2 numbers).
+Validation30, median eta^S: identical up to r = 32; r = 40: 9.850e-03 vs 9.891e-03;
+r = 48: 1.369e-03 vs 1.384e-03;
+r = 56: 1.994e-04 vs 2.331e-04;
+r = 62: 6.625e-05 vs 9.875e-05. Acceptance counts at the eps sweep
+do not change on this population. From now on A_Q appears only in the reduced solve and in the
+N-independent online certificate.
+
+## 2b. N-independent per-query symbol work
+
+* **eps_Q on an N-independent node set** (`EIM.eps_Q_graded`, `eim.GradedNodes`). The nodes are symmetric:
+  a uniform 96-point grid plus 32 geometric points on the scale h * min_box min(G, M) = h near 0, plus the
+  one-sided limits at +-pi, 161 nodes in all. The EIM basis is precomputed on them, along with
+  theta_k, |N^(theta_k)|^2 and its derivative (query-independent). Online, (delta +- i theta_k)^Y is
+  evaluated in real arithmetic with all K = 100 aliases. Bound: sup_theta |e| <= max over cells of
+  (max endpoint |e| + half-width x max endpoint |e'|) (spectral._grid_extreme's rule), and separately the
+  L-grid's convention value at theta = -pi.
+  Alias truncation is *not* used for eps_Q: the tail at any useful K' is far larger than e itself
+  (~1e-9 relative), so it cannot be rigorous.
+* Rigour check, 200 queries per N: graded eps_Q / (scale * max_L-grid |e|) >= 1.050 at every N in 64..4096
+  (the right-hand side bounds ||A_I - A_Q||_2 by the compression argument). Loss of tightness against the
+  old L-grid eps_Q (median / max): N=64: 1.02 / 1.31; N=256: 1.20 / 1.54; N=512: 1.55 / 1.78; N=1024: 1.52 / 1.90; N=4096: 1.75 / 2.08.
+* **c_mu is optional** (`ReducedCertificate.certify(..., tighten=False)` by default). The cells are built so that
+  x-bar <= x_mu <= s_mu; on 400 Sobol queries c_mu >= 1.0057 for every partition
+  (`results/E2_3_cells.json` -> validity). With tighten=True, c_mu uses the adaptive alias truncation
+  K' in {10, 20, 40, 100}, rigorous via the Lemma 1.2 tail bound eps_K'(all |k| > K'):
+  s_mu >= s_(mu,K') - eps_K'. It costs 0.2-0.4 s, so it is not in the timed path.
+* **Timing** (one thread, r = 48, Q = 29, CYm:3x3x2 cells, `timing_v2`; measured while the 2.4 sweep
+  occupied ~24 threads):
+
+  | N | cert. form | ell(nu) | eps_Q (graded) | total online cert. | c_mu (optional) |
+  |---|---|---|---|---|---|
+  | 256 | 0.63 ms | 1.17 ms | 1.62 ms | 3.42 ms | 209 ms |
+  | 1024 | 5.42 ms | 1.19 ms | 1.62 ms | 8.22 ms | 410 ms |
+  | 4096 | 9.07 ms | 1.24 ms | 1.60 ms | 11.91 ms | 399 ms |
+
+  ell and eps_Q are flat in N. The form costs O(m r N_T) with m = min(n_free, (Q+2)(r+1)), so it grows with N
+  until m saturates at 1519 (N >= ~1520). It is bounded independently of N but not flat below that. On a
+  less loaded machine this afternoon the same form took 0.55 / 1.95 / 2.99 ms (table above); the slowdown
+  here is contention. Reducing m via a smaller Gram matrix would reintroduce the cancellation problem.
+  The < 5 ms target is met for N <= 1024 under contention for ell + eps_Q, and for the full total only
+  at N = 256. Phase 3 (E2) repeats this on an idle machine.
+
+## 2c. Cells in (log C, Y, log min(G, M))
+
+* beta~(G, M, Y) = beta_mu / C was tabulated on a 9 x 10 x 13 grid (N = 512). It is monotone on the table:
+  nonincreasing in G and in M, nondecreasing in Y. The cell minimum is therefore attained at a corner,
+  and the cell boundaries are table nodes. This monotonicity is observed, not proven. beta~ ranges from 41
+  to 2417 and is driven by Y; the min(G, M) split changes beta-bar by only ~3%.
+* beta-bar(cell) = 0.99 C_lo min_cell beta~, r-bar = r_min of the box (0.01) for all cells.
+* Validation30, POD-Galerkin r = 48, residual parts (A_I), eta^{X-bar} / eta^X (own X_I) and / eta^S,
+  median (max):
+  * rC:2x2: 3.52 (10.06) / 5.72 (13.48)
+  * CYm:2x2x2: 2.61 (5.10) / 4.29 (7.05)
+  * CYm:3x3x2: 1.82 (3.17) / 3.24 (5.10)
+  CYm:3x3x2 meets the target (median within ~2x of the own norm). Storage: 8.4 MB per cell at N = 512 with
+  Q_max = 42 (151 MB for 18 cells; ~37 MB per cell at N >= 2048). Files:
+  `data/redcert_N512_r48_n{800,4000}_CYm_3x3x2.npz` (sha256 in MANIFEST).
+  A finer Y split would probably pay off more than the min(G, M) split.
+* The running 2.4 sweep's loss uses the old rC:2x2 cells (its loss is still a valid majorant). Its
+  evaluation (section 4) uses the new cells. This is recorded in `training_log.json` at collection.
+
+## 2d. EIM tolerance matched to the target
+
+* `EIM.Q_for_target(q, eps)`: the smallest stored Q with eps_Q(mu) ||cbar||_2 sqrt(T/alpha) <= eps/10, with
+  defaults ||cbar|| = 1.1 ||c_raw^0||_2 and alpha = r min m (a rigorous lower bound of alpha_lb). This is a
+  selection heuristic only: the certificate always uses the actual allowance.
+* No rebuild was needed. The greedy had already stored every term down to a training error of 1e-13
+  (q_max = 42 at N = 512). The 1e-11 test tolerance needs Q = 37 at N = 512 and 1024 (28 / 32 / 36 at
+  N = 64 / 128 / 256). F4 now extends to 1e-11.
+* Reduced tensors are built for Q_max = 42: the leading block columns of R are the R-factor of the leading
+  columns, so one tensor serves every Q <= 42 (tested).
+* Validation30 at N = 512: target-matched Q median / max = eps=0.0001: 32.0 / 38; eps=0.0003: 31.0 / 34; eps=0.001: 30.5 / 32; eps=0.003: 28.0 / 31; eps=0.01: 26.0 / 31.

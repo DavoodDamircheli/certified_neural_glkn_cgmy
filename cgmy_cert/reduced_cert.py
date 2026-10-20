@@ -67,6 +67,49 @@ def cell_of(q: Query) -> str:
     return f"r{i}C{j}"
 
 
+@dataclass(frozen=True)
+class Partition:
+    """Cell partition of the box.  spec "rC:2x2" = the plan's 2 x 2 cells in (log r, log C) (ids r{i}C{j});
+    spec "CYm:nCxnYxnm" = cells in (log C, Y, log min(G, M)) (follow-up 2, 2c; ids C{i}Y{j}m{k}).
+    beta_mu = C beta~(G, M, Y) does not depend on r, so the rC cells only differ in r-bar."""
+    spec: str
+
+    @property
+    def kind(self) -> str:
+        return self.spec.split(":")[0]
+
+    @property
+    def shape(self) -> tuple:
+        return tuple(int(x) for x in self.spec.split(":")[1].split("x"))
+
+    def edges(self) -> dict:
+        if self.kind == "rC":
+            nr, nc = self.shape
+            return dict(r=np.geomspace(*BOX["r"], nr + 1), C=np.geomspace(*BOX["C"], nc + 1))
+        nc, ny, nm = self.shape
+        mlo = min(BOX["G"][0], BOX["M"][0]); mhi = min(BOX["G"][1], BOX["M"][1])
+        return dict(C=np.geomspace(*BOX["C"], nc + 1), Y=np.linspace(*BOX["Y"], ny + 1), m=np.geomspace(mlo, mhi, nm + 1))
+
+    @staticmethod
+    def _idx(edges, x):
+        return int(min(max(np.searchsorted(edges, x, side="left") - 1, 0), edges.size - 2))
+
+    def cell_of(self, q: Query) -> str:
+        e = self.edges()
+        if self.kind == "rC":
+            return f"r{self._idx(e['r'], q.r)}C{self._idx(e['C'], q.C)}"
+        return f"C{self._idx(e['C'], q.C)}Y{self._idx(e['Y'], q.Y)}m{self._idx(e['m'], min(q.G, q.M))}"
+
+    def cells(self) -> list[dict]:
+        e = self.edges()
+        if self.kind == "rC":
+            return [dict(id=f"r{i}C{j}", r=(e["r"][i], e["r"][i + 1]), C=(e["C"][j], e["C"][j + 1]))
+                    for i in range(e["r"].size - 1) for j in range(e["C"].size - 1)]
+        return [dict(id=f"C{i}Y{j}m{k}", C=(e["C"][i], e["C"][i + 1]), Y=(e["Y"][j], e["Y"][j + 1]),
+                     m=(e["m"][k], e["m"][k + 1]))
+                for i in range(e["C"].size - 1) for j in range(e["Y"].size - 1) for k in range(e["m"].size - 1)]
+
+
 def cell_beta_queries(cell: dict) -> list[Query]:
     """5 x 5 (r, C) grid of the cell (geometric, corners and interior) x 3 x 3 x 3 (G, M, Y) (min, mid, max)."""
     rr = np.geomspace(*cell["r"], 5); cc = np.geomspace(*cell["C"], 5)
@@ -142,6 +185,7 @@ class ReducedCertificate:
     VtV: np.ndarray          # r x r
     beta0_proj: float        # ||z_h^0 - V alpha0_proj||_M, computed at full order (the strike is fixed)
     cells: dict = field(default_factory=dict)      # id -> CellGram
+    partition: str = "rC:2x2"
     time_offline_s: float = 0.0
 
     @staticmethod
@@ -159,8 +203,11 @@ class ReducedCertificate:
         return F
 
     @classmethod
-    def build(cls, V: np.ndarray, eim, cell_params: dict, Q: int | None = None) -> "ReducedCertificate":
-        """cell_params: {cell id: (rbar, betabar)}."""
+    def build(cls, V: np.ndarray, eim, cell_params: dict, Q: int | None = None,
+              partition: str = "rC:2x2") -> "ReducedCertificate":
+        """cell_params: {cell id: (rbar, betabar)}.  Q may exceed the EIM's operational Q (up to the stored
+        q_max): the leading block columns of R are the R-factor of the leading columns of W, so a tensor built
+        for Q_max serves every Q <= Q_max (pass ell of length Q; the remaining theta entries are zero)."""
         t0 = time.time()
         Q = eim.Q if Q is None else Q
         n, r = V.shape
@@ -174,7 +221,7 @@ class ReducedCertificate:
         a0 = V.T @ Mz0
         d0 = z0 - V @ a0
         rc = cls(N=eim.N, r=r, Q=Q, h=eim.h, p=p, VtV=V.T @ V,
-                 beta0_proj=float(np.sqrt(max(d0 @ banded_sym_matvec(Me, d0), 0.0))))
+                 beta0_proj=float(np.sqrt(max(d0 @ banded_sym_matvec(Me, d0), 0.0))), partition=partition)
         rc._Vt_Mz0 = a0
         for cid, (rbar, betabar) in cell_params.items():
             ab = banded_from_toeplitz(xbar_entries(rbar, betabar, p), n, bw)
@@ -200,7 +247,8 @@ class ReducedCertificate:
 
     def theta(self, q: Query, ell: np.ndarray) -> np.ndarray:
         cg = q.C * q.gammaY * self.h ** (-q.Y)
-        return np.concatenate([[q.lambda0, -(q.r - q.omega_S)], -cg * ell[: self.Q]])
+        ell_full = np.zeros(self.Q); ell_full[: min(ell.size, self.Q)] = ell[: self.Q]
+        return np.concatenate([[q.lambda0, -(q.r - q.omega_S)], -cg * ell_full])
 
     def per_step(self, cid: str, theta: np.ndarray, X: np.ndarray, Yv: np.ndarray, with_rounding: bool = False):
         """u_n = rho_n^T X-bar^{-1} rho_n for columns of X = [x_n], Y = [y_n] ((r+1) x N_T); with_rounding also
@@ -218,10 +266,14 @@ class ReducedCertificate:
         return u, rnd
 
     def certify(self, q: Query, alpha: np.ndarray, dt: float, bL: np.ndarray, ell: np.ndarray,
-                eps_Q: float, c_mu: float | None = None, cid: str | None = None, timings: dict | None = None):
-        """eta^{X-bar} (augmented with beta_0).  c_mu is computed if not given (graded-grid symbol)."""
+                eps_Q: float, c_mu: float | None = None, cid: str | None = None, timings: dict | None = None,
+                tighten: bool = False):
+        """eta^{X-bar} (augmented with beta_0).  Validity does not need c_mu: the cells are built so that
+        x-bar <= x_mu <= s_mu (follow-up 2, 2b; checked on samples in results/E2_3_cells.json), hence
+        rho^T S^{-1} rho <= rho^T X-bar^{-1} rho.  With tighten=True (or an explicit c_mu) the bound is divided
+        by c_mu = min (s_mu - eps)/x-bar >= 1, one graded-grid symbol evaluation."""
         t0 = time.perf_counter()
-        cid = cell_of(q) if cid is None else cid
+        cid = Partition(self.partition).cell_of(q) if cid is None else cid
         cell = self.cells[cid]
         X = np.vstack([(alpha[:, 1:] - alpha[:, :-1]) / dt, ((bL[1:] - bL[:-1]) / dt)[None, :]])
         Yv = np.vstack([0.5 * (alpha[:, 1:] + alpha[:, :-1]), (0.5 * (bL[1:] + bL[:-1]))[None, :]])
@@ -234,7 +286,7 @@ class ReducedCertificate:
         t_form = time.perf_counter() - t0
         t0 = time.perf_counter()
         if c_mu is None:
-            c_mu = conversion_factor(q, self.N, cell.rbar, cell.betabar)
+            c_mu = conversion_factor(q, self.N, cell.rbar, cell.betabar) if tighten else 1.0
         t_conv = time.perf_counter() - t0
         if c_mu <= 0:
             raise ValueError(f"conversion factor c_mu = {c_mu} <= 0 for {q} in cell {cid}")
@@ -248,7 +300,7 @@ class ReducedCertificate:
 
 def save_rc(rc: ReducedCertificate, path):
     arrs = dict(N=rc.N, r=rc.r, Q=rc.Q, h=rc.h, p=rc.p, VtV=rc.VtV, beta0_proj=rc.beta0_proj,
-                Vt_Mz0=rc._Vt_Mz0, cell_ids=np.array(list(rc.cells)))
+                Vt_Mz0=rc._Vt_Mz0, cell_ids=np.array(list(rc.cells)), partition=rc.partition)
     for cid, c in rc.cells.items():
         arrs[f"{cid}|R"] = c.R; arrs[f"{cid}|scal"] = np.array([c.rbar, c.betabar, c.xbar_min])
     np.savez(path, **arrs)
@@ -259,6 +311,7 @@ def load_rc(path) -> ReducedCertificate:
     rc = ReducedCertificate(N=int(d["N"]), r=int(d["r"]), Q=int(d["Q"]), h=float(d["h"]), p=int(d["p"]),
                             VtV=d["VtV"], beta0_proj=float(d["beta0_proj"]))
     rc._Vt_Mz0 = d["Vt_Mz0"]
+    rc.partition = str(d["partition"]) if "partition" in d.files else "rC:2x2"
     for cid in d["cell_ids"]:
         cid = str(cid); rb, bb, xm = d[f"{cid}|scal"]; Rb = d[f"{cid}|R"]
         rc.cells[cid] = CellGram(cell=cid, rbar=float(rb), betabar=float(bb), xbar_min=float(xm), R=Rb,

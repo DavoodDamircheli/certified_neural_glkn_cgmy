@@ -858,6 +858,13 @@
    "git_sha": "1e487f79db290f2ae8cacdd980dd1c7a0802c168-dirty",
    "timestamp": "2026-10-20T14:40:23-0500",
    "nproc": 20
+  },
+  "extended_precision_evidence": {
+   "query_index": 5,
+   "online_vs_longdouble": 1.1123850261170714e-10,
+   "full_order_double_vs_longdouble": 3.3072628962083567e-11,
+   "longdouble_eps": 1.0842021724855044e-19,
+   "script": "scripts/check_reduced_cert_longdouble.py"
   }
  },
  "timing": {
@@ -1144,6 +1151,360 @@
    "scipy": "1.15.3",
    "git_sha": "bbebc1b3871cdff78149bd84e4902028382a570f-dirty",
    "timestamp": "2026-10-20T14:36:00-0500"
+  }
+ },
+ "graded_eps_Q": {
+  "per_N": {
+   "64": {
+    "Q": 23,
+    "n_nodes": 161,
+    "min_graded_over_Lgrid_max": 1.078336357976769,
+    "median_graded_over_old_epsQ": 1.021878699246908,
+    "max_graded_over_old_epsQ": 1.3127335506710551
+   },
+   "256": {
+    "Q": 27,
+    "n_nodes": 161,
+    "min_graded_over_Lgrid_max": 1.0955448304139404,
+    "median_graded_over_old_epsQ": 1.204243820785119,
+    "max_graded_over_old_epsQ": 1.5354594781374515
+   },
+   "512": {
+    "Q": 29,
+    "n_nodes": 161,
+    "min_graded_over_Lgrid_max": 1.5327013800901346,
+    "median_graded_over_old_epsQ": 1.5493205745350447,
+    "max_graded_over_old_epsQ": 1.7821829893778438
+   },
+   "1024": {
+    "Q": 29,
+    "n_nodes": 161,
+    "min_graded_over_Lgrid_max": 1.228941507829582,
+    "median_graded_over_old_epsQ": 1.5216745332208406,
+    "max_graded_over_old_epsQ": 1.8956939929590884
+   },
+   "4096": {
+    "Q": 29,
+    "n_nodes": 161,
+    "min_graded_over_Lgrid_max": 1.0497141836278028,
+    "median_graded_over_old_epsQ": 1.7502250982892715,
+    "max_graded_over_old_epsQ": 2.078172180894189
+   }
+  },
+  "L0": 96,
+  "n_fine": 32,
+  "n_queries": 200,
+  "population": "eim_test_queries (sobol seed 2026)",
+  "rule": "sup_theta |e| bounded cell-wise on the node set (endpoint values + half width x max endpoint |e'|), +-pi as one-sided limits plus the L-grid convention value at -pi",
+  "provenance": {
+   "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+   "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+   "cpu_count": 24,
+   "affinity_cpus": 1,
+   "thread_env": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1"
+   },
+   "python": "3.10.12",
+   "numpy": "1.26.4",
+   "scipy": "1.15.3",
+   "git_sha": "9e354d10e39cd1e85bf7ac7df5b47838e47e3cae-dirty",
+   "timestamp": "2026-10-20T16:34:23-0500"
+  }
+ },
+ "timing_v2": {
+  "256": {
+   "N": 256,
+   "partition": "CYm:3x3x2",
+   "n_free": 254,
+   "r": 48,
+   "Q": 29,
+   "rows_m": 254,
+   "median_s": {
+    "ell": 0.001165793021209538,
+    "reduced_solve": 0.0010689724469557405,
+    "eps_Q_graded": 0.001622999389655888,
+    "c_mu_optional": 0.2089248588308692,
+    "form": 0.0006272444501519203,
+    "total_online_certificate": 0.0034160368610173467
+   },
+   "per_query": [
+    {
+     "ell": 0.001163078285753727,
+     "reduced_solve": 0.0010634069796651602,
+     "eps_Q_graded": 0.0016034877859055995,
+     "c_mu_optional": 0.10541229881346226,
+     "form": 0.0006283120717853307
+    },
+    {
+     "reduced_solve": 0.0010711600538343192,
+     "eps_Q_graded": 0.0016982012894004583,
+     "c_mu_optional": 0.20927088428288698,
+     "form": 0.0006426230538636446,
+     "ell": 0.0011972979176789523
+    },
+    {
+     "ell": 0.0011644625570625066,
+     "form": 0.0006199743133038282,
+     "reduced_solve": 0.0010638510808348655,
+     "c_mu_optional": 0.20883146487176418,
+     "eps_Q_graded": 0.00158225791528821
+    },
+    {
+     "ell": 0.0011637612245976926,
+     "reduced_solve": 0.0010958738159388304,
+     "eps_Q_graded": 0.0016425109934061766,
+     "c_mu_optional": 0.20742889121174812,
+     "form": 0.0006423265673220158
+    },
+    {
+     "reduced_solve": 0.0010831630788743496,
+     "form": 0.0006212712731212377,
+     "eps_Q_graded": 0.0017162729054689407,
+     "c_mu_optional": 0.2090182527899742,
+     "ell": 0.0012088350020349025
+    },
+    {
+     "reduced_solve": 0.0010667848400771618,
+     "form": 0.0006174381822347641,
+     "eps_Q_graded": 0.001579121733084321,
+     "ell": 0.0011612153612077236,
+     "c_mu_optional": 0.2123622801154852
+    },
+    {
+     "c_mu_optional": 0.4175766296684742,
+     "form": 0.0006478340830653906,
+     "ell": 0.001188535476103425,
+     "reduced_solve": 0.001085394201800227,
+     "eps_Q_graded": 0.001690693059936166
+    },
+    {
+     "reduced_solve": 0.001055236766114831,
+     "c_mu_optional": 0.111215909011662,
+     "eps_Q_graded": 0.0015926957130432129,
+     "ell": 0.0011671234853565693,
+     "form": 0.0006261768285185099
+    },
+    {
+     "c_mu_optional": 0.1103575648739934,
+     "ell": 0.0011474513448774815,
+     "eps_Q_graded": 0.0015864269342273473,
+     "form": 0.0006296172738075257,
+     "reduced_solve": 0.0010729835368692875
+    },
+    {
+     "eps_Q_graded": 0.001692477660253644,
+     "ell": 0.00120828147046268,
+     "form": 0.0006172102410346269,
+     "reduced_solve": 0.0010527339298278093,
+     "c_mu_optional": 0.21147477440536022
+    }
+   ],
+   "n_queries": 10,
+   "basis": "POD of 20 trajectories (sobol seed 11) at N=256"
+  },
+  "1024": {
+   "N": 1024,
+   "partition": "CYm:3x3x2",
+   "n_free": 1022,
+   "r": 48,
+   "Q": 29,
+   "rows_m": 1022,
+   "median_s": {
+    "ell": 0.0011880453210324049,
+    "reduced_solve": 0.001060759648680687,
+    "eps_Q_graded": 0.001617462863214314,
+    "c_mu_optional": 0.4100576378405094,
+    "form": 0.005416247691027821,
+    "total_online_certificate": 0.00822175587527454
+   },
+   "per_query": [
+    {
+     "ell": 0.0011754856444895268,
+     "reduced_solve": 0.0010652752593159676,
+     "eps_Q_graded": 0.0015997174195945263,
+     "c_mu_optional": 0.1950428355485201,
+     "form": 0.005305647989735008
+    },
+    {
+     "reduced_solve": 0.0010518772061914206,
+     "eps_Q_graded": 0.0016924208030104637,
+     "c_mu_optional": 0.41889840085059404,
+     "form": 0.0057358489837497474,
+     "ell": 0.001219149911776185
+    },
+    {
+     "ell": 0.0011830526869744062,
+     "form": 0.005659118900075555,
+     "reduced_solve": 0.0010533200111240149,
+     "c_mu_optional": 0.41214464232325554,
+     "eps_Q_graded": 0.0015807084273546934
+    },
+    {
+     "ell": 0.001180387893691659,
+     "reduced_solve": 0.0010726936627179385,
+     "eps_Q_graded": 0.0015752894803881645,
+     "c_mu_optional": 0.20039039105176926,
+     "form": 0.005194606306031346
+    },
+    {
+     "reduced_solve": 0.001060255616903305,
+     "form": 0.005568151967599988,
+     "eps_Q_graded": 0.0016853793524205685,
+     "c_mu_optional": 0.4151564557105303,
+     "ell": 0.0012134036980569363
+    },
+    {
+     "reduced_solve": 0.0010543306823819875,
+     "form": 0.005400047358125448,
+     "eps_Q_graded": 0.0015603176783770324,
+     "ell": 0.0011884073261171578,
+     "c_mu_optional": 0.4079706333577633
+    },
+    {
+     "c_mu_optional": 0.99973857216537,
+     "form": 0.00561146684922278,
+     "ell": 0.001211423147469759,
+     "reduced_solve": 0.0010632776655256748,
+     "eps_Q_graded": 0.001729131955653429
+    },
+    {
+     "reduced_solve": 0.0010641179978847504,
+     "c_mu_optional": 0.19770483579486609,
+     "eps_Q_graded": 0.0015775530599057674,
+     "ell": 0.0011836288496851922,
+     "form": 0.00529450704343617
+    },
+    {
+     "c_mu_optional": 0.2069488102570176,
+     "ell": 0.0011876833159476519,
+     "eps_Q_graded": 0.0016352083068341017,
+     "form": 0.005432448023930192,
+     "reduced_solve": 0.0010612636804580688
+    },
+    {
+     "eps_Q_graded": 0.0016764371190220117,
+     "ell": 0.0012166657485067844,
+     "form": 0.005298454454168678,
+     "reduced_solve": 0.0010581423994153738,
+     "c_mu_optional": 0.41574832797050476
+    }
+   ],
+   "n_queries": 10,
+   "basis": "POD of 20 trajectories (sobol seed 11) at N=1024"
+  },
+  "4096": {
+   "N": 4096,
+   "partition": "CYm:3x3x2",
+   "n_free": 4094,
+   "r": 48,
+   "Q": 29,
+   "rows_m": 1519,
+   "median_s": {
+    "ell": 0.0012429779395461082,
+    "reduced_solve": 0.001058782753534615,
+    "eps_Q_graded": 0.001597168715670705,
+    "c_mu_optional": 0.3991419509984553,
+    "form": 0.009072511666454376,
+    "total_online_certificate": 0.01191265832167119
+   },
+   "per_query": [
+    {
+     "ell": 0.0012421906925737859,
+     "reduced_solve": 0.0010632759891450404,
+     "eps_Q_graded": 0.0015716016758233308,
+     "c_mu_optional": 0.2031956072896719,
+     "form": 0.00954948328435421
+    },
+    {
+     "reduced_solve": 0.0010693393647670745,
+     "eps_Q_graded": 0.001711480738595128,
+     "c_mu_optional": 0.9932233076542616,
+     "form": 0.009140947181731463,
+     "ell": 0.0012750713154673575
+    },
+    {
+     "ell": 0.0012437651865184307,
+     "form": 0.00919252964667976,
+     "reduced_solve": 0.0010542895179241896,
+     "c_mu_optional": 0.3926726309582591,
+     "eps_Q_graded": 0.0015969353262335062
+    },
+    {
+     "ell": 0.0012398877181112767,
+     "reduced_solve": 0.0010736030526459217,
+     "eps_Q_graded": 0.0015838600229471922,
+     "c_mu_optional": 0.40021506417542696,
+     "form": 0.009071552474051715
+    },
+    {
+     "reduced_solve": 0.0010521072428673506,
+     "form": 0.008824375690892339,
+     "eps_Q_graded": 0.0016987433191388845,
+     "c_mu_optional": 0.9938321709632874,
+     "ell": 0.0012743283994495868
+    },
+    {
+     "reduced_solve": 0.0010498649440705775,
+     "form": 0.0088065923191607,
+     "eps_Q_graded": 0.0015733472537249327,
+     "ell": 0.0012413203716278077,
+     "c_mu_optional": 0.3964635943993926
+    },
+    {
+     "c_mu_optional": 0.9952868008986115,
+     "form": 0.009315617056563497,
+     "ell": 0.001275969436392188,
+     "reduced_solve": 0.00108238379471004,
+     "eps_Q_graded": 0.0017263853456825017
+    },
+    {
+     "reduced_solve": 0.0010453746188431978,
+     "c_mu_optional": 0.195903648622334,
+     "eps_Q_graded": 0.0015816752333194018,
+     "ell": 0.0012292529456317425,
+     "form": 0.009073470858857036
+    },
+    {
+     "c_mu_optional": 0.3980688378214836,
+     "ell": 0.0012325781863182783,
+     "eps_Q_graded": 0.0015974021051079034,
+     "form": 0.009011538838967681,
+     "reduced_solve": 0.0010518094524741173
+    },
+    {
+     "eps_Q_graded": 0.0017092739697545766,
+     "ell": 0.0012632655445486308,
+     "form": 0.008914103405550123,
+     "reduced_solve": 0.001064580539241433,
+     "c_mu_optional": 0.9855249123647809
+    }
+   ],
+   "n_queries": 10,
+   "basis": "POD of 20 trajectories (sobol seed 11) at N=4096"
+  }
+ },
+ "timing_v2_meta": {
+  "note": "follow-up 2, 2b: eps_Q on the N-independent node set, new cells, c_mu optional (not part of the default online path); the earlier 'timing' block (L-grid eps_Q, rC cells, c_mu always) is kept for comparison",
+  "load_note": "measured while the 2.4 training sweep occupied ~24 threads; Phase 3 (E2) repeats on an idle machine",
+  "protocol": "OMP_NUM_THREADS=1, one warm-up per query, 5 repetitions (inner loops of 20 for the fast parts), shuffled order, median of per-query medians",
+  "implementation": "numpy (no compilation)",
+  "provenance": {
+   "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+   "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+   "cpu_count": 24,
+   "affinity_cpus": 1,
+   "thread_env": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1"
+   },
+   "python": "3.10.12",
+   "numpy": "1.26.4",
+   "scipy": "1.15.3",
+   "git_sha": "9e354d10e39cd1e85bf7ac7df5b47838e47e3cae-dirty",
+   "timestamp": "2026-10-20T16:44:20-0500"
   }
  }
 }
