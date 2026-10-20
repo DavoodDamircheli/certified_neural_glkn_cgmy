@@ -1,0 +1,42 @@
+{
+ "N": 1024,
+ "N_T": 240,
+ "tau_dollar": 0.01,
+ "eps_N": 0.0011846335568048742,
+ "eps_sweep": [
+  0.00011846335568048742,
+  0.00035539006704146225,
+  0.0011846335568048742,
+  0.0035539006704146227,
+  0.011846335568048741
+ ],
+ "sweep_factors": [
+  0.1,
+  0.3,
+  1.0,
+  3.0,
+  10.0
+ ],
+ "max_beta_I": 8.441428948688088,
+ "max_price_err": 0.0023493553846682946,
+ "N_T_60_also_within_1cent": false,
+ "eps_0p1cent_at_N1024": 0.00011846335568048743,
+ "matches_provisional": false,
+ "source": "results/E3_1_calibration.json",
+ "provenance": {
+  "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+  "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+  "cpu_count": 24,
+  "affinity_cpus": 24,
+  "thread_env": {
+   "OMP_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": null,
+   "MKL_NUM_THREADS": null
+  },
+  "python": "3.10.12",
+  "numpy": "1.26.4",
+  "scipy": "1.15.3",
+  "git_sha": "f925a9ce8a159af0befde32460502b820db2b374",
+  "timestamp": "2026-10-20T18:27:07-0500"
+ }
+}

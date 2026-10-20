@@ -295,3 +295,23 @@ N-independent online certificate.
 * Check: in all 18 cells the old table-based minimum equals the corner value (old / corner = 1.000 to 5 digits;
   never below 0.99 x corner). beta-bar is unchanged. The minimum sits at the cell's lowest Y and at (sqrt 5, 9)
   or (5, 9). Tensors were rebuilt with the corner rule; the file names are unchanged.
+
+## Item 3 (Phase 3.1): PRODUCTION N = 1024, NOT 512  <-- decision needed before E1
+
+* Max |V_h(T,S) - V_COS| over ref30 + the two v8 corners, spots 0.8K..1.2K (`results/E3_1_calibration.json`,
+  `tables_v9/tab_budget_v9.tex`), in cents (N_T = 240): N = 128: 78; 256: 20; **512: 3.2** (ref30 0.11,
+  Corner A 2.4, Corner B 3.2); **1024: 0.24** (ref30 0.16, A 0.14, B 0.24). At N = 512 ref30 alone is within
+  1 cent; the corner queries (C = 0.05, Y = 1.1, T = 0.1) are not.
+* **Production: N = 1024, N_T = 240, eps_N = 0.01 / max_s beta_I = 0.01 / 8.441 = 1.1846e-3** (sweep
+  eps_N x {0.1, 0.3, 1, 3, 10}), written to `results/PRODUCTION_CONFIG.json`. N_T = 60 does not suffice at
+  N = 1024: ref30 error 4.6 cents, larger than at N = 512. Pure CN damps the kink's high frequencies poorly
+  when lambda dt is large.
+* The 0.1-cent tolerance at N = 1024 gives eps = 1.18e-4. This is a certificate tolerance only: the
+  discretisation error at N = 1024 is 0.24 cents.
+* **Consequence (not started, as instructed):** the stored references (`data/references_N512_NT240_*`), the
+  POD bases, the reduced tensors and the POD-NN sweep are all at N = 512. E1 at the production resolution
+  needs them regenerated at N = 1024 (references ~4800 trajectories, POD, EIM/redcert at N = 1024, and a POD-NN
+  retrain). This awaits your decision.
+* COS (8192 modes, L = 30) vs Carr-Madan on 10 rows: 8 rows <= 6e-13, one 1.5e-12, and Corner B 2.6e-12 after
+  extending Carr-Madan's cutoff (at the default max_v = 400 it was cutoff-limited, diff 3.4e-8). The 1e-12
+  target is not met strictly on 2 of the 10 rows: the max is 2.6e-12 absolute, 5.6e-11 relative.
