@@ -1,0 +1,194 @@
+# Frozen discretization settings and parameter box for
+# "Galerkin-Certified Neural Operators for Tempered-Fractional CGMY Pricing PIDEs".
+#
+# This file is the single source of truth for the discrete spaces and the
+# parameter ranges used across the whole pipeline (reference solves,
+# certification, dataset generation, training, experiments). See CLAUDE.md
+# "Frozen numerical setting" / "Hard invariants #6" — nothing hardcodes
+# these values elsewhere. Changing any value here invalidates previously
+# generated datasets and certificates unless explicitly re-tagged with a
+# new discretization/config id.
+#
+# The parameter_box ranges below were NARROWED after Stage D found that
+# S_h(mu) -- the operator the entire certification stack (Stage C) needs
+# SPD -- loses positive-definiteness across large parts of the original
+# box. A 200-trajectory Stage D dataset run showed 90% of a stress-biased
+# split and 17% of an edge-biased split were not SPD; a systematic grid
+# sweep (see the Stage D->E handoff) isolated M as the dominant driver
+# (near-universal failure at M>=17-20, worse at low G) plus a separate
+# C-near-0.01 + Y-near-1.10 interaction. Y was deliberately left untouched
+# (it is this paper's headline parameter); M absorbed most of the
+# narrowing since it was the dominant driver. They are still candidate
+# ranges pending Stage A's other validation gates (Gates 1-3 in CLAUDE.md).
+#
+# CORRECTED (Task 4, working prompt -- see notes/04_spd_study.md): the
+# narrowed ranges below are NOT SPD-clean at the actual production mesh
+# (N=64) -- a prior claim of "0/500 fresh Sobol, 0/64 exact vertices, 0/100
+# at N=96" here did not hold when re-swept at N=64: 10/500 Sobol and 16/64
+# vertex failures were found and logged (results/spd_failures.csv),
+# independently cross-checked outside this project's own certification
+# code. Failures shrink sharply at higher N (0/500, 2/64 at N=96) and the
+# dominant cause is the drift/convection term (not quadrature -- no
+# independent quadrature-order knob exists in this discretization; not
+# roundoff -- violations are ~1e11x larger than the eigensolver's own
+# ~1e-13 relative error). This is an OPEN decision (shrink the box further
+# vs. a Gårding-inequality reformulation vs. restricting the certificate to
+# the interior/non-Dirichlet submatrix, which fixes 121/121 of this
+# sweep's failures but needs its own derivation check) -- not resolved,
+# not decided unilaterally. Do not reintroduce a "validated SPD-clean"
+# claim about this box without re-running scripts/spd_sweep.py at N=64
+# first.
+
+discretization:
+  # CORRECTED after the Stage J hard-invariant audit: this block previously
+  # still stated Stage A's original scaffold values (256 elements, +-10
+  # domain, 200 time steps), untouched since commit 13bf0d5. But every
+  # trained model and certified result from Stage F onward
+  # (exp_common.FIXED_MESH/TIME_GRID, generate_production_dataset.py,
+  # lossablation.py, stage_f_baselines_report.py) was actually built on
+  # N=64/p=3/domain=log(K)+-8/n_steps=60 -- independently hardcoded as
+  # Python literals in each of those files, never read from this config.
+  # The numbers below now reflect what was actually validated and trained
+  # against (Gates 1-3, exp01-exp10), not the never-exercised Stage A
+  # scaffold values. Every existing checkpoint (MLP, DeepONet, POD,
+  # ProjectedFNO) remains valid under this correction. See
+  # zips/hard_invariant_audit.md (finding #5) for the full account; the
+  # code sites above still need to be pointed at this config (a separate,
+  # not-yet-done deduplication fix) rather than re-declaring these numbers.
+  # RENAMED from spline_degree (v4, CGMY_V4_REMAINING_WORK.md item 1): this
+  # is the B-spline ORDER, not degree -- the vendored solver's own
+  # docstrings consistently call it order (order 3 = degree 2 = quadratic,
+  # confirmed by measuring the implemented basis function's support width,
+  # see reports/BASIS_AND_BOUNDARY_AUDIT.md section 2). Value unchanged (3)
+  # -- this is a naming fix, NOT a switch to cubic splines.
+  # src/common/config_compat.read_spline_order reads either this key or the
+  # old spline_degree key (deprecation warning, not an error) so existing
+  # on-disk results/*/config_snapshot.yaml files keep loading.
+  spline_order: 3               # p — confirmed via Gates 1-3
+  n_elements: 64                # h = (domain_right - domain_left) / n_elements
+  n_time_steps: 60              # dt = maturity / n_time_steps
+
+  # CORRECTED after Stage A inspection of the trusted solver
+  # (cgmy_bspline/cgmy_bspline/solver_cn.py): it runs pure Crank-Nicolson
+  # from tau=0. There is no Rannacher/backward-Euler startup in the trusted
+  # solver, despite what CLAUDE.md's "Key objects" section assumed. Do not
+  # reintroduce a rannacher_startup_steps field unless that scheme is
+  # actually implemented and validated in the trusted solver.
+  time_stepping: crank_nicolson
+
+  # Omega = (log K - 8, log K + 8), with K fixed at 100 (see contract below).
+  # CORRECTED after Stage A inspection: the trusted solver's own default
+  # domain (cgmy_bspline.grid.make_grid) is NOT this fixed, symmetric-in-K
+  # window -- it is mu-dependent: target_left = domain_scale/G,
+  # target_right = domain_scale/M (domain_scale=10 by default), so the
+  # domain width and asymmetry change with G and M. These domain_left/right
+  # values are only used when a mesh explicitly overrides the domain (e.g.
+  # cgmy.reference_solver.Mesh with x_min/x_max set); solve_cgmy's default
+  # (x_min=x_max=None) uses the solver's own mu-dependent domain instead.
+  # See scripts/stage_a_difficult_corners.py for how domain choice affects
+  # truncation error across the parameter box.
+  #
+  # Width narrowed from +-10 to +-8 as part of the same Stage-J audit
+  # correction above: +-8 is the domain every Stage F-J model/mesh
+  # (exp_common.FIXED_MESH etc.) was actually built and certified on;
+  # +-10 was the never-exercised Stage A scaffold value.
+  domain_left: -3.394829814011908    # log(100) - 8
+  domain_right: 12.605170185988092   # log(100) + 8
+
+parameter_box:
+  # CGMY Levy triplet
+  C: [0.05, 1.0]    # narrowed from 0.01: C near 0.01 + Y near 1.10 lost SPD
+  G: [1.0, 5.0]     # unchanged
+  M: [2.0, 9.0]     # narrowed from 20.0: dominant SPD-loss driver, see above
+  Y: [1.10, 1.80]   # unchanged (deliberately preserved)
+
+  # Market parameters
+  r: [0.01, 0.10]
+
+  # Contract parameters
+  maturity: [0.1, 1.0]     # T, years
+
+contract:
+  strike: 100.0             # K — fixed, not sampled (every experiment/checkpoint
+                             # EXCEPT the Task 14 operator-generalization ablation
+                             # below uses this single value)
+
+# Task 14 (working prompt): "make it an operator, not a parameter map" --
+# with a single fixed strike, the DeepONet branch net's psi input never
+# varies, so the trained map is really mu -> u(mu), not (psi, mu) ->
+# u(psi, mu). Scoped to data.operator_sampling ONLY (never touches
+# `contract.strike` above, or any other experiment/checkpoint in this
+# project) -- see notes/14_operator_not_parameter_map.md for the full
+# investigation and notes/14b_operator_generalization_results.md for the
+# results this range produced.
+#
+# Range [70, 150] validated empirically (not assumed): solving one
+# representative mu at K=70/100/150 on the project's existing FIXED mesh
+# (x_min=log(100)-8, x_max=log(100)+8) gives max_residual ~2-5e-6 at every
+# K (same order as the K=100 baseline) -- the payoff kink at log(K) stays
+# >=7.5 log-units from either domain edge across this whole range,
+# essentially unchanged from K=100's own ~8-unit margin. S_h(mu)'s
+# SPD-ness is UNAFFECTED by K entirely (A_h/M_h/S_h depend on mu and the
+# mesh alone; K only enters the Dirichlet boundary values and the
+# terminal payoff projection, both already fully K-general formulas --
+# confirmed by direct code inspection, not assumed).
+operator_generalization:
+  strike_min: 70.0
+  strike_max: 150.0
+  strike_holdout: [95.0, 105.0]  # excluded from training; reserved for the
+                                   # "unseen strike" generalization tier
+                                   # (includes K=100 itself, so the exact
+                                   # query the OLD K=100-only checkpoint was
+                                   # trained on is a fair common reference
+                                   # point in the comparison)
+
+payoffs:
+  # CORRECTED after Stage A inspection: only the European put has validated
+  # boundary conditions in the trusted solver (its Dirichlet values encode
+  # the put's own far-field asymptotics). cgmy.reference_solver.solve_cgmy
+  # only accepts EuropeanPutPayoff for this reason. Adding "call" requires
+  # deriving call-specific boundary conditions first (new numerics).
+  families: ["put"]
+
+certification:
+  acceptance_tolerance: 1.0e-3
+  # PCG preconditioner for the Riesz solve (certification.riesz_solver):
+  # 'none', 'mass', 'jacobi', or 'banded' -- see notes/09_preconditioner.md
+  # (Task 9, working prompt) for the full benchmark. CHANGED from 'mass' to
+  # 'none': Stage C's suspicion that mass-preconditioning increases, not
+  # decreases, kappa was CONFIRMED and quantified (10 random production-mesh
+  # queries, amortized over a full 60-step query each) -- mean kappa(mass) ~
+  # 4536 vs kappa(none) ~ 138 (a ~33x WORSE condition number), more PCG
+  # iterations (80 vs 51), and more amortized wall-clock (6.6ms vs 4.1ms per
+  # call). 'jacobi' (diag(S_h(mu))^{-1}) is essentially tied with 'none' on
+  # every metric -- no real benefit at this operator's diagonal structure.
+  # 'banded' (a truncated-bandwidth operator-aware preconditioner) gives far
+  # better conditioning (kappa ~ 1.02) and far fewer iterations (6 vs 51),
+  # but its one-time per-mu factorization cost (~530ms) is NOT recovered by
+  # amortizing over a 60-step query (9.5ms/call amortized, still worse than
+  # 'none') -- would only win if this project needed far more than ~60 PCG
+  # solves per mu. 'none' is the fastest AND simplest; kept as the default.
+  preconditioner: none
+  max_pcg_iterations: 200
+  # Task 3 (working prompt): how alpha_certified (the RIGOROUS lower bound
+  # on lambda_min(S_h(mu)) that feeds eta_guar/eta_mass_indicator) is
+  # obtained, as an explicit, named, config-level choice -- never let a raw
+  # numerical eigenvalue estimate flow into a "certified" quantity
+  # implicitly. See src/certification/constants.py and
+  # notes/03_coercivity.md for the full derivation/validation.
+  #   B_weyl_residual_enclosure (default): a RIGOROUS bound (Weyl's
+  #     inequality applied to the off-diagonal residual of S in its own
+  #     computed eigenbasis) -- not an approximation with a safety margin,
+  #     an actual proof. Empirically validated to match the raw numerical
+  #     estimate to ~1e-13 relative error on this project's operators (see
+  #     notes/03_coercivity.md) -- effectively free precision loss.
+  #   C_safety_margin: NON-rigorous fallback, alpha_certified =
+  #     (1-coercivity_safety_delta) * lambda_min_numerical. Must be labeled
+  #     as such wherever used (see notes/03_coercivity.md); not the default.
+  #   A_analytical: NOT IMPLEMENTED -- would require a from-scratch
+  #     coercivity derivation for the CGMY bilinear form; see
+  #     notes/03_coercivity.md for why this was not attempted here.
+  coercivity_strategy: B_weyl_residual_enclosure
+  coercivity_safety_delta: 0.1  # only consumed if coercivity_strategy: C_safety_margin
+
+seed: 0

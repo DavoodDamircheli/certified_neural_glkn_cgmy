@@ -1,0 +1,10 @@
+{
+  "blocked": [],
+  "calls": {
+    "OperatorCache.apply_M_inv (raw M_h^-1) [discrete initial target c_h^0 (trusted convention), dim=]": 4929,
+    "certification.free_problem.compute_stability_constants [FreeOperatorCache, dim=62]": 4929,
+    "certification.guaranteed_certificate.solve_riesz_pcg [FreeOperatorCache, dim=62]": 365160,
+    "OperatorCache.apply_M_inv (raw M_h^-1) [model input encoding psi (raw L2 projection), dim=]": 1803,
+    "certification.free_problem.kappa_operator_norm [FreeOperatorCache, dim=62]": 1803
+  }
+}

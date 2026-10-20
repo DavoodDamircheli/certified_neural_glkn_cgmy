@@ -1,0 +1,68 @@
+{
+  "_comment": "Frozen v5 query populations (roadmap \u00a71, M0). Files are referenced, never modified. sha256 of a file population is of the file bytes; the generated validation population's sha256 is of common.run_manifest.queries_csv_text(generate_validation30()). Any mismatch makes common.run_manifest.declare_populations raise.",
+  "populations": {
+    "audit459": {
+      "kind": "file",
+      "path": "experiments/raw_results/query_sets/Q_audit.csv",
+      "sha256": "9d0ef945d6ae1b8736e82e6e5fcd8eb5d8a5dff661faf978a6a14e571c534a80",
+      "n_queries": 459,
+      "source_counts": {
+        "known_failure": 139,
+        "sobol_main_box": 256,
+        "exact_vertex": 64
+      },
+      "role": "gate/positivity audit; 139 deliberately selected failure queries are not an unbiased failure-rate sample"
+    },
+    "bench120": {
+      "kind": "file",
+      "path": "experiments/raw_results/query_sets/Q_bench120.csv",
+      "sha256": "0fff434a04331117cebbae35d0f1b27886e0c9536283dc4b26613ec2fdee02e3",
+      "n_queries": 120,
+      "source_counts": {
+        "sobol": 120
+      },
+      "role": "benchmark population"
+    },
+    "pricing_q_ref30": {
+      "kind": "file",
+      "path": "experiments/raw_results/query_sets/Q_ref30.csv",
+      "sha256": "7a2d94c3835c190ce0e13aec7c8194f999ae949abd56a3c647b426fb365124fe",
+      "n_queries": 30,
+      "source_counts": {
+        "sobol": 30
+      },
+      "role": "financial/pricing population"
+    },
+    "validation30": {
+      "kind": "generated_validation30",
+      "generator": "data.sampling.sample_sobol(load_parameter_box(configs/base.yaml), 30, seed=999_999) -- identical call to scripts/generate_production_dataset.build_val_set(30)",
+      "generator_dependency": "scipy.stats.qmc.Sobol (scipy 1.15.3 at declaration)",
+      "sha256": "2ca78e0225f71f454cfa8a62d067ec7731a8e297561d43f9390acc248def083d",
+      "n_queries": 30,
+      "source_counts": {
+        "sobol_seed999999": 30
+      },
+      "role": "fixed validation population (POD rank sweep, recovery)"
+    },
+    "scale30": {
+      "kind": "file",
+      "path": "experiments/raw_results/query_sets/Q_scale.csv",
+      "sha256": "dffccd3d954d6fb20657a3981c43b876d727bd95f377522e7647d020b7bf43a2",
+      "n_queries": 30,
+      "source_counts": {
+        "sobol": 30
+      },
+      "role": "resolution-scaling population (N=64,128,256 all 30; N=512 on the predeclared subset in configs/v5_scaling.yaml)"
+    },
+    "fourier_old27": {
+      "kind": "file",
+      "path": "validation/reference_validation.csv",
+      "sha256": "f8ef209fa5796d4cfb511a012d824da85623febcf7c137f3d59f71c089c6814f",
+      "n_queries": 27,
+      "source_counts": {
+        "reference_validation_v3": 27
+      },
+      "role": "coordinates of the historical 27-query COS/Carr-Madan cross-check (incl. box_12); file is a v3 results CSV, read only"
+    }
+  }
+}

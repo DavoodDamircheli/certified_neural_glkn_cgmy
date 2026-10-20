@@ -1,0 +1,1 @@
+{"launched_from_commit": "30cf1dbf5a2a5eedfa1311c25adbea910a7fea7d", "pid": 4065446, "note": "manifest.json is written at the end of the run and records the HEAD at that time; this file records the commit the process was started from (working tree clean apart from untracked zips/)"}

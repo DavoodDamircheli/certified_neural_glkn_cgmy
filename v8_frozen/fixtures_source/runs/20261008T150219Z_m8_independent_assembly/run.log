@@ -1,0 +1,35 @@
+[10:02:19] session_start git_head_at_start=4ef882f62eed38c0ded3d7e208b8659f009a95a4 population=scale30 first {64: 10, 128: 10, 256: 10, 512: 3} scope=ordinary floating-point evaluation of exact-arithmetic theory: the reliability theorems hold in exact arithmetic under their stated hypotheses (including alpha <= lambda_min(S_I)); every reported number is computed in IEEE double precision without validated/outward rounding. No machine-validated enclosure and no total continuum-price error bound is claimed.
+[10:10:10] Q_scale_0002 N=256 conv relop_A=7.143e-04 gal relop_A=3.236e-01 t_ind=467s
+[10:10:10] Q_scale_0004 N=256 conv relop_A=5.876e-04 gal relop_A=3.691e-01 t_ind=467s
+[10:10:11] Q_scale_0000 N=256 conv relop_A=2.402e-03 gal relop_A=3.452e-01 t_ind=468s
+[10:10:13] Q_scale_0001 N=256 conv relop_A=2.053e-03 gal relop_A=4.045e-01 t_ind=470s
+[10:10:14] Q_scale_0003 N=256 conv relop_A=1.108e-03 gal relop_A=3.707e-01 t_ind=470s
+[10:15:45] Q_scale_0005 N=256 conv relop_A=2.314e-03 gal relop_A=3.105e-01 t_ind=331s
+[10:15:45] Q_scale_0008 N=256 conv relop_A=1.042e-03 gal relop_A=3.263e-01 t_ind=328s
+[10:15:45] Q_scale_0009 N=256 conv relop_A=2.916e-03 gal relop_A=3.628e-01 t_ind=327s
+[10:15:46] Q_scale_0007 N=256 conv relop_A=1.996e-03 gal relop_A=3.531e-01 t_ind=331s
+[10:15:48] Q_scale_0006 N=256 conv relop_A=7.134e-04 gal relop_A=3.998e-01 t_ind=334s
+[10:17:43] Q_scale_0002 N=128 conv relop_A=1.568e-03 gal relop_A=3.455e-01 t_ind=115s
+[10:17:45] Q_scale_0001 N=128 conv relop_A=4.243e-03 gal relop_A=4.083e-01 t_ind=118s
+[10:17:46] Q_scale_0000 N=128 conv relop_A=5.341e-03 gal relop_A=3.616e-01 t_ind=119s
+[10:17:48] Q_scale_0003 N=128 conv relop_A=2.283e-03 gal relop_A=3.746e-01 t_ind=119s
+[10:17:51] Q_scale_0004 N=128 conv relop_A=1.198e-03 gal relop_A=3.794e-01 t_ind=120s
+[10:19:33] Q_scale_0001 N=512 conv relop_A=1.005e-03 gal relop_A=4.017e-01 t_ind=1026s
+[10:19:41] Q_scale_0005 N=128 conv relop_A=5.163e-03 gal relop_A=3.274e-01 t_ind=116s
+[10:19:44] Q_scale_0006 N=128 conv relop_A=1.447e-03 gal relop_A=4.034e-01 t_ind=117s
+[10:19:45] Q_scale_0002 N=512 conv relop_A=3.350e-04 gal relop_A=3.083e-01 t_ind=1038s
+[10:19:47] Q_scale_0008 N=128 conv relop_A=2.271e-03 gal relop_A=3.409e-01 t_ind=117s
+[10:19:49] Q_scale_0007 N=128 conv relop_A=4.356e-03 gal relop_A=3.674e-01 t_ind=120s
+[10:19:50] Q_scale_0000 N=512 conv relop_A=1.113e-03 gal relop_A=3.334e-01 t_ind=1042s
+[10:19:58] Q_scale_0009 N=128 conv relop_A=6.231e-03 gal relop_A=3.737e-01 t_ind=123s
+[10:20:18] Q_scale_0000 N=64 conv relop_A=1.196e-02 gal relop_A=3.790e-01 t_ind=43s
+[10:20:25] Q_scale_0001 N=64 conv relop_A=8.832e-03 gal relop_A=4.115e-01 t_ind=43s
+[10:20:28] Q_scale_0002 N=64 conv relop_A=3.509e-03 gal relop_A=3.697e-01 t_ind=42s
+[10:20:31] Q_scale_0003 N=64 conv relop_A=4.759e-03 gal relop_A=3.784e-01 t_ind=45s
+[10:20:32] Q_scale_0004 N=64 conv relop_A=2.428e-03 gal relop_A=3.893e-01 t_ind=43s
+[10:20:34] Q_scale_0005 N=64 conv relop_A=1.176e-02 gal relop_A=3.514e-01 t_ind=43s
+[10:20:36] Q_scale_0006 N=64 conv relop_A=2.932e-03 gal relop_A=4.048e-01 t_ind=45s
+[10:20:41] Q_scale_0007 N=64 conv relop_A=9.700e-03 gal relop_A=3.847e-01 t_ind=43s
+[10:20:58] Q_scale_0008 N=64 conv relop_A=5.074e-03 gal relop_A=3.573e-01 t_ind=38s
+[10:21:04] Q_scale_0009 N=64 conv relop_A=1.348e-02 gal relop_A=3.900e-01 t_ind=37s
+[10:21:05] done

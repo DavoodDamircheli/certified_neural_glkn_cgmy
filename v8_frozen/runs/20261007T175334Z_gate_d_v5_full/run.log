@@ -1,0 +1,9 @@
+[12:53:34] session_start=0 run_id=20261007T175334Z_gate_d_v5_full harness=gate_d_v5.0 modes=['reuse'] pid=4065443 affinity=[3] scope=ordinary floating-point evaluation of exact-arithmetic theory: the reliability theorems hold in exact arithmetic under their stated hypotheses (including alpha <= lambda_min(S_I)); every reported number is computed in IEEE double precision without validated/outward rounding. No machine-validated enclosure and no total continuum-price error bound is claimed.
+[12:56:31] stored references: 120
+[12:56:40] [reuse] warmup done
+[13:02:38] [reuse] repeat 0 done
+[13:08:46] [reuse] repeat 1 done
+[13:15:04] [reuse] repeat 2 done
+[13:21:31] [reuse] repeat 3 done
+[13:28:10] [reuse] repeat 4 done
+[13:28:10] summaries written

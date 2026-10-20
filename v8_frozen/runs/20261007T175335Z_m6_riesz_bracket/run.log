@@ -1,0 +1,27 @@
+[12:53:35] session_start run_dir=20261007T175335Z_m6_riesz_bracket scope=ordinary floating-point evaluation of exact-arithmetic theory: the reliability theorems hold in exact arithmetic under their stated hypotheses (including alpha <= lambda_min(S_I)); every reported number is computed in IEEE double precision without validated/outward rounding. No machine-validated enclosure and no total continuum-price error bound is claimed.
+[12:53:40] query 1/24 Q_audit_0139 done
+[12:53:45] query 2/24 Q_audit_0140 done
+[12:53:49] query 3/24 Q_audit_0141 done
+[12:53:54] query 4/24 Q_audit_0142 done
+[12:53:59] query 5/24 Q_audit_0143 done
+[12:54:03] query 6/24 Q_audit_0144 done
+[12:54:08] query 7/24 Q_audit_0145 done
+[12:54:13] query 8/24 Q_audit_0146 done
+[12:54:17] query 9/24 Q_audit_0395 done
+[12:54:22] query 10/24 Q_audit_0396 done
+[12:54:27] query 11/24 Q_audit_0397 done
+[12:54:32] query 12/24 Q_audit_0398 done
+[12:54:37] query 13/24 Q_audit_0399 done
+[12:54:41] query 14/24 Q_audit_0400 done
+[12:54:46] query 15/24 Q_audit_0401 done
+[12:54:51] query 16/24 Q_audit_0402 done
+[12:54:56] query 17/24 Q_audit_0000 done
+[12:55:01] query 18/24 Q_audit_0001 done
+[12:55:06] query 19/24 Q_audit_0002 done
+[12:55:11] query 20/24 Q_audit_0003 done
+[12:55:16] query 21/24 Q_audit_0004 done
+[12:55:21] query 22/24 Q_audit_0005 done
+[12:55:26] query 23/24 Q_audit_0006 done
+[12:55:31] query 24/24 Q_audit_0007 done
+[12:55:40] manufactured done
+[12:55:40] done

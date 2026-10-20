@@ -1,0 +1,19 @@
+# v5 resolution scaling study (roadmap §7.2, M7). FROZEN before running.
+# Solver/certificate scaling only: the neural checkpoints and the POD basis are
+# N=64 artifacts and no resolution-transfer strategy is defined, so they are NOT
+# run at N != 64 (recorded as not_applicable rows); their N=64 cost is the
+# Q_bench120 benchmark's.
+harness_version: scaling_v5.0
+population: scale30                      # experiments/raw_results/query_sets/Q_scale.csv
+resolutions: [64, 128, 256]              # all 30 queries
+extended:
+  N: 512
+  queries: [Q_scale_0000, Q_scale_0001, Q_scale_0002, Q_scale_0003, Q_scale_0004, Q_scale_0005]  # predeclared subset
+domain: from configs/base.yaml (log K +- 8), h = 16 / N
+time_step_policy: fixed n_steps = 60 at every N (dt = T/60), pure CN
+methods: [reference_trusted, free_direct_lu, free_cold_gmres]
+not_applicable_at_N_ne_64: [neural_warm_gmres, neural_direct_riesz, neural_free_workflow, pod32_free_workflow, pod48_free_workflow]
+cache_mode: cold                         # fresh OperatorCache per (method, query, repetition), inside the timer
+repeats: {warmup: 1, timed: 3}
+memory: one extra untimed repetition per (N, query, method) under tracemalloc (peak bytes)
+max_n_dof_dense_guard: 1100              # dense eigendecomposition / LU allowed up to n_dof 1100 (cost recorded)

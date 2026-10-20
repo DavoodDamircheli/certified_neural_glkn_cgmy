@@ -1,0 +1,65 @@
+# v5 repaired Gate-D benchmark (roadmap §5, milestone M5). FROZEN before any run:
+# changing a value here is a deliberate, committed act; the harness records this
+# file's sha256 in every manifest. Discretization comes from configs/base.yaml,
+# certificate/solver policy from configs/v5_free_workflow.yaml.
+
+harness_version: gate_d_v5.0
+seed: 20261006                 # method-order shuffles and bootstrap
+
+repeats:
+  warmup: 1                    # per method, on the warmup query (never a population query)
+  timed: 5
+
+warmup_query:                  # mid-box point in no declared population
+  C: 0.525
+  G: 3.0
+  M: 5.5
+  Y: 1.45
+  r: 0.055
+  T: 0.55
+  K: 100.0
+
+workloads:
+  trajectory:
+    output: entire discrete time trajectory (raw coefficients, exact lifting)
+    target_type: augmented_algebraic_max_in_time_mass_norm
+    target_definition: >
+      max_n ||z^n - z_h^n||_{M_I} <= tolerance, z_h = exact constrained discrete CN solution.
+      verified: eta_aug (floating-point evaluation of the exact-arithmetic bound) <= tolerance.
+      empirically_checked: not verified, but max_n ||z^n - z_ref^n||_{M_I} + eta_aug(stored reference) <= tolerance.
+      failed: neither. unavailable: no output delivered/available for comparison.
+    tolerance: 1.0e-3
+  terminal_price:
+    output: put prices at maturity for the spots below
+    target_type: dollar_abs_to_exact_discrete_price
+    target_definition: >
+      max over spots |V(x_s) - V_h(x_s)| <= budget, V_h = exact constrained discrete price
+      (NOT the continuum price; no discretisation/truncation budget is claimed).
+      verified: max_s beta_I(x_s) * eta_aug <= budget.
+      empirically_checked: not verified, but max_s |V(x_s) - V_ref(x_s)| + beta_I(x_s) eta_aug(stored reference) <= budget.
+      failed: neither. unavailable: no price delivered.
+    spot_fractions: [0.8, 0.9, 1.0, 1.1, 1.2]
+    budget_dollars: 0.01        # primary; 0.05 / 0.10 starting choices are not evaluated in M5
+
+methods:
+  trajectory: [reference_trusted, free_direct_lu, free_cold_gmres, neural_warm_gmres,
+               neural_direct_riesz, neural_free_workflow, pod32_free_workflow, pod48_free_workflow]
+  terminal_price_extra: [cos]   # plus prices derived from every trajectory method's delivered output
+  neural_model: DeepONet        # checkpoints/deeponet_final.pt
+  pod_ranks: [32, 48]           # mass-weighted basis pinned in configs/v5_free_workflow.yaml
+  cos: {N: 256, L: 12.0}
+
+ratio_baselines:
+  trajectory: [reference_trusted, free_direct_lu]
+  terminal_price: [cos]
+bootstrap:
+  resamples: 2000
+  confidence: 0.95
+amortisation_population_sizes: [1, 8, 120, 1000]
+
+populations:
+  smoke:
+    typical: [Q_bench120_0000, Q_bench120_0001, Q_bench120_0002]
+    difficult: [Q_audit_0401, Q_audit_0397]          # exact vertices, smallest free lambda_min(S_I)
+    legacy_gate_failing: [Q_audit_0000, Q_audit_0001, Q_audit_0005]  # full S_h indefinite, free gate passes
+  full: bench120                                      # NOT run without explicit approval

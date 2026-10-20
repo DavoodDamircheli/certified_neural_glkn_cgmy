@@ -1,0 +1,433 @@
+{
+  "run_id": "20261007T175334Z_gate_d_v5_full",
+  "created_utc": "2026-10-07T18:28:10.447067+00:00",
+  "method_id": "constrained_free_cn_v1",
+  "coordinate_space": "constrained_free",
+  "method_description": "Integrated free-coordinate predict/certify/correct path: c = P z + b, M_I = P^T M P, A_I = P^T A P, S_I = (A_I + A_I^T)/2, CN free forcing f_I = P^T(f_raw - M (b^{n+1}-b^n)/dt - A (b^{n+1}+b^n)/2); acceptance on eta_aug = sqrt(beta_0^2 + eta_res_upper^2).",
+  "numerical_scope": "ordinary floating-point evaluation of exact-arithmetic theory: the reliability theorems hold in exact arithmetic under their stated hypotheses (including alpha <= lambda_min(S_I)); every reported number is computed in IEEE double precision without validated/outward rounding. No machine-validated enclosure and no total continuum-price error bound is claimed.",
+  "git": {
+    "head": "c9add45777ee4bbbc6da16fe997267b79ecfb5a8",
+    "branch": "v5/m7-benchmark-scaling",
+    "dirty": true,
+    "status_porcelain": [
+      "?? results/free_integrated_v5/20261007T175334Z_gate_d_v5_full/",
+      "?? results/free_integrated_v5/20261007T175334Z_scaling_v5/",
+      "?? results/free_integrated_v5/20261007T175406Z_gate_d_v5_full_cold/",
+      "?? zips/CGMY_V4_REMAINING_WORK.md",
+      "?? zips/OVERNIGHT_CLAUDE_CODE_PROMPT.md"
+    ],
+    "diff_vs_head_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "source_tree_sha256": "e5a92698b09c2e1e14d74030f31dcda538acb9335e4d6c07208b42d4246fcb2d",
+  "resolved_config_sha256": "9ab40a75fcbf3b0ea1cf3d528c9cc8832678e3f066e868de435d3c8c9964b92f",
+  "base_config_sha256": "6a5f815371714e017635a6946b09e95bbc2d49cdda46269e134a1a16383ff0e1",
+  "discretization": {
+    "N": 64,
+    "spline_order_p": 3,
+    "spline_degree": 2,
+    "x_min": -3.394829814011908,
+    "x_max": 12.605170185988092,
+    "h": 0.25,
+    "n_dof": 66,
+    "bc_left": [
+      0,
+      1
+    ],
+    "bc_right": [
+      64,
+      65
+    ],
+    "n_free": 62,
+    "time_grid_policy": {
+      "n_steps": 60,
+      "grid": "uniform np.linspace(0, T, n_steps+1) per query; dt = T/n_steps",
+      "tau0": 0.0
+    },
+    "scheme": "crank_nicolson",
+    "scheme_detail": "pure Crank-Nicolson from tau=0; no Rannacher/BE start-up"
+  },
+  "solver_policy": {
+    "gmres_rtol": 1e-10,
+    "gmres_restart": 50,
+    "gmres_maxiter": null,
+    "correction_warm_start": true,
+    "fallback": "direct_free_dense",
+    "fallback_max_n_free": 400
+  },
+  "certificate_policy": {
+    "acceptance_tolerance": 0.001,
+    "quick_pcg_iterations": 10,
+    "max_pcg_iterations": 200,
+    "pcg_tol": 1e-14,
+    "preconditioner": "none",
+    "bracket": "upper",
+    "coercivity_strategy": "B_weyl_residual_enclosure",
+    "spd_gate_space": "constrained_free"
+  },
+  "checkpoints_sha256": {
+    "deeponet_final.pt": "120a80af5a737b339a3cddde9df1380ab8bb98dd7fca533386f848bfaf80f16e",
+    "mlp_final.pt": "b2e0d4b51250e00beed25d2088c2eeba6ac3eff437e26ceeca0d3bbf8974647e",
+    "pod_final.npz": "a85c1b87973e547a88b0d4fc3e8f2edf2bbb95590d7cb891494ab597a786574b",
+    "projected_fno_final.pt": "aa4a0de1ce65b62d5861ee2cbcab21a9b960c38baccf72df230e4e30a5acf8e1"
+  },
+  "extra_inputs_sha256": {
+    "benchmark_config": "091338aa2d5139859cb39266f4dfd50fc6eb9da26861df3461eba680a16916b8",
+    "deeponet": "120a80af5a737b339a3cddde9df1380ab8bb98dd7fca533386f848bfaf80f16e",
+    "pod_artifact": "4aa18e2ec737ef014858d9a13cf3fac962ac0f6a7517a4744f15dca2fa3d07aa"
+  },
+  "query_populations": {
+    "audit459": {
+      "kind": "file",
+      "path": "experiments/raw_results/query_sets/Q_audit.csv",
+      "sha256": "9d0ef945d6ae1b8736e82e6e5fcd8eb5d8a5dff661faf978a6a14e571c534a80",
+      "n_queries": 459,
+      "source_counts": {
+        "known_failure": 139,
+        "sobol_main_box": 256,
+        "exact_vertex": 64
+      },
+      "role": "gate/positivity audit; 139 deliberately selected failure queries are not an unbiased failure-rate sample"
+    },
+    "bench120": {
+      "kind": "file",
+      "path": "experiments/raw_results/query_sets/Q_bench120.csv",
+      "sha256": "0fff434a04331117cebbae35d0f1b27886e0c9536283dc4b26613ec2fdee02e3",
+      "n_queries": 120,
+      "source_counts": {
+        "sobol": 120
+      },
+      "role": "benchmark population"
+    },
+    "pricing_q_ref30": {
+      "kind": "file",
+      "path": "experiments/raw_results/query_sets/Q_ref30.csv",
+      "sha256": "7a2d94c3835c190ce0e13aec7c8194f999ae949abd56a3c647b426fb365124fe",
+      "n_queries": 30,
+      "source_counts": {
+        "sobol": 30
+      },
+      "role": "financial/pricing population"
+    },
+    "validation30": {
+      "kind": "generated_validation30",
+      "generator": "data.sampling.sample_sobol(load_parameter_box(configs/base.yaml), 30, seed=999_999) -- identical call to scripts/generate_production_dataset.build_val_set(30)",
+      "generator_dependency": "scipy.stats.qmc.Sobol (scipy 1.15.3 at declaration)",
+      "sha256": "2ca78e0225f71f454cfa8a62d067ec7731a8e297561d43f9390acc248def083d",
+      "n_queries": 30,
+      "source_counts": {
+        "sobol_seed999999": 30
+      },
+      "role": "fixed validation population (POD rank sweep, recovery)"
+    },
+    "scale30": {
+      "kind": "file",
+      "path": "experiments/raw_results/query_sets/Q_scale.csv",
+      "sha256": "dffccd3d954d6fb20657a3981c43b876d727bd95f377522e7647d020b7bf43a2",
+      "n_queries": 30,
+      "source_counts": {
+        "sobol": 30
+      },
+      "role": "resolution-scaling population (N=64,128,256 all 30; N=512 on the predeclared subset in configs/v5_scaling.yaml)"
+    }
+  },
+  "population_used": [
+    "Q_bench120_0000 (bench120)",
+    "Q_bench120_0001 (bench120)",
+    "Q_bench120_0002 (bench120)",
+    "Q_bench120_0003 (bench120)",
+    "Q_bench120_0004 (bench120)",
+    "Q_bench120_0005 (bench120)",
+    "Q_bench120_0006 (bench120)",
+    "Q_bench120_0007 (bench120)",
+    "Q_bench120_0008 (bench120)",
+    "Q_bench120_0009 (bench120)",
+    "Q_bench120_0010 (bench120)",
+    "Q_bench120_0011 (bench120)",
+    "Q_bench120_0012 (bench120)",
+    "Q_bench120_0013 (bench120)",
+    "Q_bench120_0014 (bench120)",
+    "Q_bench120_0015 (bench120)",
+    "Q_bench120_0016 (bench120)",
+    "Q_bench120_0017 (bench120)",
+    "Q_bench120_0018 (bench120)",
+    "Q_bench120_0019 (bench120)",
+    "Q_bench120_0020 (bench120)",
+    "Q_bench120_0021 (bench120)",
+    "Q_bench120_0022 (bench120)",
+    "Q_bench120_0023 (bench120)",
+    "Q_bench120_0024 (bench120)",
+    "Q_bench120_0025 (bench120)",
+    "Q_bench120_0026 (bench120)",
+    "Q_bench120_0027 (bench120)",
+    "Q_bench120_0028 (bench120)",
+    "Q_bench120_0029 (bench120)",
+    "Q_bench120_0030 (bench120)",
+    "Q_bench120_0031 (bench120)",
+    "Q_bench120_0032 (bench120)",
+    "Q_bench120_0033 (bench120)",
+    "Q_bench120_0034 (bench120)",
+    "Q_bench120_0035 (bench120)",
+    "Q_bench120_0036 (bench120)",
+    "Q_bench120_0037 (bench120)",
+    "Q_bench120_0038 (bench120)",
+    "Q_bench120_0039 (bench120)",
+    "Q_bench120_0040 (bench120)",
+    "Q_bench120_0041 (bench120)",
+    "Q_bench120_0042 (bench120)",
+    "Q_bench120_0043 (bench120)",
+    "Q_bench120_0044 (bench120)",
+    "Q_bench120_0045 (bench120)",
+    "Q_bench120_0046 (bench120)",
+    "Q_bench120_0047 (bench120)",
+    "Q_bench120_0048 (bench120)",
+    "Q_bench120_0049 (bench120)",
+    "Q_bench120_0050 (bench120)",
+    "Q_bench120_0051 (bench120)",
+    "Q_bench120_0052 (bench120)",
+    "Q_bench120_0053 (bench120)",
+    "Q_bench120_0054 (bench120)",
+    "Q_bench120_0055 (bench120)",
+    "Q_bench120_0056 (bench120)",
+    "Q_bench120_0057 (bench120)",
+    "Q_bench120_0058 (bench120)",
+    "Q_bench120_0059 (bench120)",
+    "Q_bench120_0060 (bench120)",
+    "Q_bench120_0061 (bench120)",
+    "Q_bench120_0062 (bench120)",
+    "Q_bench120_0063 (bench120)",
+    "Q_bench120_0064 (bench120)",
+    "Q_bench120_0065 (bench120)",
+    "Q_bench120_0066 (bench120)",
+    "Q_bench120_0067 (bench120)",
+    "Q_bench120_0068 (bench120)",
+    "Q_bench120_0069 (bench120)",
+    "Q_bench120_0070 (bench120)",
+    "Q_bench120_0071 (bench120)",
+    "Q_bench120_0072 (bench120)",
+    "Q_bench120_0073 (bench120)",
+    "Q_bench120_0074 (bench120)",
+    "Q_bench120_0075 (bench120)",
+    "Q_bench120_0076 (bench120)",
+    "Q_bench120_0077 (bench120)",
+    "Q_bench120_0078 (bench120)",
+    "Q_bench120_0079 (bench120)",
+    "Q_bench120_0080 (bench120)",
+    "Q_bench120_0081 (bench120)",
+    "Q_bench120_0082 (bench120)",
+    "Q_bench120_0083 (bench120)",
+    "Q_bench120_0084 (bench120)",
+    "Q_bench120_0085 (bench120)",
+    "Q_bench120_0086 (bench120)",
+    "Q_bench120_0087 (bench120)",
+    "Q_bench120_0088 (bench120)",
+    "Q_bench120_0089 (bench120)",
+    "Q_bench120_0090 (bench120)",
+    "Q_bench120_0091 (bench120)",
+    "Q_bench120_0092 (bench120)",
+    "Q_bench120_0093 (bench120)",
+    "Q_bench120_0094 (bench120)",
+    "Q_bench120_0095 (bench120)",
+    "Q_bench120_0096 (bench120)",
+    "Q_bench120_0097 (bench120)",
+    "Q_bench120_0098 (bench120)",
+    "Q_bench120_0099 (bench120)",
+    "Q_bench120_0100 (bench120)",
+    "Q_bench120_0101 (bench120)",
+    "Q_bench120_0102 (bench120)",
+    "Q_bench120_0103 (bench120)",
+    "Q_bench120_0104 (bench120)",
+    "Q_bench120_0105 (bench120)",
+    "Q_bench120_0106 (bench120)",
+    "Q_bench120_0107 (bench120)",
+    "Q_bench120_0108 (bench120)",
+    "Q_bench120_0109 (bench120)",
+    "Q_bench120_0110 (bench120)",
+    "Q_bench120_0111 (bench120)",
+    "Q_bench120_0112 (bench120)",
+    "Q_bench120_0113 (bench120)",
+    "Q_bench120_0114 (bench120)",
+    "Q_bench120_0115 (bench120)",
+    "Q_bench120_0116 (bench120)",
+    "Q_bench120_0117 (bench120)",
+    "Q_bench120_0118 (bench120)",
+    "Q_bench120_0119 (bench120)"
+  ],
+  "seeds": {
+    "benchmark": 20261006,
+    "global": 0
+  },
+  "software": {
+    "python": "3.10.12 (main, Mar  3 2026, 11:56:32) [GCC 11.4.0]",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "torch": "2.14.0+cpu",
+    "h5py": "3.16.0",
+    "pyyaml": "6.0.2",
+    "numpy_build_dependencies": {
+      "blas": {
+        "name": "openblas64",
+        "found": true,
+        "version": "0.3.23.dev",
+        "detection method": "pkgconfig",
+        "include directory": "/usr/local/include",
+        "lib directory": "/usr/local/lib",
+        "openblas configuration": "USE_64BITINT=1 DYNAMIC_ARCH=1 DYNAMIC_OLDER= NO_CBLAS= NO_LAPACK= NO_LAPACKE= NO_AFFINITY=1 USE_OPENMP= HASWELL MAX_THREADS=2",
+        "pc file directory": "/usr/local/lib/pkgconfig"
+      },
+      "lapack": {
+        "name": "dep139863411681952",
+        "found": true,
+        "version": "1.26.4",
+        "detection method": "internal",
+        "include directory": "unknown",
+        "lib directory": "unknown",
+        "openblas configuration": "unknown",
+        "pc file directory": "unknown"
+      }
+    }
+  },
+  "hardware": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "logical_cpus": 24,
+    "mem_total_kb": 131337108,
+    "hostname_sha256": "d8b93a84dafe4e6d081f5d857315de9959a9eb26716935108d3827a39eab7ee0"
+  },
+  "threads": {
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "torch_num_threads": 1,
+    "single_threaded": true
+  },
+  "studies": {
+    "g0_dry_run": "not run",
+    "g1_free_path_traces": "not run",
+    "pod_free_baseline": "not run",
+    "riesz_bracket_campaign": "not run",
+    "audit459": "not run",
+    "bench120_cold": "not run",
+    "bench120_reusable": "not run",
+    "scaling": "not run",
+    "assembly_refinement": "not run",
+    "fourier_rerun": "not run",
+    "financial_q_ref30": "not run",
+    "g4_smoke": "not run"
+  },
+  "harness_version": "gate_d_v5.0",
+  "benchmark_config": {
+    "harness_version": "gate_d_v5.0",
+    "seed": 20261006,
+    "repeats": {
+      "warmup": 1,
+      "timed": 5
+    },
+    "warmup_query": {
+      "C": 0.525,
+      "G": 3.0,
+      "M": 5.5,
+      "Y": 1.45,
+      "r": 0.055,
+      "T": 0.55,
+      "K": 100.0
+    },
+    "workloads": {
+      "trajectory": {
+        "output": "entire discrete time trajectory (raw coefficients, exact lifting)",
+        "target_type": "augmented_algebraic_max_in_time_mass_norm",
+        "target_definition": "max_n ||z^n - z_h^n||_{M_I} <= tolerance, z_h = exact constrained discrete CN solution. verified: eta_aug (floating-point evaluation of the exact-arithmetic bound) <= tolerance. empirically_checked: not verified, but max_n ||z^n - z_ref^n||_{M_I} + eta_aug(stored reference) <= tolerance. failed: neither. unavailable: no output delivered/available for comparison.\n",
+        "tolerance": 0.001
+      },
+      "terminal_price": {
+        "output": "put prices at maturity for the spots below",
+        "target_type": "dollar_abs_to_exact_discrete_price",
+        "target_definition": "max over spots |V(x_s) - V_h(x_s)| <= budget, V_h = exact constrained discrete price (NOT the continuum price; no discretisation/truncation budget is claimed). verified: max_s beta_I(x_s) * eta_aug <= budget. empirically_checked: not verified, but max_s |V(x_s) - V_ref(x_s)| + beta_I(x_s) eta_aug(stored reference) <= budget. failed: neither. unavailable: no price delivered.\n",
+        "spot_fractions": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "budget_dollars": 0.01
+      }
+    },
+    "methods": {
+      "trajectory": [
+        "reference_trusted",
+        "free_direct_lu",
+        "free_cold_gmres",
+        "neural_warm_gmres",
+        "neural_direct_riesz",
+        "neural_free_workflow",
+        "pod32_free_workflow",
+        "pod48_free_workflow"
+      ],
+      "terminal_price_extra": [
+        "cos"
+      ],
+      "neural_model": "DeepONet",
+      "pod_ranks": [
+        32,
+        48
+      ],
+      "cos": {
+        "N": 256,
+        "L": 12.0
+      }
+    },
+    "ratio_baselines": {
+      "trajectory": [
+        "reference_trusted",
+        "free_direct_lu"
+      ],
+      "terminal_price": [
+        "cos"
+      ]
+    },
+    "bootstrap": {
+      "resamples": 2000,
+      "confidence": 0.95
+    },
+    "amortisation_population_sizes": [
+      1,
+      8,
+      120,
+      1000
+    ],
+    "populations": {
+      "smoke": {
+        "typical": [
+          "Q_bench120_0000",
+          "Q_bench120_0001",
+          "Q_bench120_0002"
+        ],
+        "difficult": [
+          "Q_audit_0401",
+          "Q_audit_0397"
+        ],
+        "legacy_gate_failing": [
+          "Q_audit_0000",
+          "Q_audit_0001",
+          "Q_audit_0005"
+        ]
+      },
+      "full": "bench120"
+    }
+  },
+  "other_method_ids_in_run": {
+    "terminal_price_*_cos": "independent_cos_v1"
+  },
+  "loaded_models": {
+    "neural": "deeponet_final.pt:120a80af5a73",
+    "neural_class": "DeepONetCoeffNet",
+    "pod": {
+      "32": "mass_weighted_pod:r32:4aa18e2ec737",
+      "48": "mass_weighted_pod:r48:4aa18e2ec737"
+    },
+    "pod_class": "FreePODBasis",
+    "pod_basis_type": "mass_weighted_pod",
+    "legacy_pod_loaded": false
+  }
+}

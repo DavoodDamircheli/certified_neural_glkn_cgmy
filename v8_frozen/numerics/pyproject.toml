@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "certified-galkn-cgmy"
+version = "0.1.0"
+description = "Galerkin-Certified Neural Operators for Tempered-Fractional CGMY Pricing PIDEs"
+requires-python = ">=3.10"
+# Task 6 (working prompt): pinned to what this project was actually
+# developed and verified against (see README.md's "Reproducibility"
+# section) -- previously unpinned, so "pip install -e ." could silently
+# resolve a different numpy/scipy/torch than the one this project's own
+# numerical results were produced with.
+dependencies = [
+    "numpy==1.26.4",
+    "scipy==1.15.3",
+    "h5py==3.16.0",
+    "pyyaml==6.0.2",
+    "matplotlib==3.10.9",
+    "torch==2.14.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==9.1.1", "ruff>=0.6,<1.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "experiments"]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

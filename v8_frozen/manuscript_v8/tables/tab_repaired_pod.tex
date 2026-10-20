@@ -1,0 +1,18 @@
+\begin{table}[!htbp]
+\centering\small
+\caption{Mass-weighted POD baseline on the fixed 30-query validation set (training: 800 assembled trajectories, 48{,}800 uncentred free snapshots). Errors in the $M_I$ norm against the stored reference: projection and $E_{\rm rel}$ are maxima over time, $\beta_0$ is the finite-rank initial error. Single-valued error and bound columns are query medians; $E_{\rm rel}$ gives median and maximum. Last column: direct / corrected acceptance at $10^{-3}$ through the assembled free workflow (all 30 delivered).}
+\label{tab:repaired-pod}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrrr}
+\toprule
+basis & $r$ & projection & $\beta_0$ & $E_{\rm rel}$ med./max & price err. (\$) & cand. $\eta_{\rm aug}$ & dir./corr.\\
+\midrule
+mass-weighted & 8 & $0.332$ & $0.332$ & $1.33\times10^{-3}$ / $4.17\times10^{-3}$ & $0.0395$ & $2.96$ & 0/30\\
+mass-weighted & 16 & $0.0235$ & $0.0235$ & $1.05\times10^{-4}$ / $4.37\times10^{-4}$ & $4.57\times10^{-4}$ & $0.252$ & 0/30\\
+mass-weighted & 32 & $3.34\times10^{-4}$ & $1.44\times10^{-4}$ & $1.36\times10^{-6}$ / $3.40\times10^{-6}$ & $1.14\times10^{-6}$ & $1.58\times10^{-3}$ & 0/30\\
+mass-weighted & 48 & $4.16\times10^{-6}$ & $7.65\times10^{-7}$ & $1.72\times10^{-8}$ / $5.57\times10^{-8}$ & $1.66\times10^{-8}$ & $1.63\times10^{-5}$ & 30/0\\
+mass-weighted & 62 & $2.58\times10^{-13}$ & $2.02\times10^{-13}$ & $1.06\times10^{-9}$ / $6.13\times10^{-9}$ & $1.54\times10^{-8}$ & $3.40\times10^{-11}$ & 30/0\\
+\bottomrule
+\end{tabular}}
+\par\smallskip\parbox{0.95\linewidth}{\footnotesize Full-rank recovery against a dense direct solve of the same free CN system: 46/46 within the residual-derived allowance (30 validation queries, 8 exact vertices, 8 selected full-space failures; max error/allowance 0.011, max relative coefficient error $5.1\times10^{-14}$).}
+\end{table}

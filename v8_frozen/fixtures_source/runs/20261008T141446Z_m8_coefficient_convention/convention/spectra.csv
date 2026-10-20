@@ -1,0 +1,9 @@
+key,method_id,query_id,source,operator,lambda_min_S_h,lambda_min_S_I,lambda_min_S_h_minus_rM,rel_opnorm_diff_vs_real_line
+Q_audit_0000|production,constrained_free_cn_v1,Q_audit_0000,known_failure,production,-0.031675123116511626,0.07990572810266307,-0.08386657396798033,0.38807272250342467
+Q_audit_0000|real_line_galerkin,constrained_free_cn_v1,Q_audit_0000,known_failure,real_line_galerkin,-0.017259131610727087,0.07993355722895853,-0.07046533648851781,0.0
+Q_audit_0001|production,constrained_free_cn_v1,Q_audit_0001,known_failure,production,-0.2169957890759846,0.10411041148598549,-0.2570524392865232,0.4128443550145725
+Q_audit_0001|real_line_galerkin,constrained_free_cn_v1,Q_audit_0001,known_failure,real_line_galerkin,-0.16880270189647123,0.10420624717754413,-0.20965864944618684,0.0
+Q_audit_0401|production,constrained_free_cn_v1,Q_audit_0401,exact_vertex,production,0.010188018523971117,0.010382672562908606,0.00026855998707520144,0.37032161046962925
+Q_audit_0401|real_line_galerkin,constrained_free_cn_v1,Q_audit_0401,exact_vertex,real_line_galerkin,0.010213063248633018,0.010383315349175916,0.000276803675436017,0.0
+Q_audit_0139|production,constrained_free_cn_v1,Q_audit_0139,sobol_main_box,production,0.042486577976560656,0.042976353775691624,0.0032608576683816103,0.3767125711988355
+Q_audit_0139|real_line_galerkin,constrained_free_cn_v1,Q_audit_0139,sobol_main_box,real_line_galerkin,0.0424954044037071,0.042982518318923066,0.0032683629666047883,0.0

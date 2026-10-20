@@ -1,0 +1,10 @@
+method_id,item,cache_mode,seconds,charged_per_query,session
+constrained_free_cn_v1,neural model + POD basis file load (process-level),both,0.6213013147935271,False,0
+constrained_free_cn_v1,template:reference_trusted,reuse,0.5649522636085749,False,0
+constrained_free_cn_v1,template:free_direct_lu,reuse,0.5753901908174157,False,0
+constrained_free_cn_v1,template:free_cold_gmres,reuse,0.5675279218703508,False,0
+constrained_free_cn_v1,template:neural_warm_gmres,reuse,0.5659426720812917,False,0
+constrained_free_cn_v1,template:neural_direct_riesz,reuse,0.5684445854276419,False,0
+constrained_free_cn_v1,template:neural_free_workflow,reuse,0.5636757398024201,False,0
+constrained_free_cn_v1,template:pod32_free_workflow,reuse,0.5663864025846124,False,0
+constrained_free_cn_v1,template:pod48_free_workflow,reuse,0.5679755434393883,False,0

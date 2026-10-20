@@ -1,0 +1,14 @@
+{
+  "tables/layout_v7/tab_financial.tex": {
+    "source": "tables/tab_financial.tex",
+    "source_sha256": "3c08273d013c918de26fb96bd8c899409a246bd02e1b117895f262e8e2bd2cad",
+    "sha256": "b8ebf5c432cddb073d8348c468780a6f6923275bdb241111fe6a1dc2132f1315",
+    "data_cells_preserved": true
+  },
+  "tables/layout_v7/tab_fourier.tex": {
+    "source": "tables/tab_fourier.tex",
+    "source_sha256": "0b6c353351697e6210918a1b08285183a4269d51ed8b2d252b4d643eb552b2cb",
+    "sha256": "f2d641d50d5492121555a0fc7fd7a742b4d5a933a36b3a73660edbde18831be8",
+    "data_cells_preserved": true
+  }
+}

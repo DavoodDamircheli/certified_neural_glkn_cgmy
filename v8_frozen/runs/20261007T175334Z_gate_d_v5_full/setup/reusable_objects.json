@@ -1,0 +1,17 @@
+{
+  "reused_across_queries_in_reuse_mode": [
+    "OperatorCache mesh data: M_h, D_h, M_h sparse LU (mesh only)",
+    "free partition and the M_I sparse LU (mesh only)",
+    "point functionals phi(x_s) and beta_I(x_s) for the declared spots (mesh + spots only)",
+    "neural model weights; POD basis V (process-level, loaded once in both modes)"
+  ],
+  "never_reused_across_queries_or_repetitions": [
+    "Toeplitz blocks K_G, K_M (depend on G, M, Y)",
+    "A_I actions, S_I spectrum, alpha, kappa (mu)",
+    "forcing f_I and lifting b(t) (mu, T)",
+    "POD reduced operator A_r and forcing f_r (mu, T)",
+    "initial target c_h^0 and network input psi (K; reusable in principle, not reused here)",
+    "trusted solver internals (solve_cgmy builds its own matrices every call)",
+    "COS truncation range / characteristic function (mu)"
+  ]
+}

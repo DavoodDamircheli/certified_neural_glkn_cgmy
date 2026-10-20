@@ -1,0 +1,26 @@
+\begin{table}[!htbp]
+\centering\small
+\caption{Corner discrepancy diagnostic (240 time steps; the $N=64$ values are unchanged with 60 steps). Corner A/0397: $C=0.05$, $Y=1.1$, $T=0.1$, $r=0.01$. Spots $0.8K..1.2K$.}
+\label{tab:corner}
+\begin{tabular}{lrrrr}
+\toprule
+query & $N$ & $\max_s|V_h(T)-\mathrm{COS}|$ & $\max_s|V_h(0)-\psi|$ & $\min_s V_h(T)$\\
+\midrule
+Corner A & 64 & $2.22$ & $3.30$ & $-1.17$\\
+Corner A & 128 & $0.774$ & $1.66$ & $-0.357$\\
+Corner A & 256 & $0.195$ & $0.829$ & $0.0225$\\
+Corner A & 512 & $0.0275$ & $0.415$ & $0.0489$\\
+Corner A & 1024 & $1.61\times10^{-3}$ & $0.207$ & $0.0474$\\
+Corner B & 64 & $2.07$ & $3.30$ & $-1.11$\\
+Corner B & 128 & $0.693$ & $1.66$ & $-0.293$\\
+Corner B & 256 & $0.164$ & $0.829$ & $0.0379$\\
+Corner B & 512 & $0.0200$ & $0.415$ & $0.0517$\\
+Corner B & 1024 & $8.34\times10^{-4}$ & $0.207$ & $0.0510$\\
+Interior query & 64 & $0.107$ & $3.30$ & $3.48$\\
+Interior query & 128 & $8.46\times10^{-3}$ & $1.66$ & $3.58$\\
+Interior query & 256 & $6.71\times10^{-4}$ & $0.829$ & $3.58$\\
+Interior query & 512 & $1.65\times10^{-4}$ & $0.415$ & $3.58$\\
+Interior query & 1024 & $2.82\times10^{-5}$ & $0.207$ & $3.58$\\
+\bottomrule
+\end{tabular}
+\end{table}

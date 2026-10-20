@@ -1,0 +1,4 @@
+stratum,n,free_gate_passes,legacy_full_gate_passes,legacy_only_rejections,free_only_rejections,exceptions,min_lambda_min_free,min_lambda_min_full,max_alpha_minus_lambda_free,max_cond2_S_I,median_kappa_I,max_kappa_I,role
+sobol_main_box,256,256,253,3,0,0,0.015793531818254856,-0.03624348894513583,-5.2735593669694936e-15,439.27803304189143,1.4455287666464824,2.5467109253471243,sample of the parameter box
+exact_vertex,64,64,48,16,0,0,0.010382672562908521,-1.803052674592722,-2.5118795932144167e-15,524.8988703919127,1.7833104873116254,2.6765308313997185,all 64 exact box vertices
+known_failure,139,139,4,135,0,0,0.010302661989450151,-30.374140039567713,-8.690964614643804e-16,563.7849646411221,1.5220725182507462,2.6803981817620985,deliberately selected failures: NOT a production failure rate

@@ -1,0 +1,40 @@
+# v5 integrated free-coordinate workflow policy (roadmap §1-§2, milestones M0-M2).
+# Discretization (mesh, p, domain, n_time_steps, scheme) is NOT repeated here: it is
+# read from configs/base.yaml (Hard Invariant #6). This file only fixes the method
+# identifier, the solver/certificate policy and seeds of v5 runs.
+
+method_id: constrained_free_cn_v1
+
+solver:
+  # Same GMRES settings as the trusted solver's mode='toeplitz' CN step
+  # (vendor/cgmy_bspline/solver_cn.py) and correction.krylov.
+  gmres_rtol: 1.0e-10
+  gmres_restart: 50
+  gmres_maxiter: null          # scipy default (10 * n restarts); recorded per step
+  correction_warm_start: true  # GMRES at step n seeded with the projected candidate z^{n+1}
+  fallback: direct_free_dense  # on correction failure: dense LU of the free CN system
+                               # (n_free <= fallback_max_n_free), then recertified;
+                               # "none" -> explicit failure status
+  fallback_max_n_free: 400
+
+certificate:
+  acceptance_tolerance: 1.0e-3   # eta_aug tolerance (configs/base.yaml certification value)
+  quick_pcg_iterations: 10
+  max_pcg_iterations: 200
+  pcg_tol: 1.0e-14
+  preconditioner: none
+  bracket: upper                 # eta_res uses the PCG upper bracket at every step
+  coercivity_strategy: B_weyl_residual_enclosure
+  spd_gate_space: constrained_free   # S_I, never the legacy full S_h
+
+seeds:
+  global: 0
+
+pod:
+  # Production free POD basis (roadmap §3, M3): genuinely mass-weighted, uncentred,
+  # rank 62 stored; ranks are truncations. Loaded only via
+  # learning.pod_free.load_pod_artifact (refuses legacy checkpoints/pod_final.npz).
+  # The .npz is gitignored; its metadata is committed alongside as .metadata.json.
+  artifact: results/free_integrated_v5/20261006T215800Z_m3_pod_study/basis/pod_basis_mass_weighted.npz
+  artifact_sha256: 4aa18e2ec737ef014858d9a13cf3fac962ac0f6a7517a4744f15dca2fa3d07aa
+  basis_type: mass_weighted_pod

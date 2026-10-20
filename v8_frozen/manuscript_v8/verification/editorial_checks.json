@@ -1,0 +1,52 @@
+{
+  "baseline_pages": 51,
+  "revised_pages": 23,
+  "baseline_pdf_words": 25882,
+  "revised_pdf_words": 12064,
+  "tables": {
+    "tab_augmented.tex": {
+      "numeric_tokens": 25,
+      "comparison": "identical retained numerical tokens; Euclidean POD rows omitted from main table"
+    },
+    "tab_riesz_brackets.tex": {
+      "numeric_tokens": 64,
+      "comparison": "identical retained numerical tokens; Euclidean POD rows omitted from main table"
+    },
+    "tab_repaired_pod.tex": {
+      "numeric_tokens": 91,
+      "comparison": "identical retained numerical tokens; Euclidean POD rows omitted from main table"
+    },
+    "tab_assembly.tex": {
+      "numeric_tokens": 110,
+      "comparison": "identical retained numerical tokens; Euclidean POD rows omitted from main table"
+    },
+    "tab_refinement.tex": {
+      "numeric_tokens": 127,
+      "comparison": "identical retained numerical tokens; Euclidean POD rows omitted from main table"
+    },
+    "tab_scaling.tex": {
+      "numeric_tokens": 120,
+      "comparison": "identical retained numerical tokens; Euclidean POD rows omitted from main table"
+    },
+    "tab_benchmark_trajectory.tex": {
+      "numeric_tokens": 88,
+      "comparison": "identical retained numerical tokens; Euclidean POD rows omitted from main table"
+    },
+    "tab_corner.tex": {
+      "numeric_tokens": 72,
+      "comparison": "identical retained numerical tokens; Euclidean POD rows omitted from main table"
+    },
+    "tab_free_spd_audit.tex": {
+      "numeric_tokens": 27,
+      "comparison": "identical retained numerical tokens; Euclidean POD rows omitted from main table"
+    },
+    "tab_financial.tex": {
+      "numeric_tokens": 48,
+      "comparison": "identical retained numerical tokens; Euclidean POD rows omitted from main table"
+    }
+  },
+  "figures": "both current figures byte-identical",
+  "references": "all labels and citations resolved",
+  "compile": "no unresolved references or overfull boxes",
+  "scope": "editorial revision; numerical campaign not rerun"
+}

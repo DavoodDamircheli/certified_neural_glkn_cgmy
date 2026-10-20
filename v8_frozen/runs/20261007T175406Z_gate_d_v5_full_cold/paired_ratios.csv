@@ -1,0 +1,23 @@
+workload,cache_mode,method,baseline,qualifying_rule,n_queries,n_common_qualifying,coverage_method,coverage_baseline,median_time_ratio,geomean_time_ratio,geomean_ci_low,geomean_ci_high
+trajectory,cold,free_cold_gmres,reference_trusted,both target_status == verified,120,120,1.0,1.0,0.6075855253721898,0.6074631183567011,0.6066560228207906,0.6081832540046745
+trajectory,cold,free_direct_lu,reference_trusted,both target_status == verified,120,120,1.0,1.0,0.5653212519658908,0.5644250265417761,0.563036882913806,0.5657424924153942
+trajectory,cold,neural_direct_riesz,reference_trusted,both target_status == verified,120,0,0.0,1.0,nan,nan,nan,nan
+trajectory,cold,neural_free_workflow,reference_trusted,both target_status == verified,120,120,1.0,1.0,0.6687561378100821,0.6682801174953786,0.6674068186306543,0.6690415376529028
+trajectory,cold,neural_warm_gmres,reference_trusted,both target_status == verified,120,120,1.0,1.0,0.6232847355699423,0.6227516225621431,0.6218937724515198,0.6236098223624369
+trajectory,cold,pod32_free_workflow,reference_trusted,both target_status == verified,120,120,1.0,1.0,0.6372780695865599,0.619591903444845,0.6077168337145785,0.6296117913537524
+trajectory,cold,pod48_free_workflow,reference_trusted,both target_status == verified,120,120,1.0,1.0,0.4377136365949655,0.43808460845256975,0.4373849797895947,0.43887170060397634
+trajectory,cold,free_cold_gmres,free_direct_lu,both target_status == verified,120,120,1.0,1.0,1.0771940862900549,1.0762512110396996,1.0742917214037406,1.078202859850911
+trajectory,cold,neural_direct_riesz,free_direct_lu,both target_status == verified,120,0,0.0,1.0,nan,nan,nan,nan
+trajectory,cold,neural_free_workflow,free_direct_lu,both target_status == verified,120,120,1.0,1.0,1.1844037563759588,1.184001569862912,1.1820543304497166,1.1858860546422647
+trajectory,cold,neural_warm_gmres,free_direct_lu,both target_status == verified,120,120,1.0,1.0,1.104652446030037,1.1033380755239244,1.1016650188401929,1.1049960061852713
+trajectory,cold,pod32_free_workflow,free_direct_lu,both target_status == verified,120,120,1.0,1.0,1.1269635496886585,1.09773995536852,1.077384425946803,1.1149524479051327
+trajectory,cold,pod48_free_workflow,free_direct_lu,both target_status == verified,120,120,1.0,1.0,0.7725340695147327,0.7761608501605746,0.7737523351552451,0.7790651774839215
+trajectory,cold,reference_trusted,free_direct_lu,both target_status == verified,120,120,1.0,1.0,1.7689057811428603,1.7717144934677782,1.7674220800522527,1.7759771690238966
+terminal_price,cold,free_cold_gmres,cos,"both empirically within budget (target_status in {verified, empirically_checked})",120,9,1.0,0.075,7.3948028863132285,7.396356216914409,7.357596932891252,7.434444179488194
+terminal_price,cold,free_direct_lu,cos,"both empirically within budget (target_status in {verified, empirically_checked})",120,9,1.0,0.075,6.937136593223152,6.934143862842127,6.867820782001029,6.9916942530162975
+terminal_price,cold,neural_direct_riesz,cos,"both empirically within budget (target_status in {verified, empirically_checked})",120,0,0.0,0.075,nan,nan,nan,nan
+terminal_price,cold,neural_free_workflow,cos,"both empirically within budget (target_status in {verified, empirically_checked})",120,9,1.0,0.075,8.101687538701517,8.079385650890634,8.031092872249996,8.125898164322255
+terminal_price,cold,neural_warm_gmres,cos,"both empirically within budget (target_status in {verified, empirically_checked})",120,9,1.0,0.075,7.614614987891295,7.58131646350311,7.538076041733422,7.61811805893728
+terminal_price,cold,pod32_free_workflow,cos,"both empirically within budget (target_status in {verified, empirically_checked})",120,9,1.0,0.075,7.746689661758298,7.732998436734498,7.673316823060371,7.783775231579715
+terminal_price,cold,pod48_free_workflow,cos,"both empirically within budget (target_status in {verified, empirically_checked})",120,9,1.0,0.075,5.327005873885425,5.311864763301749,5.282757734569986,5.337885219774724
+terminal_price,cold,reference_trusted,cos,"both empirically within budget (target_status in {verified, empirically_checked})",120,9,1.0,0.075,12.129887904644542,12.117031803210265,12.086604534160232,12.14847064280773

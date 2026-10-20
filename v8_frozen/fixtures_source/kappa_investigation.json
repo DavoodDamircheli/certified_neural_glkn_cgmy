@@ -1,0 +1,31 @@
+{
+  "n": 12,
+  "seed": 12345,
+  "construction": "tests/test_efficiency_norm_kappa._random_spd(12, rng, cond_boost=1e8), first draw",
+  "cond2_S": 99999999.73365659,
+  "S_asymmetry_max_abs": 3.725290298461914e-09,
+  "S_asymmetry_rel": 4.5296666985480716e-17,
+  "kappa_production": 1.0000000015738064,
+  "kappa_minus_1": 1.5738064185200074e-09,
+  "chol_reconstruction_max_abs": 7.450580596923828e-09,
+  "chol_reconstruction_rel_to_LLt": 4.268251006285841e-16,
+  "chol_backward_bound_gamma_n1": 2.8865798640254153e-15,
+  "trisolve1_residual_rel": 3.228580908423073e-16,
+  "trisolve2_residual_rel": 2.20591043882577e-16,
+  "trisolve_backward_bound_gamma_n": 2.6645352591003828e-15,
+  "B_symmetry_defect_2norm": 6.968241739362982e-10,
+  "B_identity_defect_2norm": 1.6492251698678042e-09,
+  "mp_kappa_A_vs_lower_triangle_S": 1.000000000289205,
+  "mp_kappa_minus_1_A_vs_lower_triangle_S": 2.892050391096966e-10,
+  "mp_kappa_A_vs_symA_exact": 1.0,
+  "mp_kappa_minus_1_A_vs_symA_exact": 8.78387966193708e-21,
+  "production_minus_mp_lower": 1.2846013794103108e-09,
+  "first_order_forward_bound_n_eps_cond": 2.6645352520035615e-07,
+  "kappa_production_symmetrized_input": 1.00000000005122,
+  "mp_kappa_symmetrized_input": 1.0,
+  "thread_env": {
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1"
+  }
+}
