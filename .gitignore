@@ -1,0 +1,384 @@
+rtified-CGMY-Galerkin
+# .gitignore
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Python
+# -----------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# pip / package-manager caches
+pip-log.txt
+pip-delete-this-directory.txt
+.pip/
+.cache/pip/
+
+# pytest / coverage / type checking
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+.ruff_cache/
+.hypothesis/
+
+# Jupyter
+.ipynb_checkpoints/
+*.nbconvert.ipynb
+
+# -----------------------------------------------------------------------------
+# Machine learning / training artifacts
+# -----------------------------------------------------------------------------
+checkpoints/*
+!checkpoints/.gitkeep
+checkpoint/
+models/
+trained_models/
+weights/
+runs/
+wandb/
+mlruns/
+lightning_logs/
+tensorboard/
+*.ckpt
+*.pth
+*.pt
+*.onnx
+*.h5
+*.hdf5
+
+# Temporary training outputs
+training_logs/
+logs/
+*.log
+
+# -----------------------------------------------------------------------------
+# Numerical data and generated datasets
+# -----------------------------------------------------------------------------
+# Raw/generated data can become very large. Keep directory placeholders with
+# .gitkeep files if desired.
+data/raw/*
+data/processed/*
+data/reference/*
+data/generated/*
+datasets/*
+results/raw/*
+results/cache/*
+results/tmp/*
+
+# Preserve directory structure if .gitkeep is used
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/reference/.gitkeep
+!data/generated/.gitkeep
+!results/raw/.gitkeep
+!results/cache/.gitkeep
+!results/tmp/.gitkeep
+
+# Common numerical / scientific data formats
+*.npy
+*.npz
+*.pkl
+*.pickle
+*.joblib
+*.mat
+*.hdf
+*.hdf5
+*.nc
+*.zarr/
+*.parquet
+*.feather
+
+# -----------------------------------------------------------------------------
+# Generated experiment artifacts
+# -----------------------------------------------------------------------------
+experiments/**/output/
+experiments/**/outputs/
+experiments/**/results/
+experiments/**/checkpoints/
+experiments/**/logs/
+experiments/**/tmp/
+
+# Generated figures/tables can be ignored if recreated automatically.
+# Uncomment these if you do not want generated manuscript assets tracked.
+# paper/figures/generated/
+# paper/tables/generated/
+
+# -----------------------------------------------------------------------------
+# LaTeX / manuscript build artifacts
+# -----------------------------------------------------------------------------
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.fmt
+*.fot
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex
+*.synctex.gz
+*.toc
+*.vrb
+*.xdv
+*.dvi
+*.ps
+
+# latexmk output
+*.latexmk
+
+# Bibliography/index/glossary intermediates
+*.idx
+*.ilg
+*.ind
+*.ist
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.glsdefs
+*.xdy
+
+# minted
+_minted-*/
+*.pyg
+
+# Temporary TeX editor files
+*.tex~
+*.bak
+*.backup
+*.tmp
+*.temp
+
+# Optional: ignore compiled manuscript PDFs.
+# Uncomment if the repository should track only LaTeX source.
+# paper/*.pdf
+
+# -----------------------------------------------------------------------------
+# C / C++ build artifacts
+# -----------------------------------------------------------------------------
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.dylib
+*.exe
+*.out
+*.app
+
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# -----------------------------------------------------------------------------
+# HPC / scheduler outputs
+# -----------------------------------------------------------------------------
+slurm-*.out
+slurm-*.err
+*.slurm.out
+*.slurm.err
+job_output/
+job_outputs/
+
+# -----------------------------------------------------------------------------
+# Profiling / debugging
+# -----------------------------------------------------------------------------
+*.prof
+*.lprof
+*.trace
+*.core
+core
+core.*
+
+# -----------------------------------------------------------------------------
+# IDE / editor files
+# -----------------------------------------------------------------------------
+.vscode/
+.idea/
+*.code-workspace
+
+# Vim / Neovim
+*.swp
+*.swo
+*.swn
+*~
+.netrwhist
+
+# Emacs
+\#*\#
+.#*
+
+# -----------------------------------------------------------------------------
+# OS-generated files
+# -----------------------------------------------------------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Linux
+.directory
+.Trash-*
+.nfs*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# -----------------------------------------------------------------------------
+# Environment variables, credentials, and local configuration
+# -----------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+credentials.json
+secrets.json
+secret.json
+config.local.*
+local_config.*
+
+# -----------------------------------------------------------------------------
+# Archives and large transfer files
+# -----------------------------------------------------------------------------
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.tar.bz2
+*.tbz2
+*.7z
+*.rar
+
+# -----------------------------------------------------------------------------
+# Temporary / scratch directories
+# -----------------------------------------------------------------------------
+tmp/
+temp/
+scratch/
+.cache/
+.local_cache/
+
+# -----------------------------------------------------------------------------
+# Project-specific
+# -----------------------------------------------------------------------------
+# Local benchmark artifacts
+benchmarks/output/
+benchmarks/results/
+
+# Locally generated timing/profiling results
+timings/
+profiling/
+
+# Large parameter sweeps
+parameter_sweeps/
+sweeps/
+
+# Local backup copies of manuscripts/scripts
+*_backup.*
+*_old.*
+*_copy.*
+* copy.*
+
+# Claude / AI coding-tool local state, if present
+.claude/
+CLAUDE.local.md
+
+# Local reference/working-prompt documents pasted into the repo root during
+# interactive sessions (fix/efficiency-norm-kappa, Step 8 working prompt):
+# kept local rather than committed or deleted, and ignored here specifically
+# so they stop making `git status --porcelain` non-empty (every provenance
+# sidecar's git_commit hash was picking up a spurious "-dirty" suffix from
+# these alone, not from any actual code change).
+/main.tex
+/CGMY_presubmission_review_and_efficiency_fix_notes.md
+/PRE_SUBMISSION_FIXES_CGMY_NEURAL_OPERATOR.md
+/PROMPT_certification_fixes.md
+/notes/00_code_map.md
+
+# -----------------------------------------------------------------------------
+# Do not ignore important project files
+# -----------------------------------------------------------------------------
+!README.md
+!LICENSE
+!.gitignore
+!requirements.txt
+!pyproject.toml
+!environment.yml
+!configs/
+!configs/**
+!scripts/
+!scripts/**
+!src/
+!src/**
+!tests/
+!tests/**
+!docs/
+!docs/**
+!paper/
+!paper/**
+
+# The blanket !src/** / !scripts/** / !tests/** negations above re-include
+# everything under those trees, undoing the earlier __pycache__/ ignore for
+# paths inside them -- re-ignore explicitly (must come after the negations
+# to take effect; gitignore evaluates patterns in file order).
+**/__pycache__/
+**/*.py[cod]
