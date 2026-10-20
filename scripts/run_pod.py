@@ -112,12 +112,20 @@ def _validate_one(args):
         aS, aX, raw, free = allowance_vectors(Z, sol.bL, fs.mesh.p, info["eps_Q"], spec.alpha_lb, spec.x_min)
         cX = certify(fs_Q, forc_Q, Z, z0, 1e-3, mode="banded", spec=spec, allowance=aS, allowance_X=aX)
         cS = certify(fs_Q, forc_Q, Z, z0, 1e-3, mode="exact", spec=spec, allowance=aS, allowance_X=aX)
-        # the same candidate certified with the exact operator A_I (no allowance), for comparison
+        # follow-up 2, 2a: the full-order certificate proper uses the exact operator A_I (no EIM, no allowance)
         cXI = certify(fs, forc, Z, z0, 1e-3, mode="banded", spec=spec)
+        cSI = certify(fs, forc, Z, z0, 1e-3, mode="exact", spec=spec)
         resX = float(np.sqrt(forc.dt * np.sum(cX.per_step_X)))
         resS = float(np.sqrt(forc.dt * np.sum(cS.per_step_u)))
+        variants = {}
+        for vname, (vx, vs) in (("with_AI", (cXI, cSI)), ("with_AQ_allowance", (cX, cS))):
+            variants[vname] = dict(etaX_aug=vx.etaX_aug, etaS_aug=vs.etaS_aug, eff_X=vx.etaX_aug / err,
+                                   eff_S=vs.etaS_aug / err,
+                                   accept_X={f"{t:g}": bool(vx.etaX_aug <= t) for t in EPS_SWEEP},
+                                   accept_S={f"{t:g}": bool(vs.etaS_aug <= t) for t in EPS_SWEEP})
         out["ranks"][str(r)] = dict(
-            true_err=err, beta0=cX.beta0, etaX_aug=cX.etaX_aug, etaS_aug=cS.etaS_aug, etaX_aug_AI=cXI.etaX_aug,
+            true_err=err, beta0=cX.beta0, variants=variants,
+            etaX_aug=cX.etaX_aug, etaS_aug=cS.etaS_aug, etaX_aug_AI=cXI.etaX_aug, etaS_aug_AI=cSI.etaS_aug,
             residual_X=resX, residual_S=resS,
             allowance_X_l2=float(np.sqrt(forc.dt * np.sum(aX ** 2))),
             allowance_S_l2=float(np.sqrt(forc.dt * np.sum(aS ** 2))),
@@ -148,6 +156,15 @@ def do_validate(nproc, n_basis=800):
                  max_allowance_X_over_residual=float(np.max([x["allowance_X_over_residual"] for x in R])),
                  max_rel_diff_etaX_AQ_vs_AI=float(np.max([abs(x["etaX_aug"] - x["etaX_aug_AI"]) / x["etaX_aug_AI"] for x in R])),
                  max_raw_over_free_norm=float(np.max([x["raw_over_free_norm_max"] for x in R])))
+        for vname in ("with_AI", "with_AQ_allowance"):
+            vv = [x["variants"][vname] for x in R]
+            s[vname] = dict(median_etaX=float(np.median([x["etaX_aug"] for x in vv])),
+                            median_etaS=float(np.median([x["etaS_aug"] for x in vv])),
+                            median_eff_X=float(np.median([x["eff_X"] for x in vv])),
+                            median_eff_S=float(np.median([x["eff_S"] for x in vv])),
+                            accepted={f"{t:g}": dict(X=int(sum(x["accept_X"][f"{t:g}"] for x in vv)),
+                                                     S=int(sum(x["accept_S"][f"{t:g}"] for x in vv)))
+                                      for t in EPS_SWEEP})
         for t in EPS_SWEEP:
             k = f"{t:g}"
             tw = np.array([x["truly_within"][k] for x in R])
@@ -156,12 +173,17 @@ def do_validate(nproc, n_basis=800):
                 s[f"eps={k}:{mode}"] = dict(accepted=int(ac.sum()), truly_within=int(tw.sum()),
                                             false_accepts=int((ac & ~tw).sum()), missed=int((~ac & tw).sum()))
         summ[str(r)] = s
-        print(f"r={r}: true err med {s['median_true_err']:.2e} max {s['max_true_err']:.2e} | etaS med "
+        print(f"r={r}: with_AI etaS med {s['with_AI']['median_etaS']:.2e} vs with_AQ {s['with_AQ_allowance']['median_etaS']:.2e}; "
+              f"accepted@1e-3 S: AI {s['with_AI']['accepted']['0.001']['S']} AQ {s['with_AQ_allowance']['accepted']['0.001']['S']} | ", end="")
+        print(f"true err med {s['median_true_err']:.2e} max {s['max_true_err']:.2e} | etaS med "
               f"{s['median_etaS']:.2e} eff_S med {s['median_eff_S']:.1f} | eps=1e-3 X {s['eps=0.001:X']} "
               f"S {s['eps=0.001:S']} | allow/res max {s['max_allowance_X_over_residual']:.1e}", flush=True)
-    res = dict(meta=dict(description="Plan 2.2: POD-Galerkin with the affine EIM operator A_Q on validation30, "
-                         "certified with the full-order certificate on (A_Q, f_Q) plus the Theorem 5.2 allowance "
+    res = dict(meta=dict(description="Plan 2.2: POD-Galerkin with the affine EIM operator A_Q on validation30. "
+                         "Two full-order certificate variants side by side (follow-up 2, 2a): 'with_AI' = residual "
+                         "with the exact operator A_I and f_I, no allowance (the full-order certificate proper); "
+                         "'with_AQ_allowance' = residual on (A_Q, f_Q) plus the Theorem 5.2 allowance "
                          "eps_Q ||cbar_raw||_2 / sqrt(alpha) (alpha = alpha_lb exact mode, x_min banded mode). "
+                         "Top-level etaX_aug/etaS_aug/accept_* keys are the with_AQ_allowance variant (2.2 run). "
                          "true_err = max_n ||Z^n - Z_ref^n||_{M_I} against the stored GMRES references; "
                          "bounds are augmented (beta0 included), same units.",
                          N=N, N_T=NT, Q=load_eim(N, build_if_missing=False).Q, ranks=list(RANKS),
