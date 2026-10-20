@@ -1,0 +1,151 @@
+{
+ "files": {
+  "references_N512_NT240_seed0_4000.npz": {
+   "file": "data/references_N512_NT240_seed0_4000.npz",
+   "sha256": "0013cdaac23340b065a42f504600e21afe87d91dee1b0aa05a51048b4b08a490",
+   "bytes": 3933506330,
+   "n_queries": 4000,
+   "N": 512,
+   "N_T": 240,
+   "population": "sobol_queries(4000, seed=0, include_T=True)",
+   "dtype": "float64",
+   "arrays": "Z (n_q, n_free, N_T+1), mu (n_q, 5) = (C,G,M,Y,r), T, query_ids, gmres_max_iters",
+   "solver": "reference_trajectory(q, N, N_T, solver='gmres'), K = 100, rtol 1e-13",
+   "max_gmres_iters_per_step": 8,
+   "wall_s": 54.18221044540405,
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "1",
+     "OPENBLAS_NUM_THREADS": "1",
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "e3ba0d32d8738d3fb9cc67ffed8e894cad0883c8-dirty",
+    "timestamp": "2026-10-20T14:11:53-0500",
+    "nproc": 20
+   }
+  },
+  "references_N512_NT240_seed0_800.npz": {
+   "file": "data/references_N512_NT240_seed0_800.npz",
+   "sha256": "5fc04387ef1a5fd5417b5cf6fbcd9bdad0793fee6306f02dd3d0e193a79b2185",
+   "bytes": 786703058,
+   "n_queries": 800,
+   "N": 512,
+   "N_T": 240,
+   "population": "sobol_queries(800, seed=0, include_T=True) = first 800 of the 4000 set",
+   "dtype": "float64",
+   "arrays": "Z (n_q, n_free, N_T+1), mu (n_q, 5) = (C,G,M,Y,r), T, query_ids, gmres_max_iters",
+   "solver": "reference_trajectory(q, N, N_T, solver='gmres'), K = 100, rtol 1e-13",
+   "max_gmres_iters_per_step": 7,
+   "derived_from": "references_N512_NT240_seed0_4000.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "1",
+     "OPENBLAS_NUM_THREADS": "1",
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "e3ba0d32d8738d3fb9cc67ffed8e894cad0883c8-dirty",
+    "timestamp": "2026-10-20T14:11:53-0500",
+    "nproc": 20
+   }
+  },
+  "references_N512_NT240_validation30.npz": {
+   "file": "data/references_N512_NT240_validation30.npz",
+   "sha256": "1b2aed1423d72681481f089a6dc518d3a26fb63ea6b6337291f053a012eb67f8",
+   "bytes": 29503186,
+   "n_queries": 30,
+   "N": 512,
+   "N_T": 240,
+   "population": "validation30 (tests/fixtures/queries.json)",
+   "dtype": "float64",
+   "arrays": "Z (n_q, n_free, N_T+1), mu (n_q, 5) = (C,G,M,Y,r), T, query_ids, gmres_max_iters",
+   "solver": "reference_trajectory(q, N, N_T, solver='gmres'), K = 100, rtol 1e-13",
+   "max_gmres_iters_per_step": 7,
+   "wall_s": 0.9174790382385254,
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "1",
+     "OPENBLAS_NUM_THREADS": "1",
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "e3ba0d32d8738d3fb9cc67ffed8e894cad0883c8-dirty",
+    "timestamp": "2026-10-20T14:11:54-0500",
+    "nproc": 20
+   }
+  },
+  "pod_N512_NT240_seed0_800.npz": {
+   "file": "data/pod_N512_NT240_seed0_800.npz",
+   "sha256": "9a91742ecc1de810b959aa5841766cac4fc583536a05f3da601658e03bcb8e5a",
+   "n_traj": 800,
+   "r_max": 62,
+   "source": "references_N512_NT240_seed0_4000.npz",
+   "source_sha256": "0013cdaac23340b065a42f504600e21afe87d91dee1b0aa05a51048b4b08a490",
+   "construction": "mass-weighted POD (V^T M_I V = I) of all N_T+1 snapshots of the first n trajectories",
+   "mass_orthonormality_err": 1.9984014443252818e-15,
+   "wall_s": 10.554093837738037,
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": null,
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "e3ba0d32d8738d3fb9cc67ffed8e894cad0883c8-dirty",
+    "timestamp": "2026-10-20T14:14:23-0500"
+   }
+  },
+  "pod_N512_NT240_seed0_4000.npz": {
+   "file": "data/pod_N512_NT240_seed0_4000.npz",
+   "sha256": "085a9895ca3ce50fd165aa70ef68cdef555072cbcf73ba4a40c5729523b97b28",
+   "n_traj": 4000,
+   "r_max": 62,
+   "source": "references_N512_NT240_seed0_4000.npz",
+   "source_sha256": "0013cdaac23340b065a42f504600e21afe87d91dee1b0aa05a51048b4b08a490",
+   "construction": "mass-weighted POD (V^T M_I V = I) of all N_T+1 snapshots of the first n trajectories",
+   "mass_orthonormality_err": 2.4424906541753444e-15,
+   "wall_s": 55.727402687072754,
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": null,
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "e3ba0d32d8738d3fb9cc67ffed8e894cad0883c8-dirty",
+    "timestamp": "2026-10-20T14:15:19-0500"
+   }
+  }
+ }
+}

@@ -26,3 +26,20 @@
 4. The family is additive, Phi_(G,M,Y) = P(G h, Y) + P'(M h, Y), so the training snapshots cost
    2 x 16 x 16 alias sums. One could also interpolate the two halves separately (two 2-parameter
    families). Not done; it would give a different Q, and the plan fixes the 3-parameter EIM.
+
+## Section 5 / Theorem 5.2 (POD-Galerkin with A_Q), from plan 2.2 (`results/E2_2_pod.json`)
+
+5. **The EIM allowance limits the bound at high rank.** At Q = 29 (N = 512) the allowance
+   eps_Q ||cbar_raw||_2 / sqrt(x_min) is small compared with the residual term for r <= 40 (ratio <= 1e-2).
+   It reaches 8e-2 at r = 48, 0.7 at r = 56 and 2.2 at r = 62. Consequently eta^X computed on A_Q (with
+   the allowance) exceeds eta^X computed on A_I by up to 4% at r = 48 and by a factor of up to 2.8 at r = 62.
+   If the paper certifies ranks >= 56 at small eps_N, use Q from the 1e-10 column of F4b (Q = 32), or say
+   that the rank is EIM-limited. The ||c||_2 factor is the crude part: ||cbar_raw||_2 is about 300 in
+   these units.
+6. POD singular values (mass-weighted, N = 512, N_T = 240), sigma_r/sigma_1 at r = 8/16/24/32/40/48/56/62:
+   800 trajectories: 1.3e-3, 1.2e-4, 1.9e-5, 3.4e-6, 6.2e-7, 1.1e-7, 1.9e-8, 5.7e-9; 4000 trajectories:
+   about the same (1.4e-3 ... 8.7e-9). Five times more data does not enlarge the space noticeably.
+7. Validation30, POD-Galerkin on A_Q, median true error (max_n mass norm): r = 32: 4.2e-3; r = 40: 6.8e-4;
+   r = 48: 1.2e-4; r = 56: 1.7e-5; r = 62: 6.5e-6. Median effectivity eta^S/err is 11-16 and eta^X/err is 18-21.
+   These are higher than the E0.3 values (6-9 at N = 512) because the basis is now trained on 800
+   trajectories over the whole box, so the residual is smaller and less structured.

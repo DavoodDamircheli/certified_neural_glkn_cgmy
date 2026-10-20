@@ -124,4 +124,6 @@ def sobol_queries(n: int, seed: int = 0, include_T: bool = True, prefix: str = "
 def load_queries_json(path) -> dict[str, list[Query]]:
     with open(path) as f:
         raw = json.load(f)
-    return {name: [Query(**{k: v for k, v in q.items()}) for q in pop] for name, pop in raw["populations"].items()}
+    fields = set(Query.__dataclass_fields__)          # fixture rows may carry extra keys (e.g. 'source')
+    return {name: [Query(**{k: v for k, v in q.items() if k in fields}) for q in pop]
+            for name, pop in raw["populations"].items()}
