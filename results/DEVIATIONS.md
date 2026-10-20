@@ -144,3 +144,14 @@ Each entry: what the plan says, what was done, the best achieved value, and wher
   The redcert files were rebuilt and the E2_3 check rerun (MANIFEST updated).
 * **Compute.** n = 4000 with lambda_R > 0 takes 17.5 s/epoch (4 threads, 6 runs in parallel), i.e. ~10 h per
   2000-epoch run; the full sweep (2 x 4 x 3 = 24 runs) takes about a day.
+
+## 2.5 DeepONet: not kept (week-4 decision)
+
+* The old checkpoint, certified as a candidate of the new system (N = 64, N_T = 60, bench120, two-stage with
+  A_I): 120/120 rejected at every eps in 1e-3 x {0.1, 0.3, 1, 3, 10}; median true error 0.78 (relative
+  3.1e-3, max 3.3); median eta^S 3.4 (effectivity 4.2); no false accepts (`results/deeponet_old_vs_new.json`).
+  production_dataset.h5 was not needed: the network inputs come from the v8 code, and c^0 equals the v9
+  vector to 8.5e-14.
+* Retraining is dropped. The v8 training script cannot run unchanged against the new references: its
+  validation set is regenerated with the principal-period assembly (forbidden by rule 2), and its loader
+  reads v8's HDF5 schema, not the new npz files.
