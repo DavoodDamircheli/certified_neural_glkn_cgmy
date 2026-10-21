@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "results"; FIG = ROOT / "figures_v9"
 PAL = ["#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7", "#56B4E9"]       # Okabe-Ito, fixed order
 CERTS = (("reduced", "reduced online"), ("banded_AI", "banded full-order"), ("exact_AI", "exact full-order"))
+CERT_ALIAS = dict(banded_AI="banded", exact_AI="exact")             # E1.json key names
 STAGES = (("reduced_accept", "reduced accept"), ("reject_cheap", "reject (reduced stage)"),
           ("banded_accept", "banded accept"), ("reject_banded", "reject (banded stage)"),
           ("exact_accept", "exact accept"), ("exact_reject", "exact reject"))
@@ -32,16 +33,31 @@ def main():
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    d = json.loads((RES / "N1024.json").read_text())
     pc = json.loads((RES / "PRODUCTION_CONFIG.json").read_text())
     eps_N = pc["eps_N"]
-    t = d["table_ext"][a.basis]
-    summ, keys = t["summary"], list(next(iter(t["summary"].values()))["reduced"]["accepted"])
-    eps = np.array([float(k) for k in keys])
-    n_q = len(t["rows"])
-    panels = [(f"POD-Galerkin r = {r}", summ[str(r)]) for r in PANEL_RANKS]
+    e1p = RES / "E1.json"
+    if e1p.exists():                     # Phase 3: the consolidated E1 evaluation (Q matched to eps)
+        E = json.loads(e1p.read_text())["eval"]; S = E["summary"]
+        keys = list(S[f"pod_galerkin_r48_n{a.basis}"]["exact"]["accepted"])
+        eps = np.array([float(k) for k in keys]); n_q = 30
+        summ = {str(r): S[f"pod_galerkin_r{r}_n{a.basis}"] for r in (8, 16, 24, 32, 40, 48, 56, 62, 64, 80, 96, 128)}
+        sel = json.loads(e1p.read_text())["selection"]["per_setting"]
+        panels = [(f"POD-Galerkin r = {r}", summ[str(r)]) for r in PANEL_RANKS]
+        for key, lab in (("podnn|n4000", "POD-NN bound-selected"), ("podnn|n4000", "POD-NN error-selected"),
+                         ("podnn_spacetime|n4000", "space-time POD-NN")):
+            which = "error_selected" if "error" in lab else "bound_selected"
+            names = sel[key][which]["names"]
+            best = min(names, key=lambda k: S[k]["exact"]["median"])
+            panels.append((f"{lab} ($\\lambda_R$={sel[key][which]['lambda_R']:g})", S[best]))
+    else:
+        d = json.loads((RES / "N1024.json").read_text())
+        t = d["table_ext"][a.basis]
+        summ, keys = t["summary"], list(next(iter(t["summary"].values()))["reduced"]["accepted"])
+        eps = np.array([float(k) for k in keys])
+        n_q = len(t["rows"])
+        panels = [(f"POD-Galerkin r = {r}", summ[str(r)]) for r in PANEL_RANKS]
     ev = RES / "E2_4_podnn_N1024.json"
-    if ev.exists():
+    if ev.exists() and not e1p.exists():
         e = json.loads(ev.read_text())["results"]
         nn = {k: v for k, v in e.items() if k.startswith("podnn") and v["summary"]["exact_AI"]["accepted"]}
         if nn:
@@ -56,7 +72,8 @@ def main():
     for j, (title, s) in enumerate(panels):
         ax = fig.add_subplot(gs[0, j])
         for c, mk, ms, (key, lab) in zip(PAL, "osD", (8, 6, 4), CERTS):
-            got = {float(k2): v for k2, v in s[key]["accepted"].items()}
+            kk = key if key in s else CERT_ALIAS[key]
+            got = {float(k2): v for k2, v in s[kk]["accepted"].items()}
             acc = np.array([next(v for e2, v in got.items() if abs(e2 - float(k)) <= 1e-3 * float(k)) for k in keys]) / n_q
             ax.semilogx(eps, acc, color=c, lw=2, marker=mk, ms=ms, label=lab)      # shapes/sizes keep overlaps visible
         ax.axvline(eps_N, color="0.5", lw=0.8, ls="--")
