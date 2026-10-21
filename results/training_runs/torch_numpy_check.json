@@ -1,37 +1,39 @@
 {
  "rows": [
   {
-   "query_id": "V30_0000",
-   "eta_numpy": 30915.606173357268,
-   "eta_torch": 30915.606173357268,
+   "query_id": "C0Y0m0",
+   "eta_numpy": 40599.24493581604,
+   "eta_torch": 40599.244935816045,
+   "rel_diff": 1.7921411163399955e-16
+  },
+  {
+   "query_id": "C0Y0m1",
+   "eta_numpy": 21012.725556357535,
+   "eta_torch": 21012.72555635754,
+   "rel_diff": 3.462643432270993e-16
+  },
+  {
+   "query_id": "C0Y1m0",
+   "eta_numpy": 21797.54191600133,
+   "eta_torch": 21797.541916001337,
+   "rel_diff": 3.33797161268089e-16
+  },
+  {
+   "query_id": "C0Y1m1",
+   "eta_numpy": 27342.9551253294,
+   "eta_torch": 27342.9551253294,
    "rel_diff": 0.0
   },
   {
-   "query_id": "V30_0001",
-   "eta_numpy": 20011.166457834348,
-   "eta_torch": 20011.16645783435,
-   "rel_diff": 1.8179743868291338e-16
-  },
-  {
-   "query_id": "V30_0002",
-   "eta_numpy": 22417.220041527435,
-   "eta_torch": 22417.22004152744,
-   "rel_diff": 1.622850112704623e-16
-  },
-  {
-   "query_id": "V30_0003",
-   "eta_numpy": 28820.931602528424,
-   "eta_torch": 28820.93160252842,
-   "rel_diff": 1.2622696786014223e-16
-  },
-  {
-   "query_id": "V30_0004",
-   "eta_numpy": 34541.14040459004,
-   "eta_torch": 34541.14040459004,
+   "query_id": "C0Y2m0",
+   "eta_numpy": 31881.652358580002,
+   "eta_torch": 31881.652358580002,
    "rel_diff": 0.0
   }
  ],
  "all_within_1e10": true,
+ "N": 1024,
+ "tensor": "redcert_N1024_r48_n800_CYm_3x3x2_Q36c.npz",
  "description": "eta^{X-bar} residual part, torch (TorchReducedCert) vs numpy (ReducedCertificate.per_step) on 5 random reduced trajectories (validation30 projections + 1e-2 noise)",
  "provenance": {
   "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
@@ -46,7 +48,7 @@
   "python": "3.10.12",
   "numpy": "1.26.4",
   "scipy": "1.15.3",
-  "git_sha": "1e487f79db290f2ae8cacdd980dd1c7a0802c168",
-  "timestamp": "2026-10-20T14:39:29-0500"
+  "git_sha": "5e42d0f27a2382b85aefca89deff81244ab61d78-dirty",
+  "timestamp": "2026-10-20T21:33:01-0500"
  }
 }

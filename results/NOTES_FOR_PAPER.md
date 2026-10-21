@@ -139,3 +139,32 @@
     band r = 56-64.
 19. **Offline tensor size per (basis, Q = 36, r)**, 18 cells, compressed: r = 8: 9 MB, r = 16: 24 MB, r = 24: 44 MB, r = 32: 69 MB, r = 40: 101 MB, r = 48: 138 MB, r = 56: 182 MB, r = 62: 220 MB, r = 64: 233 MB, r = 80: 356 MB, r = 96: 498 MB, r = 128: 688 MB
     (the 4000 basis is the same to within 1%). At r = 128 the compressed factor keeps all 1022 rows (k = n_free).
+
+## POD-NN at the production resolution (follow-up 4 item 3, follow-up 5 item 3; `results/E2_4_podnn_N1024.json`)
+
+20. **No POD-NN passes at eps_N = 1.18e-3 (nor at 1e-3).** Validation30, N = 1024, r = 48, median bounds
+    (exact full-order / banded / reduced online):
+    - best standard output (4000 trajectories, lambda_R = 1, 3 seeds): exact 1.24-1.27, banded 2.04-2.08,
+      reduced 4.8-4.9; true error 0.46-0.47; exact effectivity ~2.8;
+    - space-time output (r_t = 23 temporal modes, same setting, 3 seeds): exact 0.054-0.058, banded 0.082-0.089,
+      reduced 0.18-0.19; true error 0.014-0.016; exact effectivity ~3.7. This is the best neural candidate, still
+      ~47 x eps_N;
+    - reference candidates on the same basis: projection of the references, exact 3.2e-3 (true error 3.3e-4);
+      POD-Galerkin, exact 3.8e-3 (true error 3.5e-4);
+    - the N = 512 pilot (6 runs stopped at ~1200 of 2000 epochs) reached median reduced bounds of 5.8-7.7 with the
+      old cells (indicative only: different N, cells and Q).
+    Every POD-NN query is settled by the cheap reduced-stage rejection at every eps of the sweep; there are no
+    false accepts.
+21. **The residual term in the loss trades accuracy for temporal smoothness.** With lambda_R = 0 the network fits
+    the coefficients well (true error 0.08, 4000 trajectories), but its trajectory is noisy in time: bound 12.2,
+    effectivity ~150. With lambda_R in {1e-2, 1e-1, 1} the bound drops ~10x (1.26), the true error rises ~5x
+    (0.46) and the effectivity falls to ~3. The bound penalises time-difference noise amplified by 1/dt and by
+    the operator. The space-time representation removes that noise by construction and wins on both measures.
+    Data: 4000 trajectories beat 800 by ~4x in the bound (1.26 vs 5.2).
+22. Selected epochs are 1890-2000 of 2000, so the networks are not converged at the end of the cosine schedule.
+    Longer training would help somewhat, but cannot close the 47-1000x gap.
+23. **Online timing at N = 1024** (idle machine, one thread, Q = 36; `N1024.json` -> timing_ext). The
+    certificate (ell + eps_Q + form) takes 2.9 / 3.8 / 4.6 / 5.5 / 6.7 / 8.2 ms at r = 8 / 48 / 64 / 80 / 96 /
+    128, with retained rows rho = 185-206 / 502-582 / 639-738 / 786-898 / 939-1016 / 1022. It crosses 5 ms at
+    r ~ 74 and stays below 50 ms up to r = 128. The reduced solve takes 0.7-1.9 ms. About 2.7 ms of the
+    certificate is the rank-independent ell + eps_Q part.

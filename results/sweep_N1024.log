@@ -1,0 +1,35 @@
+phase A: 8 runs
+phase A done: {'n800_lam0_s0': 0, 'n800_lam0.01_s0': 0, 'n800_lam0.1_s0': 0, 'n800_lam1_s0': 0, 'n4000_lam0_s0': 0, 'n4000_lam0.01_s0': 0, 'n4000_lam0.1_s0': 0, 'n4000_lam1_s0': 0}
+podnn_N1024_r48_n800_lamR0.01_seed0 800 {'reduced': (18.941541, 0), 'banded_AI': (8.279746, 0), 'exact_AI': (5.204766, 0)}
+podnn_N1024_r48_n800_lamR0.1_seed0 800 {'reduced': (18.923205, 0), 'banded_AI': (8.347212, 0), 'exact_AI': (5.23103, 0)}
+podnn_N1024_r48_n800_lamR0_seed0 800 {'reduced': (102.857532, 0), 'banded_AI': (42.039681, 0), 'exact_AI': (33.658271, 0)}
+podnn_N1024_r48_n800_lamR1_seed0 800 {'reduced': (18.858655, 0), 'banded_AI': (8.1895, 0), 'exact_AI': (5.201992, 0)}
+projection 800 {'reduced': (0.011847, 0), 'banded_AI': (0.005622, 0), 'exact_AI': (0.00297, 0)}
+pod_galerkin 800 {'reduced': (0.013763, 0), 'banded_AI': (0.006961, 0), 'exact_AI': (0.00357, 0)}
+podnn_N1024_r48_n4000_lamR0.01_seed0 4000 {'reduced': (4.89548, 0), 'banded_AI': (2.114891, 0), 'exact_AI': (1.270853, 0)}
+podnn_N1024_r48_n4000_lamR0.1_seed0 4000 {'reduced': (4.953855, 0), 'banded_AI': (2.146491, 0), 'exact_AI': (1.279836, 0)}
+podnn_N1024_r48_n4000_lamR0_seed0 4000 {'reduced': (37.380236, 0), 'banded_AI': (16.405501, 0), 'exact_AI': (12.240905, 0)}
+podnn_N1024_r48_n4000_lamR1_seed0 4000 {'reduced': (4.943413, 0), 'banded_AI': (2.072946, 0), 'exact_AI': (1.263937, 0)}
+projection 4000 {'reduced': (0.012653, 0), 'banded_AI': (0.006232, 0), 'exact_AI': (0.003235, 0)}
+pod_galerkin 4000 {'reduced': (0.015389, 0), 'banded_AI': (0.008152, 0), 'exact_AI': (0.003828, 0)}
+selected {'name': 'podnn_N1024_r48_n4000_lamR1_seed0', 'n_train': 4000, 'lambda_R': 1.0, 'median_exact_AI': 1.263937448890436, 'all_medians_exact_AI': {'podnn_N1024_r48_n800_lamR0.01_seed0': 5.2047661728738595, 'podnn_N1024_r48_n800_lamR0.1_seed0': 5.231030315548215, 'podnn_N1024_r48_n800_lamR0_seed0': 33.65827138896565, 'podnn_N1024_r48_n800_lamR1_seed0': 5.201991513729276, 'podnn_N1024_r48_n4000_lamR0.01_seed0': 1.2708529972510134, 'podnn_N1024_r48_n4000_lamR0.1_seed0': 1.2798359084593667, 'podnn_N1024_r48_n4000_lamR0_seed0': 12.24090528605424, 'podnn_N1024_r48_n4000_lamR1_seed0': 1.263937448890436}}
+phase B: seeds 1, 2 and space-time seeds 0-2
+phase B done: {'n4000_lam1_s1': 0, 'n4000_lam1_s2': 0, 'n4000_lam1_s0_st': 0, 'n4000_lam1_s1_st': 0, 'n4000_lam1_s2_st': 0}
+podnn_N1024_r48_n800_lamR0.01_seed0 800 {'reduced': (18.941541, 0), 'banded_AI': (8.279746, 0), 'exact_AI': (5.204766, 0)}
+podnn_N1024_r48_n800_lamR0.1_seed0 800 {'reduced': (18.923205, 0), 'banded_AI': (8.347212, 0), 'exact_AI': (5.23103, 0)}
+podnn_N1024_r48_n800_lamR0_seed0 800 {'reduced': (102.857532, 0), 'banded_AI': (42.039681, 0), 'exact_AI': (33.658271, 0)}
+podnn_N1024_r48_n800_lamR1_seed0 800 {'reduced': (18.858655, 0), 'banded_AI': (8.1895, 0), 'exact_AI': (5.201992, 0)}
+projection 800 {'reduced': (0.011847, 0), 'banded_AI': (0.005622, 0), 'exact_AI': (0.00297, 0)}
+pod_galerkin 800 {'reduced': (0.013763, 0), 'banded_AI': (0.006961, 0), 'exact_AI': (0.00357, 0)}
+podnn_N1024_r48_n4000_lamR0.01_seed0 4000 {'reduced': (4.89548, 0), 'banded_AI': (2.114891, 0), 'exact_AI': (1.270853, 0)}
+podnn_N1024_r48_n4000_lamR0.1_seed0 4000 {'reduced': (4.953855, 0), 'banded_AI': (2.146491, 0), 'exact_AI': (1.279836, 0)}
+podnn_N1024_r48_n4000_lamR0_seed0 4000 {'reduced': (37.380236, 0), 'banded_AI': (16.405501, 0), 'exact_AI': (12.240905, 0)}
+podnn_N1024_r48_n4000_lamR1_seed0 4000 {'reduced': (4.943413, 0), 'banded_AI': (2.072946, 0), 'exact_AI': (1.263937, 0)}
+podnn_N1024_r48_n4000_lamR1_seed0_spacetime 4000 {'reduced': (0.189563, 0), 'banded_AI': (0.089096, 0), 'exact_AI': (0.058182, 0)}
+podnn_N1024_r48_n4000_lamR1_seed1 4000 {'reduced': (4.798758, 0), 'banded_AI': (2.042231, 0), 'exact_AI': (1.236176, 0)}
+podnn_N1024_r48_n4000_lamR1_seed1_spacetime 4000 {'reduced': (0.194587, 0), 'banded_AI': (0.084115, 0), 'exact_AI': (0.055916, 0)}
+podnn_N1024_r48_n4000_lamR1_seed2 4000 {'reduced': (4.945668, 0), 'banded_AI': (2.076839, 0), 'exact_AI': (1.265129, 0)}
+podnn_N1024_r48_n4000_lamR1_seed2_spacetime 4000 {'reduced': (0.175665, 0), 'banded_AI': (0.081531, 0), 'exact_AI': (0.054467, 0)}
+projection 4000 {'reduced': (0.012653, 0), 'banded_AI': (0.006232, 0), 'exact_AI': (0.003235, 0)}
+pod_galerkin 4000 {'reduced': (0.015389, 0), 'banded_AI': (0.008152, 0), 'exact_AI': (0.003828, 0)}
+final evaluation written

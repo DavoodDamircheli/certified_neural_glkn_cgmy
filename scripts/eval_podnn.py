@@ -72,6 +72,8 @@ def _query(args):
     cid = Partition(PARTITION).cell_of(q)
     cell = rc.cells[cid]
     c_mu = conversion_factor(q, N, cell.rbar, cell.betabar)
+    from cgmy_cert.three_stage import theta_bar, certify_three_stage, full_order_values
+    tbar = theta_bar(q, N, cell.rbar, cell.betabar)
     dt = q.T / NT
     bL = lifting(q, fs.mesh, np.arange(NT + 1) * dt)
     out = {}
@@ -80,11 +82,16 @@ def _query(args):
         err = max(mass_norm(fs, Z[:, k] - Zref[:, k]) for k in range(NT + 1))
         red = rc.certify(q, al, dt, bL, info["ell"], info["eps_Q"], cid=cid)
         red_t = rc.certify(q, al, dt, bL, info["ell"], info["eps_Q"], cid=cid, c_mu=c_mu)
+        full = full_order_values(fs, forc, z0, Z, q, spec)
         cX = certify(fs, forc, Z, z0, 1e-3, mode="banded", spec=spec)
-        cS = certify(fs, forc, Z, z0, 1e-3, mode="exact", spec=spec)
-        b = dict(reduced=red["eta_aug"], reduced_tightened=red_t["eta_aug"], banded_AI=cX.etaX_aug, exact_AI=cS.etaS_aug)
+        cS = dict(etaS_aug=full["etaS"])
+        b = dict(reduced=red["eta_aug"], reduced_tightened=red_t["eta_aug"], banded_AI=cX.etaX_aug, exact_AI=cS["etaS_aug"])
+        three = {f"{t:g}": certify_three_stage(fs, forc, z0, t, q=q, alpha=al, V=V, rc=rc, ell=info["ell"],
+                                               eps_Q=info["eps_Q"], cid=cid, reduced=red, tbar=tbar, full=full).status
+                 for t in EPS}
         out[name] = dict(query_id=q.query_id, cell=cid, Q=Q, eps_Q=info["eps_Q"], c_mu=c_mu, beta0=cX.beta0,
-                         true_err=err, bounds=b, effectivity={k: v / err for k, v in b.items()},
+                         true_err=err, bounds=b, effectivity={k: v / err for k, v in b.items()}, three_stage=three,
+                         theta_bar=tbar,
                          accept={k: {f"{t:g}": bool(v <= t) for t in EPS} for k, v in b.items()})
     return out
 
@@ -120,6 +127,12 @@ def main():
                                accepted={f"{t:g}": int(sum(r["accept"][b][f"{t:g}"] for r in rows)) for t in EPS},
                                false_accepts={f"{t:g}": int(sum(r["accept"][b][f"{t:g}"] and r["true_err"] > t
                                                                for r in rows)) for t in EPS})
+            from cgmy_cert.three_stage import STATUSES
+            summ["three_stage"] = {f"{t:g}": {st: int(sum(r["three_stage"][f"{t:g}"] == st for r in rows)) for st in STATUSES}
+                                   for t in EPS}
+            for b in ("reduced", "reduced_tightened", "banded_AI", "exact_AI"):
+                ef = np.array([r["effectivity"][b] for r in rows])
+                summ[b].update(max_effectivity=float(ef.max()), min_effectivity=float(ef.min()))
             results[f"{name}|n{n}" if name in ("projection", "pod_galerkin") else name] = dict(summary=summ, rows=rows)
             print(name, n, {b: (round(summ[b]["median"], 6), summ[b]["accepted"]["0.001"]) for b in
                             ("reduced", "banded_AI", "exact_AI")}, flush=True)
@@ -137,6 +150,12 @@ def main():
                          done_when_eps_provisional=1e-3, partition=PARTITION,
                          training_loss_partition=TRAIN_PARTITION, wall_s=time.time() - t0,
                          provenance=provenance()),
+               pilot_N512=dict(file="results/pilot_N512.json",
+                               best_val_median_reduced_bound=min(r["best_val"]["val_median_eta_aug"] for r in
+                                                                 json.loads((RES / "pilot_N512.json").read_text())["runs"]),
+                               note="pilot metric: median rigorous reduced bound on validation30 at N = 512 with the rC:2x2 "
+                                    "cells after ~1200 of 2000 epochs; compare with the 'reduced' column (different N, "
+                                    "cells and Q, so indicative only)"),
                done_when=dict(rule="median certified bound on validation30 <= eps_N (also reported at 1e-3) for at least one "
                                    "lambda_R", per_checkpoint=passed,
                               any_passed_eps_N=any(v["reduced"] or v["exact_AI"] for v in passed.values()),

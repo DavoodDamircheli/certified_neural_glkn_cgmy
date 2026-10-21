@@ -1,0 +1,64 @@
+{
+ "events": [
+  {
+   "t": "2026-10-20T21:33:49",
+   "msg": "phase A: 8 runs"
+  },
+  {
+   "t": "2026-10-21T04:15:12",
+   "msg": "phase A done: {'n800_lam0_s0': 0, 'n800_lam0.01_s0': 0, 'n800_lam0.1_s0': 0, 'n800_lam1_s0': 0, 'n4000_lam0_s0': 0, 'n4000_lam0.01_s0': 0, 'n4000_lam0.1_s0': 0, 'n4000_lam1_s0': 0}"
+  },
+  {
+   "t": "2026-10-21T04:15:35",
+   "msg": "selected {'name': 'podnn_N1024_r48_n4000_lamR1_seed0', 'n_train': 4000, 'lambda_R': 1.0, 'median_exact_AI': 1.263937448890436, 'all_medians_exact_AI': {'podnn_N1024_r48_n800_lamR0.01_seed0': 5.2047661728738595, 'podnn_N1024_r48_n800_lamR0.1_seed0': 5.231030315548215, 'podnn_N1024_r48_n800_lamR0_seed0': 33.65827138896565, 'podnn_N1024_r48_n800_lamR1_seed0': 5.201991513729276, 'podnn_N1024_r48_n4000_lamR0.01_seed0': 1.2708529972510134, 'podnn_N1024_r48_n4000_lamR0.1_seed0': 1.2798359084593667, 'podnn_N1024_r48_n4000_lamR0_seed0': 12.24090528605424, 'podnn_N1024_r48_n4000_lamR1_seed0': 1.263937448890436}}"
+  },
+  {
+   "t": "2026-10-21T04:15:35",
+   "msg": "phase B: seeds 1, 2 and space-time seeds 0-2"
+  },
+  {
+   "t": "2026-10-21T12:01:58",
+   "msg": "phase B done: {'n4000_lam1_s1': 0, 'n4000_lam1_s2': 0, 'n4000_lam1_s0_st': 0, 'n4000_lam1_s1_st': 0, 'n4000_lam1_s2_st': 0}"
+  },
+  {
+   "t": "2026-10-21T12:02:24",
+   "msg": "final evaluation written"
+  }
+ ],
+ "phaseA_returncodes": {
+  "n800_lam0_s0": 0,
+  "n800_lam0.01_s0": 0,
+  "n800_lam0.1_s0": 0,
+  "n800_lam1_s0": 0,
+  "n4000_lam0_s0": 0,
+  "n4000_lam0.01_s0": 0,
+  "n4000_lam0.1_s0": 0,
+  "n4000_lam1_s0": 0
+ },
+ "phaseA_done": true,
+ "best": {
+  "name": "podnn_N1024_r48_n4000_lamR1_seed0",
+  "n_train": 4000,
+  "lambda_R": 1.0,
+  "median_exact_AI": 1.263937448890436,
+  "all_medians_exact_AI": {
+   "podnn_N1024_r48_n800_lamR0.01_seed0": 5.2047661728738595,
+   "podnn_N1024_r48_n800_lamR0.1_seed0": 5.231030315548215,
+   "podnn_N1024_r48_n800_lamR0_seed0": 33.65827138896565,
+   "podnn_N1024_r48_n800_lamR1_seed0": 5.201991513729276,
+   "podnn_N1024_r48_n4000_lamR0.01_seed0": 1.2708529972510134,
+   "podnn_N1024_r48_n4000_lamR0.1_seed0": 1.2798359084593667,
+   "podnn_N1024_r48_n4000_lamR0_seed0": 12.24090528605424,
+   "podnn_N1024_r48_n4000_lamR1_seed0": 1.263937448890436
+  }
+ },
+ "phaseB_returncodes": {
+  "n4000_lam1_s1": 0,
+  "n4000_lam1_s2": 0,
+  "n4000_lam1_s0_st": 0,
+  "n4000_lam1_s1_st": 0,
+  "n4000_lam1_s2_st": 0
+ },
+ "phaseB_done": true,
+ "final_evaluation": "results/E2_4_podnn_N1024.json"
+}
