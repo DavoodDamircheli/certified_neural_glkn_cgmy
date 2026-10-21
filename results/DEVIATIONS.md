@@ -391,3 +391,22 @@ projection of the references. Not evaluated further.
   bounds what the exact stage (residual with A_I) can certify. Theta-bar_mu is an upper bound (s_K' + eps_K',
   adaptive K', graded grid, derivative margin). Validity check on 10 candidates (POD-Galerkin and perturbed,
   N = 1024): lower bound <= exact bound in every case, and close to it (2.04e-3 vs 2.19e-3).
+
+# Phase 3
+
+## Item 0: cost model (`results/cost_model.json`, `tables_v9/tab_cost_v9.tex`)
+
+* The brief asks for one constant per component. Those fits are reported, but for the direct solve (max relative
+  deviation 156%), exact eta^S (115%) and the reduced solve (638%) a single constant times the operation count
+  cannot fit. Each of the N_T steps and each GMRES/PCG iteration pays a fixed interpreter overhead (scipy
+  gmres / Python loop), which dominates at small N or small r. A two-constant fit t = c' ops + d calls is
+  reported as well: direct solve 11% (d = 37 us per iteration or step), exact 21% (d = 12 us), reduced solve 4%
+  (d = 3.3 us per step), reduced certificate 4%. Assembly, spectral data, banded eta^X and eps_Q fit to within
+  16% with one constant.
+* Cost facts that matter for E2. spectral_data (graded grid, all spectral quantities) costs 477 ms per query at
+  every N, about 3x the direct GMRES solve at N = 1024 (147 ms) and more than assembly (106 ms). The full-order
+  banded certificate is therefore dominated by its symbol work, not by the banded solves (3.2 ms). The reduced
+  online certificate (eps_Q incl. ell 2.73 ms + form 0.3-5.5 ms) avoids it.
+* The reduced rows are measured at N = 1024 only, since the tensors are N-specific. Their cost depends on
+  (Q, r, rho, N_T), and rho saturates for N >= 512 (`rho_vs_N`, Q = 29: 349-404 / 366-419 / 404-416 rows at
+  N = 512 / 1024 / 4096).

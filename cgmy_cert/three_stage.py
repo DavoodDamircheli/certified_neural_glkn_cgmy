@@ -89,8 +89,8 @@ def certify_three_stage(fs, forcing, z_h0: np.ndarray, eps: float, *, q: Query, 
     times["theta_bar"] = time.perf_counter() - t0
     if lower > eps:
         return ThreeStage("reject_cheap", 1, eps, red, lower, tbar, times=times)
-    if full is None:
-        full = full_order_values(fs, forcing, z_h0, V @ alpha, q, spec)
+    if full is None:           # lazy (timed path): banded stage now, exact stage only if the banded one is undecided
+        full = banded_values(fs, forcing, z_h0, V @ alpha, q, spec)
     times["banded"] = full["t_banded"]
     out = ThreeStage("", 2, eps, red, lower, tbar, eta_banded=full["etaX"], times=times)
     if full["etaX"] <= eps:
@@ -99,11 +99,29 @@ def certify_three_stage(fs, forcing, z_h0: np.ndarray, eps: float, *, q: Query, 
     if np.sqrt(full["beta0"] ** 2 + full["etaX_res"] ** 2 / full["Theta"]) > eps:
         out.status = "reject_banded"
         return out
+    if "etaS" not in full:
+        full.update(exact_values(fs, forcing, z_h0, V @ alpha, full["spec"]))
     times["exact"] = full["t_exact"]
     out.stage = 3
     out.eta_exact = full["etaS"]
     out.status = "exact_accept" if full["etaS"] <= eps else "exact_reject"
     return out
+
+
+def banded_values(fs, forcing, z_h0, Z, q, spec=None) -> dict:
+    """Stage 2 only: spectral data (X_I, Theta_mu) and the banded certificate with A_I."""
+    t0 = time.perf_counter()
+    if spec is None:
+        spec = spectral_data(q, fs.mesh.N)
+    fb = certify(fs, forcing, Z, z_h0, 0.0, mode="banded", spec=spec)
+    return dict(etaX=fb.etaX_aug, etaX_res=fb.etaX, Theta=spec.Theta, beta0=fb.beta0, spec=spec,
+                t_banded=time.perf_counter() - t0)
+
+
+def exact_values(fs, forcing, z_h0, Z, spec) -> dict:
+    t0 = time.perf_counter()
+    fe = certify(fs, forcing, Z, z_h0, 0.0, mode="exact", spec=spec)
+    return dict(etaS=fe.etaS_aug, t_exact=time.perf_counter() - t0)
 
 
 def full_order_values(fs, forcing, z_h0, Z, q, spec=None) -> dict:

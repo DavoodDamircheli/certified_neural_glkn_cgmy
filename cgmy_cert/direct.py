@@ -178,10 +178,10 @@ def _B_dense(fs: FreeSystem, dt: float, sign: float) -> np.ndarray:
 
 def cn_march(fs: FreeSystem, z0: np.ndarray, T: float, N_T: int, solver: str = "gmres",
              forcing: FreeForcing | None = None, rtol: float = 1e-13, restart: int = 50,
-             maxiter: int = 200, precond: str = "symbol") -> Trajectory:
+             maxiter: int = 200, precond: str = "symbol", x0_traj: np.ndarray | None = None) -> Trajectory:
     """B_+ z^{n+1} = B_- z^n + dt f^{n+1/2},  B_pm = M_I +- dt/2 A_I.
     solver = 'lu' (dense, reference only, N <= 1024) or 'gmres' (matrix-free, circulant preconditioner,
-    warm-started at z^n)."""
+    warm-started at z^n, or at x0_traj[:, n+1] when a candidate trajectory is given: the correction fallback)."""
     n = fs.n
     dt = T / N_T
     if forcing is None:
@@ -214,7 +214,8 @@ def cn_march(fs: FreeSystem, z0: np.ndarray, T: float, N_T: int, solver: str = "
 
             def cb(x, _c=cnt):
                 _c[0] += 1
-            x, info = gmres(Bop, rhs, x0=Z[:, k].copy(), M=Pop, rtol=rtol, atol=0.0, restart=restart,
+            x0 = Z[:, k].copy() if x0_traj is None else np.array(x0_traj[:, k + 1], dtype=float)
+            x, info = gmres(Bop, rhs, x0=x0, M=Pop, rtol=rtol, atol=0.0, restart=restart,
                             maxiter=maxiter, callback=cb, callback_type="pr_norm")
             if info != 0:
                 raise RuntimeError(f"GMRES failed at step {k}: info={info}")
