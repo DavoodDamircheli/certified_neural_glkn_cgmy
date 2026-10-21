@@ -1651,6 +1651,7 @@
    "scipy": "1.15.3",
    "git_sha": "e0993fd29130b132508c2cde90503ee2c4001401-dirty",
    "timestamp": "2026-10-20T18:17:07-0500"
-  }
+  },
+  "bound_inflation_definition": "relative: (eta_aug compressed / eta_aug uncompressed) - 1, per query; max 7.6e-4 relative (not absolute)"
  }
 }
