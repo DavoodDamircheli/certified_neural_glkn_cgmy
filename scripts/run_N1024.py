@@ -521,6 +521,61 @@ def do_table_ext(res, nproc):
     save(res)
 
 
+def do_timing_ext(res, n_q=10):
+    """Idle single-thread timing per (basis, r): reduced solve, online certificate (ell + eps_Q + form), and the
+    retained row count rho of the compressed factor (range over the 18 cells and the timed queries' cells); the
+    ranks where the certificate time crosses 5 ms and 50 ms (log-log interpolation)."""
+    assert os.environ.get("OMP_NUM_THREADS") == "1", "run with OMP_NUM_THREADS=1 on an idle machine"
+    Qa, _ = Q_ops(res)
+    e = load_eim(N, build_if_missing=False)
+    qs = val_queries()[:n_q]
+    out = {}
+    for n in (800, 4000):
+        Vall = np.load(pod128_file(n))["V"]
+        per = {}
+        for r in RANKS_EXT:
+            rc = load_rc(rc_ext_file(n, r, Qa)); V = Vall[:, :r]; rom = AffineROM(V, e, Q=Qa)
+            rows, rho_q = [], []
+            for q in qs:
+                cid = Partition(SPEC).cell_of(q)
+                info = e.eps_Q_graded(q, Qa)
+                sol = rom.solve(q, rc.alpha0(), NT, ell=info["ell"])
+                f_solve = lambda: rom.solve(q, rc.alpha0(), NT, ell=info["ell"])
+                f_cert = lambda: (e.ell((q.G, q.M, q.Y), Qa), e.eps_Q_graded(q, Qa, ell=info["ell"]),
+                                  rc.certify(q, sol.alpha, sol.dt, sol.bL, info["ell"], info["eps_Q"], cid=cid))
+                f_form = lambda: rc.certify(q, sol.alpha, sol.dt, sol.bL, info["ell"], info["eps_Q"], cid=cid)
+                for f in (f_solve, f_cert, f_form):
+                    f()
+                rows.append(dict(solve=_median_time(f_solve), certificate=_median_time(f_cert), form=_median_time(f_form)))
+                rho_q.append(int(rc.cells[cid].R.shape[1]))
+            ks = [int(c.R.shape[1]) for c in rc.cells.values()]
+            per[str(r)] = dict({k: float(np.median([x[k] for x in rows]) * 1e3) for k in rows[0]},
+                               rho_cells=[min(ks), max(ks)], rho_timed=[min(rho_q), max(rho_q)],
+                               columns=(Qa + 2) * (r + 1))
+            print(f"n={n} r={r}: solve {per[str(r)]['solve']:.2f} ms, certificate {per[str(r)]['certificate']:.2f} ms "
+                  f"(form {per[str(r)]['form']:.2f}), rho {per[str(r)]['rho_cells']}", flush=True)
+        rs = np.array(RANKS_EXT, float); ct = np.array([per[str(r)]["certificate"] for r in RANKS_EXT])
+        cross = {}
+        for lim in (5.0, 50.0):
+            j = np.nonzero(ct > lim)[0]
+            if j.size == 0:
+                cross[f"{lim:g}ms"] = None
+            elif j[0] == 0:
+                cross[f"{lim:g}ms"] = float(rs[0])
+            else:
+                a, b = j[0] - 1, j[0]
+                t = (np.log(lim) - np.log(ct[a])) / (np.log(ct[b]) - np.log(ct[a]))
+                cross[f"{lim:g}ms"] = float(np.exp(np.log(rs[a]) + t * (np.log(rs[b]) - np.log(rs[a]))))
+        out[str(n)] = dict(per_rank=per, crossing_rank=cross)
+    import subprocess
+    res["timing_ext"] = dict(per_basis=out, Q=Qa, unit="ms, median of per-query medians", n_queries=n_q,
+                             loadavg=subprocess.run(["cat", "/proc/loadavg"], capture_output=True, text=True).stdout.strip(),
+                             note="one thread, idle machine; certificate = ell(nu) + eps_Q (161 fixed nodes) + reduced form; "
+                                  "rho = rows of the SVD-compressed factor; form cost ~ (Q+2) rho (r+1) + rho (r+1) N_T",
+                             provenance=provenance())
+    save(res)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("steps", nargs="*", default=["pod", "eimq", "cells", "tensors", "checks", "table"])
@@ -533,7 +588,7 @@ def main():
         dict(pod=lambda: do_pod(res), eimq=lambda: do_eimq(res, a.nproc), cells=lambda: do_cells(res, a.nproc),
              tensors=lambda: do_tensors(res), checks=lambda: do_checks(res, a.nproc), table=lambda: do_table(res, a.nproc),
              podext=lambda: do_podext(res), tensors_ext=lambda: do_tensors_ext(res),
-             table_ext=lambda: do_table_ext(res, a.nproc))[st]()
+             table_ext=lambda: do_table_ext(res, a.nproc), timing_ext=lambda: do_timing_ext(res))[st]()
 
 
 if __name__ == "__main__":
