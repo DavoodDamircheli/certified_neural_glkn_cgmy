@@ -83,3 +83,18 @@
 14. **Online cost.** The R-factor form is compressed offline by an SVD with a rigorous tail term
     sigma_(k+1) ||w||, keeping k ~ 350-420 rows (Q = 29, r = 48) at every N >= 512. The online certificate
     therefore costs O((Q+2) k r + k r N_T), independent of N, with a bound inflation <= 8e-4 (measured).
+
+## From follow-up 5
+
+15. **Exact-certificate effectivity on POD-Galerkin at N = 1024 is about 10** (r = 48: true error 3.1e-4 in the
+    mass norm, bound 3.6e-3). This is consistent with Theorem 3.4: efficiency holds in the energy norm, which
+    weights the high-frequency part of the error far more than the mass norm used for the true error. It also
+    matches E0.3 at N = 512. It is the honest reason why acceptance at eps_N needs r ~ 56-64 rather than 48.
+    Median effectivities per certificate and rank: see the table below (from `results/N1024.json` -> table_ext).
+16. **The reduced online certificate is about 4x looser than the exact one at r = 56**: cell factor ~1.9 times
+    sqrt(Theta_mu) ~ 2. Acceptance at eps_N is 0 / 9 / 28 of 30 for reduced / banded / exact. This is what the
+    three-stage rule (reduced -> banded -> exact) is for. Its cheap rejection uses Theta-bar_mu = sup s_mu / x-bar
+    (Lemma 2.5) and is tight in practice: the reduced-stage lower bound was within ~7% of the exact bound on the
+    POD-Galerkin candidates tested.
+17. **Production configuration:** N = 1024, N_T = 240, eps_N = 1.18e-3 (max spot factor 8.44). The two corner
+    queries fix N (2.4 / 3.2 cents at N = 512 vs 0.14 / 0.24 at N = 1024); 60 steps give 4.6 cents at N = 1024.

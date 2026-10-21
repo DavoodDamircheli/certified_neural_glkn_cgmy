@@ -377,3 +377,17 @@ projection of the references. Not evaluated further.
   error < eps_N/10 = 1.18e-4.
 * Single-run speed (idle, 3 threads, n = 4000, lambda_R > 0): 4.2 s/epoch. Eight runs in parallel took about
   5 h per phase.
+
+# Follow-up 5
+
+* **The 0.016% worst margin of X-bar <= S at N = 1024 is expected, not a near-failure.** For a query with
+  r ~ r_min = r-bar, both symbols tend to r m(0) as theta -> 0 (g1 -> 0, and s_mu - r m -> 0 there), so
+  min_theta s_mu / x-bar -> 1 by construction. The relative margin vanishes at theta = 0 whatever the cell;
+  validity rests on s_mu >= x-bar pointwise, which holds with c_mu >= 1.00016 on the sample.
+* **Three-stage rule** (`cgmy_cert/three_stage.py`). Statuses: reduced_accept, reject_cheap (reduced-stage
+  lower bound > eps), banded_accept, reject_banded (Prop. 4.3 with the query's own X_I and Theta_mu: an added
+  status, since the banded stage can also reject), exact_accept, exact_reject. The reduced-stage lower bound
+  subtracts the EIM allowance and the rounding/compression term before dividing by sqrt(Theta-bar_mu), so it
+  bounds what the exact stage (residual with A_I) can certify. Theta-bar_mu is an upper bound (s_K' + eps_K',
+  adaptive K', graded grid, derivative margin). Validity check on 10 candidates (POD-Galerkin and perturbed,
+  N = 1024): lower bound <= exact bound in every case, and close to it (2.04e-3 vs 2.19e-3).

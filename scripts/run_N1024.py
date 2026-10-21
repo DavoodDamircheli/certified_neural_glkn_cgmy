@@ -387,6 +387,140 @@ def do_table(res, nproc):
     save(res)
 
 
+# ---------------------------------------------------------------- follow-up 5: extended ranks + three-stage rule
+
+RANKS_EXT = (8, 16, 24, 32, 40, 48, 56, 62, 64, 80, 96, 128)
+
+
+def pod128_file(n):
+    return DATA / f"pod_N{N}_NT{NT}_seed0_{n}_r128.npz"
+
+
+def rc_ext_file(n, r, Q):
+    return DATA / f"redcert_N{N}_r{r}_n{n}_{SPEC.replace(':', '_')}_Q{Q}c_b128.npz"
+
+
+def do_podext(res):
+    """POD with r_max = 128 (same construction); compares the first 62 columns with the stored r_max = 62 bases."""
+    fs = free_matrices(Query(0.5, 3.0, 5.0, 1.5, 0.05), N)
+    Lc = mass_cholesky(fs)
+    res.setdefault("podext", {})
+    for n in (800, 4000):
+        t0 = time.time()
+        Z = np.load(ref_file("seed0_4000"), mmap_mode="r")["Z"]
+        W = np.empty((fs.n, n * (NT + 1)))
+        for i0 in range(0, n, 200):
+            blk = np.asarray(Z[i0:i0 + 200])
+            W[:, i0 * (NT + 1):(i0 + blk.shape[0]) * (NT + 1)] = np.einsum("ij,qjt->iqt", Lc.T, blk).reshape(fs.n, -1)
+        U, s, _ = np.linalg.svd(W, full_matrices=False)
+        del W
+        V = solve_triangular(Lc.T, U[:, :128], lower=False)
+        old = np.load(pod_file(n))["V"]
+        same = float(np.abs(V[:, :62] - old).max())
+        np.savez(pod128_file(n), V=V, sv=s, n_traj=n, N=N, N_T=NT, source=ref_file("seed0_4000").name)
+        manifest_add(pod128_file(n), n_traj=n, r_max=128, construction="mass-weighted POD of all N_T+1 snapshots")
+        res["podext"][str(n)] = dict(sv_ratio={str(r): float(s[r] / s[0]) for r in RANKS_EXT},
+                                     max_diff_first62_vs_stored=same, wall_s=time.time() - t0)
+        print(f"POD128 n={n}: diff first 62 vs stored {same:.1e}; " + " ".join(f"{r}:{s[r] / s[0]:.1e}" for r in RANKS_EXT[8:]), flush=True)
+        save(res)
+
+
+def do_tensors_ext(res):
+    Qa, _ = Q_ops(res)
+    e = load_eim(N, build_if_missing=False)
+    res.setdefault("tensors_ext", {})
+    for n in (800, 4000):
+        Vall = np.load(pod128_file(n))["V"]
+        for r in RANKS_EXT:
+            path = rc_ext_file(n, r, Qa)
+            if path.exists():
+                continue
+            rc = ReducedCertificate.build(Vall[:, :r], e, cell_params(res), Q=Qa, partition=SPEC, svd_tol=SVD_TOL)
+            save_rc(rc, path)
+            ks = [int(c.R.shape[1]) for c in rc.cells.values()]; mb = [c.R.nbytes / 2 ** 20 for c in rc.cells.values()]
+            manifest_add(path, N=N, r=r, Q=Qa, partition=SPEC, svd_tol=SVD_TOL, basis=pod128_file(n).name)
+            res["tensors_ext"][path.name] = dict(n_basis=n, r=r, Q=Qa, rows_k=[min(ks), max(ks)],
+                                                 MB_per_cell=[min(mb), max(mb)], total_MB=path.stat().st_size / 2 ** 20,
+                                                 offline_s=rc.time_offline_s)
+            print(path.name, res["tensors_ext"][path.name], flush=True)
+            save(res)
+
+
+def _table_ext_one(args):
+    i, Qa, n = args
+    from cgmy_cert.three_stage import theta_bar, full_order_values, certify_three_stage
+    q = val_queries()[i]
+    Zref = np.load(ref_file("validation30"))["Z"][i]
+    e = load_eim(N, build_if_missing=False)
+    Vall = np.load(pod128_file(n))["V"]
+    fs = free_matrices(q, N); forc = free_forcing(fs, q.T, NT)
+    sp = spectral_data(q, N)
+    z0 = initial_free_vector(q, fs.mesh)
+    info = e.eps_Q_graded(q, Qa)
+    cid = Partition(SPEC).cell_of(q)
+    out = dict(query_id=q.query_id, cell=cid, eps_Q=info["eps_Q"], ranks={})
+    tbar = None
+    for r in RANKS_EXT:
+        V = Vall[:, :r]
+        rc = load_rc(rc_ext_file(n, r, Qa))
+        cell = rc.cells[cid]
+        if tbar is None:
+            tbar = theta_bar(q, N, cell.rbar, cell.betabar)               # depends on (query, cell) only
+            c_mu = conversion_factor(q, N, cell.rbar, cell.betabar)
+        sol = AffineROM(V, e, Q=Qa).solve(q, rc.alpha0(), NT, ell=info["ell"])
+        Z = V @ sol.alpha
+        err = max(mass_norm(fs, Z[:, k] - Zref[:, k]) for k in range(NT + 1))
+        red = rc.certify(q, sol.alpha, sol.dt, sol.bL, info["ell"], info["eps_Q"], cid=cid)
+        full = full_order_values(fs, forc, z0, Z, q, sp)
+        b = dict(reduced=red["eta_aug"], reduced_tightened=float(np.sqrt(red["beta0"] ** 2 + (red["eta_aug"] ** 2 - red["beta0"] ** 2) / c_mu)),
+                 banded_AI=full["etaX"], exact_AI=full["etaS"])
+        stat = {}
+        for t in EPS_SWEEP:
+            ts = certify_three_stage(fs, forc, z0, t, q=q, alpha=sol.alpha, V=V, rc=rc, ell=info["ell"], eps_Q=info["eps_Q"],
+                                     cid=cid, reduced=red, tbar=tbar, full=full)
+            stat[f"{t:.4g}"] = ts.status
+        lo = np.maximum((np.sqrt(red["per_step"]) - red["rounding"]) / np.sqrt(tbar) - red["allowance"], 0.0)
+        out["ranks"][str(r)] = dict(true_err=err, beta0=red["beta0"], bounds=b, effectivity={k: v / err for k, v in b.items()},
+                                    lower_from_reduced=float(np.sqrt(red["beta0"] ** 2 + forc.dt * np.sum(lo ** 2))),
+                                    theta_bar=tbar, Theta=full["Theta"], three_stage=stat,
+                                    accept={k: {f"{t:.4g}": bool(v <= t) for t in EPS_SWEEP} for k, v in b.items()})
+    return out
+
+
+def do_table_ext(res, nproc):
+    Qa, _ = Q_ops(res)
+    from cgmy_cert.three_stage import STATUSES
+    res.setdefault("table_ext", {})
+    for n in (800, 4000):
+        with Pool(nproc) as pool:
+            rows = pool.map(_table_ext_one, [(i, Qa, n) for i in range(30)], chunksize=1)
+        summ = {}
+        for r in RANKS_EXT:
+            R_ = [x["ranks"][str(r)] for x in rows]
+            s = dict(median_true_err=float(np.median([x["true_err"] for x in R_])),
+                     max_true_err=float(max(x["true_err"] for x in R_)),
+                     lower_le_exact_all=bool(all(x["lower_from_reduced"] <= x["bounds"]["exact_AI"] * (1 + 1e-12) for x in R_)))
+            for b in ("reduced", "reduced_tightened", "banded_AI", "exact_AI"):
+                v = np.array([x["bounds"][b] for x in R_]); ef = np.array([x["effectivity"][b] for x in R_])
+                s[b] = dict(median=float(np.median(v)), max=float(v.max()), median_effectivity=float(np.median(ef)),
+                            max_effectivity=float(ef.max()),
+                            accepted={f"{t:.4g}": int(sum(x["accept"][b][f"{t:.4g}"] for x in R_)) for t in EPS_SWEEP},
+                            false_accepts={f"{t:.4g}": int(sum(x["accept"][b][f"{t:.4g}"] and x["true_err"] > t for x in R_))
+                                           for t in EPS_SWEEP})
+            s["three_stage"] = {f"{t:.4g}": {st: int(sum(x["three_stage"][f"{t:.4g}"] == st for x in R_)) for st in STATUSES}
+                                for t in EPS_SWEEP}
+            summ[str(r)] = s
+            k = f"{EPS_N:.4g}"
+            print(f"n={n} r={r}: err {s['median_true_err']:.2e} | acc@eps_N red {s['reduced']['accepted'][k]} band "
+                  f"{s['banded_AI']['accepted'][k]} exact {s['exact_AI']['accepted'][k]} | 3-stage {s['three_stage'][k]}", flush=True)
+        res["table_ext"][str(n)] = dict(summary=summ, rows=rows, Q=Qa, basis=pod128_file(n).name, ranks=list(RANKS_EXT))
+        save(res)
+    res["table_ext_meta"] = dict(description="follow-up 5 item 1-2: POD-Galerkin r = 8..128, both bases (r_max = 128 POD), "
+                                 "validation30; bounds augmented; three-stage statuses at every eps of the sweep",
+                                 eps_sweep=list(EPS_SWEEP), provenance=provenance(nproc=nproc))
+    save(res)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("steps", nargs="*", default=["pod", "eimq", "cells", "tensors", "checks", "table"])
@@ -397,7 +531,9 @@ def main():
                        production_config="results/PRODUCTION_CONFIG.json")
     for st in a.steps:
         dict(pod=lambda: do_pod(res), eimq=lambda: do_eimq(res, a.nproc), cells=lambda: do_cells(res, a.nproc),
-             tensors=lambda: do_tensors(res), checks=lambda: do_checks(res, a.nproc), table=lambda: do_table(res, a.nproc))[st]()
+             tensors=lambda: do_tensors(res), checks=lambda: do_checks(res, a.nproc), table=lambda: do_table(res, a.nproc),
+             podext=lambda: do_podext(res), tensors_ext=lambda: do_tensors_ext(res),
+             table_ext=lambda: do_table_ext(res, a.nproc))[st]()
 
 
 if __name__ == "__main__":
