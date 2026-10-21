@@ -19,10 +19,15 @@ from dataclasses import dataclass
 import numpy as np
 
 from .params import Query, Mesh
-from .reduced_cert import ReducedCertificate, cell_of
+from .reduced_cert import ReducedCertificate, cell_of, Partition
 from .direct import lifting
 
-CELL_IDS = ("r0C0", "r0C1", "r1C0", "r1C1")
+CELL_IDS = ("r0C0", "r0C1", "r1C0", "r1C1")   # the plan's rC:2x2 cells (N = 512 pilot)
+
+
+def cell_ids(rc: ReducedCertificate) -> tuple:
+    """Cell order used for the integer cell index of the training data: rC files keep CELL_IDS, others the file order."""
+    return CELL_IDS if rc.partition == "rC:2x2" else tuple(rc.cells)
 
 
 # ---------------------------------------------------------------- data (numpy)
@@ -60,7 +65,8 @@ def prepare(ref_file, V: np.ndarray, rc: ReducedCertificate, eim, n: int | None 
     qs = [Query(C=m[0], G=m[1], M=m[2], Y=m[3], r=m[4], T=float(t), query_id=str(i)) for m, t, i in zip(mu, T, ids)]
     ell = np.array([eim.ell((q.G, q.M, q.Y), rc.Q) for q in qs])
     theta = np.array([rc.theta(q, l) for q, l in zip(qs, ell)])
-    cell = np.array([CELL_IDS.index(cell_of(q)) for q in qs])
+    ids = cell_ids(rc); P = Partition(rc.partition)
+    cell = np.array([ids.index(P.cell_of(q)) for q in qs])
     dt = T / NT
     bL = np.array([lifting(q, msh, np.arange(NT + 1) * (q.T / NT)) for q in qs])
     X = np.column_stack([mu, T])
@@ -88,12 +94,17 @@ def make_mlp(r: int, NT: int, width: int = 256, depth: int = 3):
 class PODNN:
     """Network + standardisation + fixed alpha^0."""
 
-    def __init__(self, r: int, NT: int, alpha0: np.ndarray, x_mean, x_std, a_mean, a_std, seed: int = 0):
+    def __init__(self, r: int, NT: int, alpha0: np.ndarray, x_mean, x_std, a_mean, a_std, seed: int = 0,
+                 time_basis: np.ndarray | None = None):
+        """time_basis (N_T x r_t): space-time variant (follow-up 3 section 4): the network outputs B (r x r_t) and
+        alpha^n = alpha^0 + (B Phi_t^T)_n, n = 1..N_T; a_mean/a_std are then statistics of B."""
         torch = _torch()
         torch.manual_seed(seed)
         self.r, self.NT = r, NT
-        self.net = make_mlp(r, NT)
         t = lambda a: torch.as_tensor(np.asarray(a), dtype=torch.float64)
+        self.time_basis = None if time_basis is None else t(time_basis)
+        self.n_out_t = NT if time_basis is None else time_basis.shape[1]
+        self.net = make_mlp(r, self.n_out_t)
         self.alpha0, self.x_mean, self.x_std, self.a_mean, self.a_std = map(t, (alpha0, x_mean, x_std, a_mean, a_std))
 
     def n_params(self) -> int:
@@ -102,9 +113,11 @@ class PODNN:
     def forward(self, X):
         """X (b, 6) raw -> alpha (b, r, N_T+1) with alpha^0 = the projection of z_h^0."""
         torch = _torch()
-        out = self.net((X - self.x_mean) / self.x_std).reshape(-1, self.r, self.NT)
+        out = self.net((X - self.x_mean) / self.x_std).reshape(-1, self.r, self.n_out_t)
         a = self.a_mean + self.a_std * out
         a0 = self.alpha0.expand(a.shape[0], self.r)[:, :, None]
+        if self.time_basis is not None:
+            a = a0 + torch.einsum("brk,nk->brn", a, self.time_basis)
         return torch.cat([a0, a], dim=2)
 
     def predict(self, X: np.ndarray) -> np.ndarray:
@@ -114,12 +127,13 @@ class PODNN:
 
     def state(self) -> dict:
         return dict(net=self.net.state_dict(), alpha0=self.alpha0, x_mean=self.x_mean, x_std=self.x_std,
-                    a_mean=self.a_mean, a_std=self.a_std, r=self.r, NT=self.NT)
+                    a_mean=self.a_mean, a_std=self.a_std, r=self.r, NT=self.NT, time_basis=self.time_basis)
 
     @classmethod
     def from_state(cls, st: dict) -> "PODNN":
+        tb = st.get("time_basis")
         m = cls(st["r"], st["NT"], st["alpha0"].numpy(), st["x_mean"].numpy(), st["x_std"].numpy(),
-                st["a_mean"].numpy(), st["a_std"].numpy())
+                st["a_mean"].numpy(), st["a_std"].numpy(), time_basis=None if tb is None else tb.numpy())
         m.net.load_state_dict(st["net"])
         return m
 
@@ -130,7 +144,8 @@ class TorchReducedCert:
 
     def __init__(self, rc: ReducedCertificate):
         torch = _torch()
-        self.R = torch.as_tensor(np.stack([rc.cells[c].R for c in CELL_IDS]), dtype=torch.float64)   # (4, Q+2, m, r+1)
+        # one tensor per cell (compressed cells have different row counts k), (Q+2, k, r+1) each
+        self.R = [torch.as_tensor(rc.cells[c].R, dtype=torch.float64) for c in cell_ids(rc)]
 
     def eta2(self, alpha, theta, cell, dt, bL):
         """alpha (b, r, N_T+1), theta (b, Q+2), cell (b,) long, dt (b,), bL (b, N_T+1) -> dt sum_n u_n (b,)."""
@@ -140,7 +155,7 @@ class TorchReducedCert:
         out = torch.zeros(alpha.shape[0], dtype=torch.float64)
         for c in torch.unique(cell):
             idx = (cell == c).nonzero(as_tuple=True)[0]
-            Rc = self.R[c]
+            Rc = self.R[int(c)]
             Rth = torch.einsum("bk,kmj->bmj", theta[idx], Rc)
             W = torch.einsum("mj,bjn->bmn", Rc[0], X[idx]) + torch.bmm(Rth, Y[idx])
             out[idx] = dt[idx] * (W * W).sum(dim=(1, 2))

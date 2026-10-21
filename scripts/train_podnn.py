@@ -12,7 +12,7 @@ Provisional acceptance target eps = 1e-3 (the v8 tolerance) until 3.1 fixes eps_
 """
 from __future__ import annotations
 
-import argparse, json, math, sys, time
+import argparse, json, math, os, sys, time
 from pathlib import Path
 
 import numpy as np
@@ -25,10 +25,15 @@ from cgmy_cert.reduced_cert import load_rc, conversion_factor  # noqa: E402
 from cgmy_cert.podnn import prepare, PODNN, TorchReducedCert, rel_ls, CELL_IDS, PODNNData  # noqa: E402
 from cgmy_cert.provenance import provenance  # noqa: E402
 
-N, NT, R = 512, 240, 48
+N, NT, R = int(os.environ.get("CGMY_N", 512)), 240, 48       # follow-up 4: CGMY_N=1024 for production
 DATA = ROOT / "data"; RES = ROOT / "results"; CK = ROOT / "checkpoints"
 RUNS = RES / "training_runs"
 EPS_PROVISIONAL = 1e-3
+if N != 512:
+    _pc = json.loads((RES / "PRODUCTION_CONFIG.json").read_text())
+    _n1 = json.loads((RES / "N1024.json").read_text())
+    EPS_PROVISIONAL = _pc["eps_N"]                             # acceptance target: eps_N
+    Q_OP = _n1["eimq"]["per_target"]["eps_N"]["Q_op"]
 
 
 def ref_file(tag):
@@ -40,11 +45,17 @@ def basis(n):
 
 
 def rc_file(n):
-    return DATA / f"redcert_N{N}_r{R}_n{n}.npz"
+    if N == 512:
+        return DATA / f"redcert_N{N}_r{R}_n{n}.npz"
+    return DATA / f"redcert_N{N}_r{R}_n{n}_CYm_3x3x2_Q{Q_OP}c.npz"
 
 
 def prep_file(tag, n_basis):
-    return DATA / f"podnn_prep_{tag}_basis{n_basis}.npz"
+    return DATA / (f"podnn_prep_{tag}_basis{n_basis}.npz" if N == 512 else f"podnn_prep_N{N}_{tag}_basis{n_basis}.npz")
+
+
+def tbasis_file(n_basis):
+    return DATA / f"podnn_tbasis_N{N}_basis{n_basis}.npz"
 
 
 def save_prep(d: PODNNData, path, **extra):
@@ -67,9 +78,13 @@ def do_prep():
         save_prep(prepare(ref_file("seed0_4000"), V, rc, e, n=n), prep_file(f"train{n}", n))
         dv = prepare(ref_file("validation30"), V, rc, e)
         qs = dv.queries()
-        eps = np.array([e.eps_Q(q)["eps_Q"] for q in qs])
-        c_mu = np.array([conversion_factor(q, N, rc.cells[CELL_IDS[c]].rbar, rc.cells[CELL_IDS[c]].betabar)
-                         for q, c in zip(qs, dv.cell)])
+        if N == 512:
+            eps = np.array([e.eps_Q(q)["eps_Q"] for q in qs])
+            c_mu = np.array([conversion_factor(q, N, rc.cells[CELL_IDS[c]].rbar, rc.cells[CELL_IDS[c]].betabar)
+                             for q, c in zip(qs, dv.cell)])
+        else:                      # production: N-independent eps_Q at Q(eps_N), untightened (c_mu = 1)
+            eps = np.array([e.eps_Q_graded(q, rc.Q)["eps_Q"] for q in qs])
+            c_mu = np.ones(len(qs))
         save_prep(dv, prep_file("val30", n), eps_Q=eps, c_mu=c_mu)
         print(f"prep basis {n}: {time.time() - t0:.0f}s", flush=True)
 
@@ -77,12 +92,39 @@ def do_prep():
 # ---------------------------------------------------------------- rigorous validation metric (numpy)
 
 def val_bounds(alpha, dv: PODNNData, extra, rc):
+    from cgmy_cert.podnn import cell_ids
+    ids = cell_ids(rc)
     out = []
     for i, q in enumerate(dv.queries()):
         c = rc.certify(q, alpha[i], dv.dt[i], dv.bL[i], dv.ell[i], float(extra["eps_Q"][i]),
-                       c_mu=float(extra["c_mu"][i]), cid=CELL_IDS[dv.cell[i]])
+                       c_mu=float(extra["c_mu"][i]), cid=ids[dv.cell[i]])
         out.append(c["eta_aug"])
     return np.array(out)
+
+
+# ---------------------------------------------------------------- space-time temporal basis (follow-up 3/4)
+
+def do_tbasis(n, tol=None):
+    """Temporal POD of the reduced training trajectories: rows (alpha^n - alpha^0)_{n=1..N_T} of every mode of every
+    trajectory; r_t = smallest rank with max over training trajectories of max_n ||alpha^n - alpha_proj^n||_2
+    (= the M-norm error of V alpha, V M-orthonormal) below tol = eps_N / 10."""
+    tol = EPS_PROVISIONAL / 10 if tol is None else tol
+    d, _ = load_prep(prep_file(f"train{n}", n))
+    A = d.alpha[:, :, 1:] - d.alpha[:, :, :1]                      # (n, r, N_T)
+    _, s, Wt = np.linalg.svd(A.reshape(-1, A.shape[2]), full_matrices=False)
+    errs = []
+    r_t = None
+    for k in range(1, Wt.shape[0] + 1):
+        P = Wt[:k].T @ Wt[:k]
+        E = A - A @ P
+        e = float(np.max(np.sqrt(np.sum(E ** 2, axis=1))))      # max over trajectories and n of ||.||_2 over modes
+        errs.append(e)
+        if e < tol:
+            r_t = k
+            break
+    np.savez(tbasis_file(n), Phi=Wt[:r_t].T, r_t=r_t, sv=s, errs=np.array(errs), tol=tol)
+    print(f"temporal POD basis {n}: r_t = {r_t} (max projection error {errs[-1]:.2e} < {tol:.2e})", flush=True)
+    return r_t
 
 
 # ---------------------------------------------------------------- check torch vs numpy
@@ -97,7 +139,8 @@ def do_check():
     for i in range(5):
         al = dv.alpha[i] + 1e-2 * rng.standard_normal(dv.alpha[i].shape) * np.abs(dv.alpha[i]).max()
         q = dv.queries()[i]
-        cid = CELL_IDS[dv.cell[i]]
+        from cgmy_cert.podnn import cell_ids
+        cid = cell_ids(rc)[dv.cell[i]]
         Xn = np.vstack([(al[:, 1:] - al[:, :-1]) / dv.dt[i], ((dv.bL[i, 1:] - dv.bL[i, :-1]) / dv.dt[i])[None]])
         Yn = np.vstack([0.5 * (al[:, 1:] + al[:, :-1]), (0.5 * (dv.bL[i, 1:] + dv.bL[i, :-1]))[None]])
         ref = dv.dt[i] * rc.per_step(cid, dv.theta[i], Xn, Yn).sum()
@@ -109,7 +152,7 @@ def do_check():
     ok = all(r["rel_diff"] <= 1e-10 for r in rows)
     print(json.dumps(rows, indent=1), "\nall <= 1e-10:", ok)
     RUNS.mkdir(parents=True, exist_ok=True)
-    (RUNS / "torch_numpy_check.json").write_text(json.dumps(dict(rows=rows, all_within_1e10=ok,
+    (RUNS / "torch_numpy_check.json").write_text(json.dumps(dict(rows=rows, all_within_1e10=ok, N=N, tensor=rc_file(800).name,
         description="eta^{X-bar} residual part, torch (TorchReducedCert) vs numpy (ReducedCertificate.per_step) on 5 "
                     "random reduced trajectories (validation30 projections + 1e-2 noise)",
         provenance=provenance()), indent=1))
@@ -118,29 +161,38 @@ def do_check():
 
 # ---------------------------------------------------------------- training
 
-def run_name(n, lam, seed):
-    return f"podnn_r{R}_n{n}_lamR{lam:g}_seed{seed}"
+def run_name(n, lam, seed, spacetime=False):
+    pre = "podnn" if N == 512 else f"podnn_N{N}"
+    return f"{pre}_r{R}_n{n}_lamR{lam:g}_seed{seed}" + ("_spacetime" if spacetime else "")
 
 
-def do_run(n, lam, seed, epochs, threads, val_every, batch=64, lr0=1e-3, lr1=1e-5):
+def do_run(n, lam, seed, epochs, threads, val_every, batch=64, lr0=1e-3, lr1=1e-5, spacetime=False):
     import torch
     torch.set_num_threads(threads)
-    name = run_name(n, lam, seed)
+    name = run_name(n, lam, seed, spacetime)
     rc = load_rc(rc_file(n)); tc = TorchReducedCert(rc)
     dtr, _ = load_prep(prep_file(f"train{n}", n))
     dv, extra = load_prep(prep_file("val30", n))
     x_mean, x_std = dtr.X.mean(0), dtr.X.std(0)
-    a = dtr.alpha[:, :, 1:]
+    Phi = None
+    if spacetime:
+        Phi = np.load(tbasis_file(n))["Phi"]
+        a = np.einsum("qrn,nk->qrk", dtr.alpha[:, :, 1:] - dtr.alpha[:, :, :1], Phi)     # B coefficients
+    else:
+        a = dtr.alpha[:, :, 1:]
     a_mean, a_std = a.mean(0), a.std(0) + 1e-12 * np.abs(a).max()
-    model = PODNN(R, NT, rc.alpha0(), x_mean, x_std, a_mean, a_std, seed=seed)
+    model = PODNN(R, NT, rc.alpha0(), x_mean, x_std, a_mean, a_std, seed=seed, time_basis=Phi)
     T = lambda z: torch.as_tensor(z, dtype=torch.float64)
     Xt, At, Tht, Ct, Dt, Bt = T(dtr.X), T(dtr.alpha), T(dtr.theta), torch.as_tensor(dtr.cell), T(dtr.dt), T(dtr.bL)
     opt = torch.optim.Adam(model.net.parameters(), lr=lr0)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=epochs, eta_min=lr1)
     g = torch.Generator().manual_seed(seed)
-    log = dict(name=name, n_train=n, lambda_R=lam, seed=seed, epochs=epochs, batch=batch, lr=[lr0, lr1],
+    log = dict(name=name, N=N, n_train=n, lambda_R=lam, seed=seed, epochs=epochs, batch=batch, lr=[lr0, lr1],
+               representation=("space-time: r x r_t, r_t = %d" % Phi.shape[1]) if spacetime else "r x N_T",
+               cell_partition=rc.partition, Q=rc.Q, target_eps=EPS_PROVISIONAL,
                optimizer="Adam, cosine annealing per epoch", n_params=model.n_params(), threads=threads,
-               dtype="float64", val_every=val_every, selection="min median rigorous eta_aug (reduced) on validation30",
+               dtype="float64", val_every=val_every,
+               selection="min median rigorous eta_aug (reduced online certificate, allowance incl.) on validation30",
                train_loss=[], train_rel_ls=[], train_eta=[], val=[], provenance=provenance(torch=torch.__version__))
     best = (np.inf, -1); t_start = time.time()
     CK.mkdir(exist_ok=True)
@@ -169,7 +221,7 @@ def do_run(n, lam, seed, epochs, threads, val_every, batch=64, lr0=1e-3, lr1=1e-
                                 / np.sum(dv.alpha[:, :, 1:] ** 2, axis=(1, 2))))
             med = float(np.median(b))
             log["val"].append(dict(epoch=ep + 1, median_eta_aug=med, max_eta_aug=float(b.max()), val_rel_ls=vls,
-                                   accepted_at_eps_provisional=int((b <= EPS_PROVISIONAL).sum()), wall_s=time.time() - t_start))
+                                   accepted_at_target=int((b <= EPS_PROVISIONAL).sum()), wall_s=time.time() - t_start))
             if med < best[0]:
                 best = (med, ep + 1)
                 torch.save(model.state(), CK / f"{name}.pt")
@@ -199,7 +251,8 @@ def do_collect():
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("step", choices=["prep", "check", "run", "collect"])
+    ap.add_argument("step", choices=["prep", "check", "run", "collect", "tbasis"])
+    ap.add_argument("--spacetime", action="store_true")
     ap.add_argument("--n", type=int, default=800)
     ap.add_argument("--lam", type=float, default=0.0)
     ap.add_argument("--seed", type=int, default=0)
@@ -212,7 +265,9 @@ def main():
     elif a.step == "check":
         sys.exit(0 if do_check() else 1)
     elif a.step == "run":
-        do_run(a.n, a.lam, a.seed, a.epochs, a.threads, a.val_every)
+        do_run(a.n, a.lam, a.seed, a.epochs, a.threads, a.val_every, spacetime=a.spacetime)
+    elif a.step == "tbasis":
+        do_tbasis(a.n)
     else:
         do_collect()
 
