@@ -2422,5 +2422,72 @@
    "bytes": 29503186,
    "reason": "data (trajectories / bases / tensors)"
   }
+ },
+ "excluded_from_slim_zip": {
+  "checkpoints/podnn_N1024_r48_n4000_lamR0.01_seed0.pt": {
+   "sha256": "f8ecbde7f4af0f2f8272a50e6c27e2578c78ad1e0355ba19bf6e03f67724a3e8",
+   "bytes": 24942499,
+   "reason": "production checkpoint, omitted from the slim zip (present in phase2_results_20261021.zip)"
+  },
+  "checkpoints/podnn_N1024_r48_n4000_lamR0.1_seed0.pt": {
+   "sha256": "71704cc01ca23030f6f7b185d790764dc450398c4006b72dab78e921bd92e924",
+   "bytes": 24942480,
+   "reason": "production checkpoint, omitted from the slim zip (present in phase2_results_20261021.zip)"
+  },
+  "checkpoints/podnn_N1024_r48_n4000_lamR0_seed0.pt": {
+   "sha256": "63e46775a0211a54484eeae18c6988bd2ce79c48ac6f6047ff8b146fcd3b7256",
+   "bytes": 24942442,
+   "reason": "production checkpoint, omitted from the slim zip (present in phase2_results_20261021.zip)"
+  },
+  "checkpoints/podnn_N1024_r48_n4000_lamR1_seed0.pt": {
+   "sha256": "a4d7278c7870742f3a6f7a24004cfd0d4d162293a51bfd7e39459310c1f04e94",
+   "bytes": 24942442,
+   "reason": "production checkpoint, omitted from the slim zip (present in phase2_results_20261021.zip)"
+  },
+  "checkpoints/podnn_N1024_r48_n4000_lamR1_seed0_spacetime.pt": {
+   "sha256": "0577cb9db319e593dab8e4666c75142fc40713d3d39e191558f508f7f3ea3653",
+   "bytes": 3405129,
+   "reason": "production checkpoint, omitted from the slim zip (present in phase2_results_20261021.zip)"
+  },
+  "checkpoints/podnn_N1024_r48_n4000_lamR1_seed1.pt": {
+   "sha256": "cca8c6b1daff33fb036ce58d7901d99352d0a990cf2b76bff5009479b02cdb73",
+   "bytes": 24942442,
+   "reason": "production checkpoint, omitted from the slim zip (present in phase2_results_20261021.zip)"
+  },
+  "checkpoints/podnn_N1024_r48_n4000_lamR1_seed1_spacetime.pt": {
+   "sha256": "cefcb89698de8907d92bf6d40a04e95512b68cd8852b9ca5d7b9f851e71cea0a",
+   "bytes": 3405129,
+   "reason": "production checkpoint, omitted from the slim zip (present in phase2_results_20261021.zip)"
+  },
+  "checkpoints/podnn_N1024_r48_n4000_lamR1_seed2.pt": {
+   "sha256": "cbd85661c7c727e5225108844cfa1f10d66ed05e82a12dcf6a1db902ad7898e5",
+   "bytes": 24942442,
+   "reason": "production checkpoint, omitted from the slim zip (present in phase2_results_20261021.zip)"
+  },
+  "checkpoints/podnn_N1024_r48_n4000_lamR1_seed2_spacetime.pt": {
+   "sha256": "cb014d84f75534922fb5af5ff98b750ed12dd1bc0bbc66b862d18a65b5d5af70",
+   "bytes": 3405129,
+   "reason": "production checkpoint, omitted from the slim zip (present in phase2_results_20261021.zip)"
+  },
+  "checkpoints/podnn_N1024_r48_n800_lamR0.01_seed0.pt": {
+   "sha256": "7c3f4c8ac5b62a296a078169996334946ac0d82e36e67f602b8c73f598236b8e",
+   "bytes": 24942480,
+   "reason": "production checkpoint, omitted from the slim zip (present in phase2_results_20261021.zip)"
+  },
+  "checkpoints/podnn_N1024_r48_n800_lamR0.1_seed0.pt": {
+   "sha256": "10df0b0afb5b880079d51944cc5032d6bcaf7ded62675e925b17a4389716dce2",
+   "bytes": 24942461,
+   "reason": "production checkpoint, omitted from the slim zip (present in phase2_results_20261021.zip)"
+  },
+  "checkpoints/podnn_N1024_r48_n800_lamR0_seed0.pt": {
+   "sha256": "8304500ccc36564db6ae0516290fbdd81c641000a6f03b3ba44388215a052b22",
+   "bytes": 24942423,
+   "reason": "production checkpoint, omitted from the slim zip (present in phase2_results_20261021.zip)"
+  },
+  "checkpoints/podnn_N1024_r48_n800_lamR1_seed0.pt": {
+   "sha256": "efecfdeab7a1766d5a1c14ac44e2b72a44dd2cafe941a94b07bf5d80e145cd01",
+   "bytes": 24942423,
+   "reason": "production checkpoint, omitted from the slim zip (present in phase2_results_20261021.zip)"
+  }
  }
 }
