@@ -315,3 +315,65 @@ N-independent online certificate.
 * COS (8192 modes, L = 30) vs Carr-Madan on 10 rows: 8 rows <= 6e-13, one 1.5e-12, and Corner B 2.6e-12 after
   extending Carr-Madan's cutoff (at the default max_v = 400 it was cutoff-limited, diff 3.4e-8). The 1e-12
   target is not met strictly on 2 of the 10 rows: the max is 2.6e-12 absolute, 5.6e-11 relative.
+
+
+# Follow-up 4: production resolution N = 1024
+
+* The "bound increase of at most 8e-4" quoted for the SVD compression is **relative**:
+  eta_aug(compressed) / eta_aug(uncompressed) - 1 (`E2_3_reduced_cert.json` -> timing_v3.bound_inflation_definition).
+  At N = 1024 the compressed bound over the full-order value is <= 1.0005 on 20 validation queries.
+
+## Item 1. N = 512 POD-NN sweep stopped and archived as the pilot
+
+`results/pilot_N512.json`, logs in `results/pilot_N512/logs/`, checkpoints in `checkpoints/pilot_N512/` (143 MB, not in
+git). Six of the 24 planned runs (n = 4000, lambda_R in (1, 0.1), seeds 0-2) had started and reached epochs
+1200-1240 of 2000. Best validation median reduced bound (old rC cells): 5.8-7.7, against 5.4e-3 for the
+projection of the references. Not evaluated further.
+
+## Item 2. Everything regenerated at N = 1024, N_T = 240 (`results/N1024.json`, `scripts/run_N1024.py`)
+
+* References: 4000 (+ its first 800), validation30, bench120, ref30; GMRES <= 11 iterations per step; sha256 in
+  MANIFEST. POD from 800 and 4000 (sigma_48/sigma_1 = 2.2e-7 for both).
+* EIM at N = 1024: no rebuild was needed (44 stored terms, Q = 37 at the 1e-11 test tolerance). eps-matched
+  operational Q on validation30 (max over queries): **Q = 36 at eps_N** (median 33) and **Q = 37 at eps_N/10**
+  (median 35).
+* Cells (3 x 3 x 2, corner rule, 33-point Y grid) recomputed at N = 1024. On 400 Sobol queries
+  c_mu >= 1.00016: X-bar <= S holds, but with only 0.016% margin at the worst query.
+  Cell vs own-norm effectivity (POD-Galerkin r = 48): median 1.87, max 3.38.
+* Compressed tensors (svd_tol 1e-12): r = 48 for both bases at Q = 36 and 37 (k = 501-606 of 1022 rows, 7.1-8.8 MB
+  per cell, ~140 MB for 18 cells), and ranks 8-62 (basis 800) at Q = 36.
+* Done-when checks:
+  - **Full basis vs direct:** r = n_free = 1022 (the analogue of r = 62 = n_free at N = 64; at N = 1024 a
+    62-dimensional basis cannot reproduce the direct solution). Max relative error
+    1.6e-13 with A_I.
+  - **Online vs full-order** (20 validation queries, Q = 36). Uncompressed: 2.7e-15 (perturbed) and
+    2.0e-10 (POD-Galerkin: the eps*kappa floor). Compressed: the rigorous per-step bracket holds to the
+    floor; the compressed main part exceeds the double-precision full-order value by at most
+    1.5e-07 per step, which equals the uncompressed per-step floor of
+    1.6e-07.
+  - **Timing, idle machine, one thread** (N = 1024 tensors, 10 validation queries): Q = 36: ell 1.27 + eps_Q
+    1.33 + form 1.06 = **3.74 ms**; Q = 37: 3.84 ms; reduced solve
+    0.94 ms. The tensors are N-specific; the cost is O((Q+2) k r + k r N_T) and does not
+    depend on N by construction (k is bounded by the compressed rank, measured flat for N = 512-4096 in
+    follow-up 3).
+* POD-Galerkin on validation30 (basis 800, reduced solve at Q = 36). Median bound and, in brackets, the number
+  accepted out of 30 at eps_N = 1.18e-3 (full sweep in `N1024.json` -> pod_galerkin_table; no false accepts
+  anywhere):
+
+  | r | true err | exact (A_I) | banded (A_I) | reduced online | reduced tightened |
+  |---|---|---|---|---|---|
+  | 8 | 1.19e+00 | 8.42e+00 (0) | 1.33e+01 (0) | 2.94e+01 (0) | 1.70e+01 (0) |
+  | 16 | 1.39e-01 | 2.39e+00 (0) | 3.57e+00 (0) | 7.61e+00 (0) | 4.28e+00 (0) |
+  | 24 | 2.98e-02 | 4.72e-01 (0) | 7.94e-01 (0) | 1.57e+00 (0) | 8.76e-01 (0) |
+  | 32 | 7.11e-03 | 8.33e-02 (0) | 1.57e-01 (0) | 3.07e-01 (0) | 1.69e-01 (0) |
+  | 40 | 1.29e-03 | 1.69e-02 (0) | 3.41e-02 (0) | 6.39e-02 (0) | 3.76e-02 (0) |
+  | 48 | 3.12e-04 | 3.57e-03 (0) | 6.96e-03 (0) | 1.38e-02 (0) | 8.21e-03 (0) |
+  | 56 | 6.00e-05 | 7.23e-04 (28) | 1.42e-03 (9) | 2.72e-03 (0) | 1.59e-03 (6) |
+  | 62 | 1.90e-05 | 2.25e-04 (30) | 4.28e-04 (30) | 8.42e-04 (24) | 4.67e-04 (29) |
+
+## Item 3. Trimmed POD-NN sweep at N = 1024 (running; `scripts/sweep_N1024.py`)
+
+* Space-time temporal POD (alpha^n - alpha^0, n = 1..N_T): r_t = 22 (800 set) and 23 (4000 set), max projection
+  error < eps_N/10 = 1.18e-4.
+* Single-run speed (idle, 3 threads, n = 4000, lambda_R > 0): 4.2 s/epoch. Eight runs in parallel took about
+  5 h per phase.
