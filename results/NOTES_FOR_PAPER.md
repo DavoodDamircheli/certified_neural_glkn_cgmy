@@ -98,3 +98,44 @@
     POD-Galerkin candidates tested.
 17. **Production configuration:** N = 1024, N_T = 240, eps_N = 1.18e-3 (max spot factor 8.44). The two corner
     queries fix N (2.4 / 3.2 cents at N = 512 vs 0.14 / 0.24 at N = 1024); 60 steps give 4.6 cents at N = 1024.
+
+18. **Effectivity per certificate and rank, and the three-stage counts at eps_N** (validation30, N = 1024, Q = 36;
+    medians; acceptance counts reduced / banded / exact; three-stage counts reduced_accept / reject_cheap /
+    banded_accept / exact_accept / exact_reject; `results/N1024.json` -> table_ext). No false accepts anywhere, and the
+    reduced-stage lower bound never exceeded the exact bound:
+
+    | basis | r | true err | eff exact | eff banded | eff reduced | eff reduced tight. | accepted | three-stage |
+    |---|---|---|---|---|---|---|---|---|
+    | 800 | 8 | 1.2e+00 | 6.8 | 10.8 | 23.7 | 14.0 | 0/0/0 | 0/30/0/0/0 |
+    | 800 | 16 | 1.4e-01 | 14.9 | 25.2 | 50.5 | 29.2 | 0/0/0 | 0/30/0/0/0 |
+    | 800 | 24 | 3.0e-02 | 13.9 | 25.2 | 52.0 | 27.4 | 0/0/0 | 0/30/0/0/0 |
+    | 800 | 32 | 7.1e-03 | 13.3 | 23.2 | 48.4 | 26.3 | 0/0/0 | 0/30/0/0/0 |
+    | 800 | 40 | 1.3e-03 | 13.2 | 24.1 | 47.2 | 26.8 | 0/0/0 | 0/30/0/0/0 |
+    | 800 | 48 | 3.1e-04 | 11.7 | 21.6 | 49.4 | 25.9 | 0/0/0 | 0/30/0/0/0 |
+    | 800 | 56 | 6.0e-05 | 11.5 | 21.5 | 46.5 | 26.1 | 0/9/28 | 0/2/9/19/0 |
+    | 800 | 62 | 1.9e-05 | 11.3 | 22.0 | 49.7 | 26.6 | 24/30/30 | 24/0/6/0/0 |
+    | 800 | 64 | 1.7e-05 | 10.5 | 20.0 | 41.9 | 23.6 | 26/30/30 | 26/0/4/0/0 |
+    | 800 | 80 | 6.6e-07 | 9.5 | 19.3 | 46.5 | 26.2 | 30/30/30 | 30/0/0/0/0 |
+    | 800 | 96 | 4.3e-08 | 9.2 | 15.4 | 142.7 | 78.0 | 30/30/30 | 30/0/0/0/0 |
+    | 800 | 128 | 2.3e-08 | 4.6 | 5.3 | 118.6 | 70.8 | 30/30/30 | 30/0/0/0/0 |
+    | 4000 | 8 | 9.6e-01 | 8.6 | 13.2 | 29.8 | 16.6 | 0/0/0 | 0/30/0/0/0 |
+    | 4000 | 16 | 1.7e-01 | 12.6 | 21.1 | 42.6 | 25.2 | 0/0/0 | 0/30/0/0/0 |
+    | 4000 | 24 | 3.4e-02 | 12.5 | 25.3 | 50.0 | 27.6 | 0/0/0 | 0/30/0/0/0 |
+    | 4000 | 32 | 7.2e-03 | 11.5 | 21.2 | 42.9 | 24.4 | 0/0/0 | 0/30/0/0/0 |
+    | 4000 | 40 | 1.5e-03 | 11.3 | 21.7 | 46.6 | 24.2 | 0/0/0 | 0/30/0/0/0 |
+    | 4000 | 48 | 3.5e-04 | 11.0 | 22.4 | 46.4 | 24.3 | 0/0/0 | 0/30/0/0/0 |
+    | 4000 | 56 | 8.6e-05 | 9.9 | 18.2 | 40.1 | 21.5 | 0/4/22 | 0/6/4/18/2 |
+    | 4000 | 62 | 2.8e-05 | 9.9 | 20.2 | 43.1 | 22.8 | 19/30/30 | 19/0/11/0/0 |
+    | 4000 | 64 | 1.8e-05 | 9.7 | 20.0 | 43.2 | 23.8 | 26/30/30 | 26/0/4/0/0 |
+    | 4000 | 80 | 8.7e-07 | 9.7 | 18.4 | 44.1 | 23.7 | 30/30/30 | 30/0/0/0/0 |
+    | 4000 | 96 | 5.2e-08 | 8.6 | 15.0 | 136.9 | 74.1 | 30/30/30 | 30/0/0/0/0 |
+    | 4000 | 128 | 2.3e-08 | 4.6 | 5.3 | 118.7 | 70.8 | 30/30/30 | 30/0/0/0/0 |
+
+    The exact effectivity is 9-15 for r <= 80 (4.6 at r = 128, where the mass-norm error reaches ~2e-8). At
+    r >= 96 the reduced effectivity jumps to 120-140 because the true error (4e-8) drops below the floor set by
+    the EIM allowance at Q = 36. That floor is harmless for acceptance, since everything is accepted there.
+    The three-stage rule settles every r <= 48 query by reject_cheap: the reduced lower bound is tight. Every
+    r >= 80 query is settled by reduced_accept. The banded and exact stages are needed only in the transition
+    band r = 56-64.
+19. **Offline tensor size per (basis, Q = 36, r)**, 18 cells, compressed: r = 8: 9 MB, r = 16: 24 MB, r = 24: 44 MB, r = 32: 69 MB, r = 40: 101 MB, r = 48: 138 MB, r = 56: 182 MB, r = 62: 220 MB, r = 64: 233 MB, r = 80: 356 MB, r = 96: 498 MB, r = 128: 688 MB
+    (the 4000 basis is the same to within 1%). At r = 128 the compressed factor keeps all 1022 rows (k = n_free).

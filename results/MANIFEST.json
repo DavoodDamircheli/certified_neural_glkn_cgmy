@@ -1328,6 +1328,702 @@
     "git_sha": "380d1ba8be82b4a8c180cee514876dec138433ad-dirty",
     "timestamp": "2026-10-20T21:19:06-0500"
    }
+  },
+  "pod_N1024_NT240_seed0_800_r128.npz": {
+   "file": "data/pod_N1024_NT240_seed0_800_r128.npz",
+   "sha256": "6ec298c6f9850572216645185a222845ddcaaa62d5361af51297ed8dfcb4d80f",
+   "bytes": 1056328,
+   "n_traj": 800,
+   "r_max": 128,
+   "construction": "mass-weighted POD of all N_T+1 snapshots",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-20T23:28:29-0500"
+   }
+  },
+  "pod_N1024_NT240_seed0_4000_r128.npz": {
+   "file": "data/pod_N1024_NT240_seed0_4000_r128.npz",
+   "sha256": "78c2739f8936c9f13804d6271a9fd1287c9b2719403e69c2c39251c16e8e95c4",
+   "bytes": 1056328,
+   "n_traj": 4000,
+   "r_max": 128,
+   "construction": "mass-weighted POD of all N_T+1 snapshots",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:34:39-0500"
+   }
+  },
+  "redcert_N1024_r8_n800_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r8_n800_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "1a453f27bfba9e85d0a57a8cc2e5b81475a153c5e2545b908c2d839b6d50753f",
+   "bytes": 9605544,
+   "N": 1024,
+   "r": 8,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_800_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:34:40-0500"
+   }
+  },
+  "redcert_N1024_r16_n800_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r16_n800_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "fb1c2b620ca8ff48c10c06e1c73f8924958b5927b9508051c81cee858279a853",
+   "bytes": 25244904,
+   "N": 1024,
+   "r": 16,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_800_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:34:41-0500"
+   }
+  },
+  "redcert_N1024_r24_n800_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r24_n800_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "d9394e6715dd0fdb8bfda3c8bc5d9bff5a8e332396c84b4400b674de2e6c5615",
+   "bytes": 45799752,
+   "N": 1024,
+   "r": 24,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_800_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:34:46-0500"
+   }
+  },
+  "redcert_N1024_r32_n800_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r32_n800_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "1145c1d6a96e6ce68721afb342712a14d35e0439c64b7e80b5ff5a05878cb5bb",
+   "bytes": 72652680,
+   "N": 1024,
+   "r": 32,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_800_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:34:52-0500"
+   }
+  },
+  "redcert_N1024_r40_n800_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r40_n800_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "24a0185388201f0da84a2a3f2cf1b330322744ba261e380804c2cd7a655c0389",
+   "bytes": 105533432,
+   "N": 1024,
+   "r": 40,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_800_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:35:00-0500"
+   }
+  },
+  "redcert_N1024_r48_n800_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r48_n800_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "3ac898e4848648ca8df79ce491d5999b8099682c396a10c13d9a4a6f47ca7ac9",
+   "bytes": 144522568,
+   "N": 1024,
+   "r": 48,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_800_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:35:09-0500"
+   }
+  },
+  "redcert_N1024_r56_n800_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r56_n800_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "d8af4dd0e6a5b44226afa5e8c2be23b3a622bbeab09f5f7df2efba6973473c7d",
+   "bytes": 190940664,
+   "N": 1024,
+   "r": 56,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_800_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:35:25-0500"
+   }
+  },
+  "redcert_N1024_r62_n800_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r62_n800_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "d0d33d1dd4b886dc12fcc7b292a3116951727716e819cb917e8fa3197f31b5fe",
+   "bytes": 230633880,
+   "N": 1024,
+   "r": 62,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_800_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:35:41-0500"
+   }
+  },
+  "redcert_N1024_r64_n800_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r64_n800_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "3f46147006a75892a5c7d722290e664b22c4cfaf1f8394e4a9271cd2ff34e5b9",
+   "bytes": 244358472,
+   "N": 1024,
+   "r": 64,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_800_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:35:59-0500"
+   }
+  },
+  "redcert_N1024_r80_n800_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r80_n800_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "9c0b838425165de852702fe42a4d6926c69a60cedafa79dfd3d9f84bb9049615",
+   "bytes": 373339608,
+   "N": 1024,
+   "r": 80,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_800_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:36:21-0500"
+   }
+  },
+  "redcert_N1024_r96_n800_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r96_n800_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "306d2d6ed409248c26f49662327cbeef3d4eda9858cc0ecda10bfb5afad3a2b2",
+   "bytes": 522083624,
+   "N": 1024,
+   "r": 96,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_800_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:36:50-0500"
+   }
+  },
+  "redcert_N1024_r128_n800_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r128_n800_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "9ed1217622bb2793ef990e4cf560caef2d546c61f77b30a4c4f20e11175220a6",
+   "bytes": 721562184,
+   "N": 1024,
+   "r": 128,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_800_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:37:23-0500"
+   }
+  },
+  "redcert_N1024_r8_n4000_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r8_n4000_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "15b2e4ee3547a1f89078a80fc9da2b4f5c55e9de94d5b8a78752f08d4fb303d7",
+   "bytes": 9474216,
+   "N": 1024,
+   "r": 8,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_4000_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:37:23-0500"
+   }
+  },
+  "redcert_N1024_r16_n4000_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r16_n4000_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "ccff116450e2d01ececa1ff0848ca744b1b322e14312a53dc4fa3143bb9a7e4d",
+   "bytes": 24934824,
+   "N": 1024,
+   "r": 16,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_4000_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:37:25-0500"
+   }
+  },
+  "redcert_N1024_r24_n4000_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r24_n4000_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "3f6e613d302416ef9fe772f5f4d5e45fdb4855a24ac90cafeb5d599b8d7170a1",
+   "bytes": 45602152,
+   "N": 1024,
+   "r": 24,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_4000_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:37:29-0500"
+   }
+  },
+  "redcert_N1024_r32_n4000_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r32_n4000_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "00d68c1c4f22cf0c7afec6e74f1dcaf96a3e27e4be418b6c046af2754c788023",
+   "bytes": 72371784,
+   "N": 1024,
+   "r": 32,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_4000_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:37:35-0500"
+   }
+  },
+  "redcert_N1024_r40_n4000_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r40_n4000_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "1a26a0643a13b299e52039636752fea0d751c6f5f2adc9a75fc951daf2479ee8",
+   "bytes": 105396328,
+   "N": 1024,
+   "r": 40,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_4000_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:37:43-0500"
+   }
+  },
+  "redcert_N1024_r48_n4000_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r48_n4000_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "361fb90e7acc58434a1367d247faa5f527e2b92ec0b18f7c04bab59a45b6a50b",
+   "bytes": 145893000,
+   "N": 1024,
+   "r": 48,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_4000_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:37:54-0500"
+   }
+  },
+  "redcert_N1024_r56_n4000_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r56_n4000_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "94c9957a131723484dd0255b8c05b4f7729b5d6a4876d72389e44098405f24d4",
+   "bytes": 191997672,
+   "N": 1024,
+   "r": 56,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_4000_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:38:07-0500"
+   }
+  },
+  "redcert_N1024_r62_n4000_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r62_n4000_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "2a6cc52e05322e0283b82c619e905ee3a146ec260b829cd28d5fd56b355bd768",
+   "bytes": 232012824,
+   "N": 1024,
+   "r": 62,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_4000_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:38:23-0500"
+   }
+  },
+  "redcert_N1024_r64_n4000_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r64_n4000_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "e58dcc46388702bfe8ad57e91926162fb147296ee2b9182418606c843b5570e0",
+   "bytes": 246117112,
+   "N": 1024,
+   "r": 64,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_4000_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:38:39-0500"
+   }
+  },
+  "redcert_N1024_r80_n4000_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r80_n4000_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "c7b712437e958e9d555f6a50394c3c19c7d87b4cde58e11cde0496a92e8f0c33",
+   "bytes": 374743176,
+   "N": 1024,
+   "r": 80,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_4000_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:39:00-0500"
+   }
+  },
+  "redcert_N1024_r96_n4000_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r96_n4000_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "b500dd02a497a482cded0cf09d80718f5824f236e4b6d5fdd796bdb9cb8aaeb8",
+   "bytes": 520756664,
+   "N": 1024,
+   "r": 96,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_4000_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:39:25-0500"
+   }
+  },
+  "redcert_N1024_r128_n4000_CYm_3x3x2_Q36c_b128.npz": {
+   "file": "data/redcert_N1024_r128_n4000_CYm_3x3x2_Q36c_b128.npz",
+   "sha256": "c97e4af5a81634cca6f9b3cb139bac513f5c6ce60d4715181ea95784496136d9",
+   "bytes": 721562184,
+   "N": 1024,
+   "r": 128,
+   "Q": 36,
+   "partition": "CYm:3x3x2",
+   "svd_tol": 1e-12,
+   "basis": "pod_N1024_NT240_seed0_4000_r128.npz",
+   "provenance": {
+    "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+    "cpu_count": 24,
+    "affinity_cpus": 24,
+    "thread_env": {
+     "OMP_NUM_THREADS": "4",
+     "OPENBLAS_NUM_THREADS": null,
+     "MKL_NUM_THREADS": null
+    },
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "git_sha": "989a335ed2fa35dc05f49be097bcb8f658e0dfa0-dirty",
+    "timestamp": "2026-10-21T00:39:58-0500"
+   }
   }
  }
 }
