@@ -4,6 +4,7 @@
     data/references_N{N}_NT{NT}_seed0_4000.npz         sobol_queries(4000, seed=0) (with T)
     data/references_N{N}_NT{NT}_seed0_800.npz          its first 800 (= sobol_queries(800, seed=0))
     data/references_N{N}_NT{NT}_validation30.npz       the validation30 population (tests/fixtures)
+    data/references_N{N}_NT{NT}_{bench120,ref30}.npz   with --extra bench120 ref30 (follow-up 4)
 
 Each file: Z (n_q, n_free, N_T+1) float64 free coefficient trajectories, mu (n_q, 5) = (C, G, M, Y, r),
 T (n_q,), query_ids, gmres_max_iters (n_q,).  sha256 of every file goes to results/MANIFEST.json.
@@ -66,6 +67,7 @@ def main():
     ap.add_argument("--N", type=int, default=512)
     ap.add_argument("--NT", type=int, default=240)
     ap.add_argument("--nproc", type=int, default=20)
+    ap.add_argument("--extra", nargs="*", default=[], help="further fixture populations, e.g. bench120 ref30")
     a = ap.parse_args()
     man = json.loads(MANIFEST.read_text()) if MANIFEST.exists() else {"files": {}}
     with warnings.catch_warnings():
@@ -73,16 +75,17 @@ def main():
         q4000 = sobol_queries(4000, seed=0)
         q800 = sobol_queries(800, seed=0)
     assert all(x == y for x, y in zip(q800, q4000[:800])), "Sobol prefix property violated"
-    val = load_queries_json(ROOT / "tests" / "fixtures" / "queries.json")["validation30"]
+    fix = load_queries_json(ROOT / "tests" / "fixtures" / "queries.json")
+    val = fix["validation30"]
 
-    for tag, qs in (("seed0_4000", q4000), ("validation30", val)):
+    for tag, qs in [("seed0_4000", q4000), ("validation30", val)] + [(t, fix[t]) for t in a.extra]:
         path = ref_path(a.N, a.NT, tag)
         if path.exists():
             raise SystemExit(f"{path} exists; references are generated once (delete it deliberately to regenerate)")
         t0 = time.time()
         Z, it = generate(qs, a.N, a.NT, a.nproc)
         wall = time.time() - t0
-        pop = "sobol_queries(4000, seed=0, include_T=True)" if tag == "seed0_4000" else "validation30 (tests/fixtures/queries.json)"
+        pop = "sobol_queries(4000, seed=0, include_T=True)" if tag == "seed0_4000" else f"{tag} (tests/fixtures/queries.json)"
         man["files"][path.name] = dict(write(path, qs, Z, it, a.N, a.NT, pop), wall_s=wall,
                                        provenance=provenance(nproc=a.nproc))
         print(f"{path.name}: {len(qs)} trajectories, {wall:.0f}s, max GMRES iters/step {it.max()}", flush=True)
