@@ -239,6 +239,63 @@ def do_summary(res):
           "\nproxy", proxy, "\ndist", dist, "\nalias", {k: v for k, v in alias.items() if k != "raised"}, "\nuncertifiable", len(bad), flush=True)
 
 
+def shells_of(r):
+    """Coordinates by which a query leaves the box (Sobol queries; the extended-box vertices form their own group)."""
+    if r["query_id"].startswith("extvertex"):
+        return ["vertices"]
+    C, G, M, Y, _ = r["mu"]
+    out = []
+    if C > BOX["C"][1]: out.append("C>1")
+    if Y < BOX["Y"][0]: out.append("Y<1.1")
+    if Y > BOX["Y"][1]: out.append("Y>1.8")
+    if G < BOX["G"][0]: out.append("G<1")
+    if M > BOX["M"][1]: out.append("M>9")
+    return out
+
+
+def do_breakdown(res):
+    """(a) per candidate: out-of-box queries with true error <= eps_N and how many of them the exact and the three-stage
+    certificates accept; (b) the same per shell, with median true error and median eps_Q; (c) precision / recall of the naive
+    rule 'reject everything outside the box' and of each certificate, as detectors of 'true error > eps_N'."""
+    rows = [r for r in res["rows"] if "error" not in r]
+    names = list(rows[0]["cands"])
+    k = f"{EPS_N:.4g}"
+    SH = ("C>1", "Y<1.1", "Y>1.8", "G<1", "M>9", "vertices")
+
+    def counts(R, nm):
+        good = [r for r in R if r["cands"][nm]["true_err"] <= EPS_N]
+        acc_ex = sum(r["cands"][nm]["bounds"]["exact"] <= EPS_N for r in good)
+        acc_3 = sum(r["cands"][nm]["three_stage"][k].endswith("accept") for r in good)
+        return dict(n_queries=len(R), n_true_err_le_eps_N=len(good), exact_accepts=int(acc_ex), three_stage_accepts=int(acc_3),
+                    median_true_err=float(np.median([r["cands"][nm]["true_err"] for r in R])) if R else None,
+                    median_eps_Q=float(np.median([r["eps_Q"] for r in R])) if R else None)
+
+    def detector(R, nm, flag):
+        """flag(r) True = predicted 'true error > eps_N'."""
+        tp = sum(flag(r) and r["cands"][nm]["true_err"] > EPS_N for r in R)
+        fp = sum(flag(r) and r["cands"][nm]["true_err"] <= EPS_N for r in R)
+        fn = sum((not flag(r)) and r["cands"][nm]["true_err"] > EPS_N for r in R)
+        return dict(tp=int(tp), fp=int(fp), fn=int(fn), precision=tp / (tp + fp) if tp + fp else None,
+                    recall=tp / (tp + fn) if tp + fn else None)
+
+    out = {}
+    for nm in names:
+        per_shell = {sh: counts([r for r in rows if sh in shells_of(r)], nm) for sh in SH}
+        out[nm] = dict(all=counts(rows, nm), per_shell=per_shell,
+                       naive_reject_outside_box=detector(rows, nm, lambda r: True),
+                       exact_certificate=detector(rows, nm, lambda r, nm=nm: r["cands"][nm]["bounds"]["exact"] > EPS_N),
+                       three_stage=detector(rows, nm, lambda r, nm=nm: not r["cands"][nm]["three_stage"][k].endswith("accept")))
+        a_ = out[nm]["all"]
+        print(f"{nm[-30:]}: works on {a_['n_true_err_le_eps_N']}/264, exact finds {a_['exact_accepts']}, three-stage "
+              f"{a_['three_stage_accepts']} | naive precision {out[nm]['naive_reject_outside_box']['precision']} | exact "
+              f"precision {out[nm]['exact_certificate']['precision']}", flush=True)
+    res["breakdown"] = dict(per_candidate=out, eps=EPS_N, shells=list(SH),
+                            note="shells overlap (a Sobol query outside in several coordinates counts in each); vertices are the "
+                                 "64 extended-box vertices; detectors predict 'true error > eps_N': the naive rule flags every "
+                                 "out-of-box query, the certificates flag a rejection (the reduced stage is not used outside the box)")
+    save(res)
+
+
 def do_fig(res):
     import matplotlib
     matplotlib.use("Agg")
@@ -290,7 +347,8 @@ def main():
     res = load()
     res["meta"] = dict(description="E3 (plan 3.4): out-of-distribution detection", N=N, N_T=NT, eps_N=EPS_N, eps_sweep=list(EPS))
     for st in a.steps:
-        dict(run=lambda: do_run(res, a.nproc), summary=lambda: do_summary(res), fig=lambda: do_fig(res))[st]()
+        dict(run=lambda: do_run(res, a.nproc), summary=lambda: do_summary(res), fig=lambda: do_fig(res),
+             breakdown=lambda: do_breakdown(res))[st]()
 
 
 if __name__ == "__main__":

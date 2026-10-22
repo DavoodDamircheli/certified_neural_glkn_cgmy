@@ -168,3 +168,45 @@
     128, with retained rows rho = 185-206 / 502-582 / 639-738 / 786-898 / 939-1016 / 1022. It crosses 5 ms at
     r ~ 74 and stays below 50 ms up to r = 128. The reduced solve takes 0.7-1.9 ms. About 2.7 ms of the
     certificate is the rank-independent ell + eps_Q part.
+
+## Phase 3
+
+24. **Cost model** (`results/cost_model.json`, `tables_v9/tab_cost_v9.tex`; one thread, idle). At N = 1024:
+    assembly 106 ms, spectral data 477 ms (N-independent: fixed graded grid), GMRES march 147 ms, residual 6 ms,
+    banded eta^X 3 ms, exact eta^S 137 ms. Reduced, r = 64: solve 1.1 ms, eps_Q + ell 2.7 ms, certificate form 1.8 ms.
+    The full-order banded certificate is dominated by the spectral data (477 ms), not by its banded solves. This is
+    the cost the reduced certificate avoids. Fitted constants: one constant per component as asked, plus
+    t = c' ops + d calls where the per-step/per-iteration interpreter overhead matters (direct 11%, reduced solve 4%).
+25. **E1** (`results/E1.json`; validation30, N = 1024, Q matched to eps). 37 candidates (POD-Galerkin r = 8..128 on two
+    bases, 13 POD-NN checkpoints): no false accepts under any certificate at any eps, and the reduced-stage lower bound
+    never exceeds the exact bound. The stored references' own certified bound is <= 2.0e-9 (negligible).
+    POD-NN, bound- vs error-selected per setting (4000 trajectories): bound-selected lambda_R = 1 (median exact bound
+    1.26, true error 0.46); error-selected lambda_R = 0 (bound 12.2, true error 0.082). The space-time variant
+    (lambda_R = 1 only) has bound 0.055 and true error 0.015. Only one checkpoint per run was saved (the
+    bound-selected epoch), so the selection is across lambda_R.
+26. **Online time vs rank** (F5c; idle, one thread, validation30[1:11], eps_N). Reduced solve 0.75-2.0 ms; reduced
+    certificate 2.9-8.2 ms; three-stage total ~200 ms for r <= 48 (all cheap rejections, dominated by the
+    Theta-bar evaluation), 717 ms at r = 56 (banded/exact stages with spectral data), and equal to the reduced
+    certificate from r = 62 (4.5-8.3 ms). Uncertified direct solve: 369 ms cold (assembly + forcing + z0 + march),
+    170 ms warm.
+27. **E3, out of distribution** (`results/E3.json` -> summary, breakdown; 264 out-of-box queries: 200 Sobol in the
+    shells plus 64 extended-box vertices; ground truth = true error <= eps_N against a GMRES reference at the query).
+    No false accepts for any candidate, certificate or eps; all 264 are certifiable; no aliasing adjustment was needed
+    (G < 1: Toeplitz change <= 5.5e-16 at L = 4 N_h). Outside the box the reduced stage is not used (the cell beta-bar
+    is valid only up to G_max, M_max), so the three-stage verdicts equal the full-order ones.
+    - **The reduced model still works on 196 (r = 64) / 210 (r = 80) of the 264 out-of-box queries, and the
+      certificate finds 181 / 193 of them** (exact and three-stage alike: 92%). The space-time POD-NN works on none
+      (median true error 0.9-1.1) and is rejected on all.
+    - Per shell (r = 80; queries / works / certified / median true error / median eps_Q; shells overlap):
+      C > 1: 122 / 104 / 95 / 3.7e-6 / 5.3e-8; Y < 1.1: 39 / 36 / 31 / 6.1e-6 / 1.4e-8; Y > 1.8: 36 / 18 / 15 /
+      2.8e-3 / 6.1e-7; G < 1: 27 / 21 / 13 / 3.9e-4 / 3.1e-6; M > 9: 111 / 101 / 94 / 8.6e-6 / 2.5e-7;
+      vertices: 64 / 34 / 31 / 2.0e-4 / 4.3e-6.
+      For r = 64: C > 1: 122 / 96 / 93; Y < 1.1: 39 / 31 / 25; Y > 1.8: 36 / 15 / 15; G < 1: 27 / 17 / 13; M > 9:
+      111 / 93 / 88; vertices: 64 / 33 / 27.
+      Y > 1.8 (rougher symbol) and G < 1 (slower decay) are where the reduced model fails most often. These are also
+      the shells with the largest eps_Q (the EIM extrapolates in Y and G). In-box validation30 has median
+      eps_Q 1.7e-9.
+    - **Naive rule "reject everything outside the box"** as a detector of "true error > eps_N": recall 1 but
+      precision 0.26 (r = 64) / 0.20 (r = 80); it discards all 196 / 210 good queries. The certificate has recall 1
+      (by theorem) and precision 0.82 / 0.76: it discards only 15 / 17 good queries. The ensemble proxy of the
+      space-time POD-NN could not make this comparison, because all its errors exceed eps_N.
