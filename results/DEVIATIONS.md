@@ -410,3 +410,46 @@ projection of the references. Not evaluated further.
 * The reduced rows are measured at N = 1024 only, since the tensors are N-specific. Their cost depends on
   (Q, r, rho, N_T), and rho saturates for N >= 512 (`rho_vs_N`, Q = 29: 349-404 / 366-419 / 404-416 rows at
   N = 512 / 1024 / 4096).
+
+## E2: two bugs found in the first run (that run is discarded)
+
+* **Q_used() read E1.json (1.6 MB) inside every timed certified call**, adding about 8 ms to each reduced-path
+  timing: 13-15 ms measured instead of 6.8-8.4 ms. Fixed by caching the lookup.
+* **The true-error loop re-read the whole 236 MB reference array from the npz on every access** (NpzFile is lazy):
+  about 318 000 reads, which turned ~50 min into 15+ h. The timings themselves were not affected, but the run never
+  finished in reasonable time. Fixed by loading the array once. E1, E3 and E4 were checked for the same pattern:
+  none.
+
+## Phase 3 follow-up 1: fast (online) spectral data and Theta-bar
+
+* `spectral_data(q, N, mode="fast")` and `three_stage.theta_bar(..., mode="fast")`:
+  - grid: coarse graded grid (512 uniform + 250 geometric points per side on the scale min(G, M) h; 1012 nodes);
+  - aliases: adaptive count K' = 10 upward until the weighted tail is <= 2% of s - r m on the grid;
+  - rigour: the dropped aliases carry |N^(theta_k)|^2 = sin^{2p}(theta/2) (2/theta_k)^{2p}, so
+    |s_exact - s_K'| <= sin^{2p}(theta/2) eps_K' (Lemma 1.2 bounds the sum with sin <= 1). alpha_lb and beta use the
+    lower envelope, Theta and Theta-bar the upper one, all with the cell-wise derivative margins.
+  The weighted tail vanishes at theta = 0 to order 2p, so beta (a ratio with g1 ~ theta^2) is unaffected by it.
+  Cost: ~3.5 ms (one thread) instead of 480-670 ms.
+* **Validation on spectral288 at N = 1024** (`results/spectral_fast.json`):
+
+  | fast / fine | median | min | max |
+  |---|---|---|---|
+  | beta | 0.99995 | 0.99992 | 0.99996 (all <= 1) |
+  | Theta | 1.0005 | 1.00005 | 1.0022 (all >= 1) |
+  | alpha_lb | 1.00001 | 1.0000001 | 1.0082 |
+  | Theta-bar | 1.0004 | 0.9977 | 1.0021 |
+
+  K' = 10 for all 288 queries. alpha_lb and Theta-bar fall on the "unsafe" side of the brief's test for some
+  queries, but both remain rigorous: the fine mode adds or subtracts the *unweighted* eps_K everywhere, which is
+  looser than the exact sin^{2p} weighting. For alpha_lb the minimum is at theta = 0, where s_mu = r exactly
+  (alpha_fast <= r holds for all 288). The coarse grid broke no bound: beta_fast <= beta_fine and
+  Theta_fast >= Theta_fine on every query. eta^X on validation30 POD-Galerkin (r = 48, 56, 64, 80) changes by
+  +0.002% (ratios 1.00002-1.00003), not the few percent expected.
+* The fine mode stays the default (E0, tests, E3's verification-grade certificates). The online path (E2's
+  direct + banded, the three-stage banded stage, Theta-bar, correction + recertify, E4) uses the fast mode. E1's
+  certificates and verdicts were computed with the fine mode; the Theta-bar difference (+-0.2%) cannot change any
+  E1 status at the margins observed. E1's timing step is rerun with the fast mode.
+* **Adaptive alias count in the assembly (follow-up item 3): measured, not adopted.** Assembling A_I with K' < 100
+  changes the discrete operator itself, while K = 100 is fixed for every Phase 3 experiment (references and true
+  errors are defined against the K = 100 system). The potential saving is reported in `spectral_fast.json` -> split.
+  The decision is the user's.
