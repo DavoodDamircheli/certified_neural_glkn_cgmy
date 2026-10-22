@@ -31,9 +31,26 @@ from .reduced_cert import conversion_alias_count
 STATUSES = ("reduced_accept", "reject_cheap", "banded_accept", "reject_banded", "exact_accept", "exact_reject")
 
 
-def theta_bar(q: Query, N: int, rbar: float, betabar: float, p: int = P_ORDER) -> float:
-    """Upper bound of sup_theta s_mu(theta) / x-bar(theta): s_mu <= s_(mu,K') + eps_K' for the exact symbol and for the
-    K = 100 truncation; grid maximum plus the cell-wise derivative margin on the graded grid."""
+def theta_bar(q: Query, N: int, rbar: float, betabar: float, p: int = P_ORDER, mode: str = "fast") -> float:
+    """Upper bound of sup_theta s_mu(theta) / x-bar(theta) (Lemma 2.5).
+    mode "fast" (online path, follow-up 1 of Phase 3): coarse graded grid of spectral.spectral_data_fast, alias count
+    K' = 10 upward until the sin^{2p}-weighted tail is <= 2% of s - r m, upper envelope s_K' + sin^{2p}(theta/2) eps_K'
+    (rigorous: the dropped aliases carry |N^(theta_k)|^2 = sin^{2p}(theta/2) (2/theta_k)^{2p}) with derivative margins.
+    mode "fine": the fine graded grid with s_K' + eps_K' (unweighted), as before."""
+    if mode == "fast":
+        from .spectral import fast_grid, FAST_K_LADDER
+        th0 = fast_grid(q, N, p=p)
+        w = np.sin(0.5 * th0) ** (2 * p); wp = p * np.sin(0.5 * th0) ** (2 * p - 1) * np.cos(0.5 * th0)
+        nz = np.abs(th0) > 1e-14
+        for K in FAST_K_LADDER:
+            sym = symbols(q, N, K=K, p=p, with_derivative=True, theta=th0)
+            if float(np.max(w[nz] * sym.eps_K / np.maximum(sym.s[nz] - q.r * sym.m[nz], 1e-300))) <= 0.02:
+                break
+        th, s, m, g1, sp = sym.theta, sym.s, sym.m, sym.g1, sym.s_prime
+        dm, _, dg = closed_form_derivatives(th, p)
+        x = rbar * m + betabar * g1; xp = rbar * dm + betabar * dg
+        su, sup_ = s + w * sym.eps_K, sp + wp * sym.eps_K
+        return _grid_extreme(su / x, (sup_ * x - su * xp) / x ** 2, th, "max")[0]
     K = conversion_alias_count(q, N, rbar, betabar, p=p)
     th = graded_theta_grid(q, N, p=p)
     sym = symbols(q, N, K=K, p=p, with_derivative=True, theta=th)
@@ -112,16 +129,18 @@ def banded_values(fs, forcing, z_h0, Z, q, spec=None) -> dict:
     """Stage 2 only: spectral data (X_I, Theta_mu) and the banded certificate with A_I."""
     t0 = time.perf_counter()
     if spec is None:
-        spec = spectral_data(q, fs.mesh.N)
+        spec = spectral_data(q, fs.mesh.N, mode="fast")           # online path: fast mode (rigorous, coarse grid)
+    t_spec = time.perf_counter() - t0
     fb = certify(fs, forcing, Z, z_h0, 0.0, mode="banded", spec=spec)
     return dict(etaX=fb.etaX_aug, etaX_res=fb.etaX, Theta=spec.Theta, beta0=fb.beta0, spec=spec,
-                t_banded=time.perf_counter() - t0)
+                t_banded=time.perf_counter() - t0, t_spectral=t_spec, t_residual=fb.time_residual,
+                t_banded_solves=fb.time_banded)
 
 
 def exact_values(fs, forcing, z_h0, Z, spec) -> dict:
     t0 = time.perf_counter()
     fe = certify(fs, forcing, Z, z_h0, 0.0, mode="exact", spec=spec)
-    return dict(etaS=fe.etaS_aug, t_exact=time.perf_counter() - t0)
+    return dict(etaS=fe.etaS_aug, t_exact=time.perf_counter() - t0, t_pcg=fe.time_exact)
 
 
 def full_order_values(fs, forcing, z_h0, Z, q, spec=None) -> dict:

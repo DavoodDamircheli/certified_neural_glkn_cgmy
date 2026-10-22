@@ -61,10 +61,80 @@ def _grid_extreme(f: np.ndarray, fprime: np.ndarray, theta: np.ndarray, kind: st
     return float(cand[j]), float(np.max(f)), float(cand[j] - np.max(f))
 
 
+FAST_L0, FAST_NFINE = 512, 250
+FAST_K_LADDER = (10, 20, 40, 100)
+
+
+def fast_grid(q: Query, N: int, L0: int = FAST_L0, n_fine: int = FAST_NFINE, p: int = P_ORDER) -> np.ndarray:
+    return graded_theta_grid(q, N, L0=L0, n_fine=n_fine, p=p)
+
+
+def fast_alias_count(q: Query, N: int, rel: float = 0.02, p: int = P_ORDER) -> int:
+    """Smallest K' in FAST_K_LADDER with eps_K'(Lemma 1.2) <= rel * r min m: the dropped tail (weighted by sin^6) then
+    changes s by at most 2% of r m anywhere."""
+    from .symbols import eps_K_fractional, mass_symbol
+    h = Mesh(N=N, p=p).h
+    m_min = float(np.min(mass_symbol(np.linspace(-pi, pi, 4001), p)))
+    for K in FAST_K_LADDER:
+        if eps_K_fractional(q, h, K, p) <= rel * q.r * m_min:
+            return K
+    return FAST_K_LADDER[-1]
+
+
+def spectral_data_fast(q: Query, N: int, p: int = P_ORDER, safety: float = 0.99, K: int | None = None) -> SpectralData:
+    """Online-path spectral data (follow-up 1 of Phase 3): coarse graded grid (FAST_L0 uniform + FAST_NFINE geometric
+    points on the scale min(G, M) h near 0) and an adaptive alias count K'.  Rigour: the dropped aliases |k| > K' of the
+    exact symbol (and of the K = 100 assembly) carry the factor |N^(theta_k)|^2 = sin^{2p}(theta/2) (2/theta_k)^{2p}, so
+    |s_exact - s_K'| <= w(theta) eps_K', w = sin^{2p}(theta/2) (Lemma 1.2 bounds the sum with sin <= 1).  alpha_lb and
+    beta use the lower envelope s_K' - w eps_K', Theta the upper one, each with the cell-wise derivative margin of
+    _grid_extreme (w' included).  The tail vanishes at theta = 0 to order 2p, so beta (a ratio with g1 ~ theta^2) stays
+    finite.  Only tightness is lost against the fine mode."""
+    th0 = fast_grid(q, N, p=p)
+    w0 = np.sin(0.5 * th0) ** (2 * p)
+    # alias count: smallest K' whose sin^{2p}-weighted tail bound is <= 2% of s - r m on the grid (theta != 0): the tail
+    # then perturbs alpha_lb, beta and Theta by <= ~2%; the bound itself stays rigorous whatever K' is chosen
+    for K_try in ((K,) if K is not None else FAST_K_LADDER):
+        sym = symbols(q, N, K=K_try, p=p, with_derivative=True, theta=th0)
+        nz = np.abs(th0) > 1e-14
+        rel = float(np.max(w0[nz] * sym.eps_K / np.maximum(sym.s[nz] - q.r * sym.m[nz], 1e-300)))
+        if rel <= 0.02:
+            break
+    K = K_try
+    th, s, m, g1, sp = sym.theta, sym.s, sym.m, sym.g1, sym.s_prime
+    dm, _, dg1 = closed_form_derivatives(th, p)
+    eps = sym.eps_K
+    w = w0
+    wp = p * np.sin(0.5 * th) ** (2 * p - 1) * np.cos(0.5 * th)          # d/dtheta sin^{2p}(theta/2)
+    sl, slp = s - w * eps, sp - wp * eps
+    su, sup_ = s + w * eps, sp + wp * eps
+    r = q.r
+    s_min, s_min_grid, margin_s = _grid_extreme(sl, slp, th, "min")
+    mask = np.abs(th) > 1e-14
+    f = sl[mask] - r * m[mask]; g = g1[mask]
+    fp = slp[mask] - r * dm[mask]; gp = dg1[mask]
+    beta_lb, beta_grid, _ = _grid_extreme(f / g, (fp * g - f * gp) / g ** 2, th[mask], "min")
+    beta = safety * beta_lb
+    if beta <= 0:
+        raise ValueError(f"comparison norm failed (fast mode): beta={beta} (query {q})")
+    x = r * m + beta * g1
+    xp = r * dm + beta * dg1
+    Theta, Theta_grid, _ = _grid_extreme(su / x, (sup_ * x - su * xp) / x ** 2, th, "max")
+    x_min, _, _ = _grid_extreme(x, xp, th, "min")
+    from .symbols import _poly_entries, mass_symbol, stiffness_symbol
+    Me = _poly_entries(lambda t: mass_symbol(t, p), p); Ke = _poly_entries(lambda t: stiffness_symbol(t, p), p)
+    X_entries = {k: r * Me[k] + beta * Ke[k] for k in Me}
+    return SpectralData(q=q, N=N, K=K, L_fine=th.size, s_min=s_min, s_min_grid=s_min_grid, margin_s=margin_s,
+                        eps_K=eps, alpha_lb=s_min, r_mmin=r * float(np.min(m)), beta=beta, beta_grid=beta_grid,
+                        Theta=Theta, Theta_grid=Theta_grid, x_min=x_min, X_entries=X_entries)
+
+
 def spectral_data(q: Query, N: int, K: int = 100, L_fine: int | None = None, p: int = P_ORDER,
-                  safety: float = 0.99, sym: Symbols | None = None) -> SpectralData:
+                  safety: float = 0.99, sym: Symbols | None = None, mode: str = "fine") -> SpectralData:
     """All symbol-derived spectral quantities for (mu, N) in one pass over a graded fine grid
-    (uniform 2^14 points plus a geometric refinement on the scale min(G,M) h near theta = 0)."""
+    (uniform 2^14 points plus a geometric refinement on the scale min(G,M) h near theta = 0).
+    mode = "fast": the online-path variant `spectral_data_fast` (coarse grid, adaptive alias count, rigorous)."""
+    if mode == "fast":
+        return spectral_data_fast(q, N, p=p, safety=safety)
     if sym is None:
         th = graded_theta_grid(q, N, L0=2 ** 14 if L_fine is None else L_fine, p=p)
         sym = symbols(q, N, K=K, p=p, with_derivative=True, theta=th)

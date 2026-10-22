@@ -54,8 +54,14 @@ def save(res):
     OUT.write_text(json.dumps(res, indent=1, default=float))
 
 
+_QE = {}
+
+
 def Q_used(eps):
-    e1 = json.loads((RES / "E1.json").read_text())["Q_eps"]["per_eps"]
+    """Q matched to eps (E1, 2d rule); E1.json is read once and cached (the lookup sits inside timed calls)."""
+    if "per_eps" not in _QE:
+        _QE["per_eps"] = json.loads((RES / "E1.json").read_text())["Q_eps"]["per_eps"]
+    e1 = _QE["per_eps"]
     # eps of E2 are a subset of the sweep (0.3, 1, 3) x eps_N
     return min(e1.values(), key=lambda v: abs(v["eps"] - eps))["Q_used"]
 
@@ -173,6 +179,7 @@ def do_bench(res):
     qs, warm = bench_queries()
     refs = np.load(DATA / f"references_N{N}_NT{NT}_bench120.npz")
     Zref = {str(i): j for j, i in enumerate(refs["query_ids"])}
+    Zall = np.asarray(refs["Z"])                              # read once (NpzFile re-reads the array on every access)
     fsM = free_matrices(qs[0], N)                              # mass matrix (query-independent) for errors
     last = {}
 
@@ -197,7 +204,8 @@ def do_bench(res):
             for i, q in enumerate(qs):
                 r = last[(name, q.query_id)]
                 Z = r.pop("Z")
-                err = max(mass_norm(fsM, Z[:, k] - refs["Z"][Zref[q.query_id]][:, k]) for k in range(NT + 1))
+                Zr = Zall[Zref[q.query_id]]
+                err = max(mass_norm(fsM, Z[:, k] - Zr[:, k]) for k in range(NT + 1))
                 rows.append(dict(query_id=q.query_id, time_s=times[name][i], true_err=err, **{k: v for k, v in r.items()}))
             per[name] = rows
         summ = {}
