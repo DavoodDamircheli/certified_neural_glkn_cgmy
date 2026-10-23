@@ -3,7 +3,7 @@
 figures_v9/*.png.  Usage: python3 scripts/run_E0.py [E0.1 E0.2 E0.3 E0.4 E0.5] [--nproc 2]"""
 from __future__ import annotations
 
-import json, sys, time, argparse
+import json, zlib, sys, time, argparse
 from pathlib import Path
 from multiprocessing import Pool
 
@@ -199,7 +199,7 @@ def _e03_eff_one(args):
     Nc = N // 4
     fsc, forcc, trc = reference_trajectory(q, Nc, N_T, solver="lu")
     cands["coarse_N/4"] = _coarse_candidate(q, fs, trc.Z, fsc.mesh)
-    rng = np.random.default_rng(abs(hash(q.query_id)) % 2 ** 32)
+    rng = np.random.default_rng(zlib.crc32(q.query_id.encode()))
     dz = rng.standard_normal(fs.n); dz *= 1e-4 / mass_norm(fs, dz)
     cands["perturbed_z0"] = cn_march(fs, z0 + dz, q.T, N_T, solver="gmres", forcing=forc).Z
     out = dict(query_id=q.query_id, N=N, sqrtTheta=float(np.sqrt(sp.Theta)), cands={})
@@ -258,7 +258,7 @@ def _e04_one(args):
     fs = free_matrices(q, N, K=100)
     sp = spectral_data(q, N, K=100)
     C = circulant_preconditioner(sym_vals=fs.sym.s.astype(complex), n=fs.n, kind="symbol")
-    rng = np.random.default_rng(abs(hash(q.query_id)) % 2 ** 32)
+    rng = np.random.default_rng(zlib.crc32(q.query_id.encode()))
     e = np.cumsum(rng.standard_normal(fs.n)); e -= e.mean()
     rho = fs.A.matvec(e)
     pcg = pcg_bracket(fs.S, rho, sp.alpha_lb, precond=C, tol=1e-12, maxit=500).iters

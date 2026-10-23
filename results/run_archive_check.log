@@ -1,0 +1,7 @@
+build: 0 tables identical: True figures pixel-identical: True
+run_E0: 0 32.2 min
+pytest: 0 spline_ft_sq(th) <= (2 / np.maximum(np.abs(th), 1e-300)) ** 6 + 1e-300)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+51 passed, 16 skipped, 5 warnings in 157.18s (0:02:37)
+

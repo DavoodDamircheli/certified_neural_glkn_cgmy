@@ -468,3 +468,21 @@ projection of the references. Not evaluated further.
   when it ran). Training is the best run's recorded wall time on 3 threads in an 8-run sweep, stated as such.
 * A helper meant to archive the E2 dry run waited on a `pgrep -f` pattern that also matched its own command line, so
   it never returned. The cold-split job waiting on its output sat idle for about a day. No result was affected.
+
+# Phase 4
+
+* **Clean-clone check** (`results/ARCHIVE_CHECK.json`): in a fresh clone and venv (`requirements.txt`), `build.sh`
+  regenerates all 7 tables byte-identically and all 10 figures pixel-identically. `run_E0.py --nproc 1` takes 32 min
+  (laptop estimate 46-54 min), and the quick tests give 51 passed, 16 skipped (the data-dependent tests skip
+  without `data/`).
+* **Non-deterministic seeding found and fixed.** E0.4 (and the perturbed-z0 candidate of E0.3) seeded their random
+  vectors with Python's `hash(query_id)`, which is randomised per process. The clean-clone rerun therefore gave
+  `tab_pcg_v9.tex` iteration counts differing by +-1. The seeding is now `zlib.crc32(query_id)`; the method-order
+  shuffles in `run_reduced_cert.py` were fixed the same way. The committed `E0.json` / `tab_pcg_v9.tex` are kept as
+  originally produced, because Phase 4 reruns no experiment. Rerunning E0.3/E0.4 with the fixed seeds (~30 min) is
+  the user's decision. All other E0 numbers reproduce (to 1e-9 or better).
+* **F2/F3 PNGs regenerated.** Same data; the Phase 1 files had been rendered on another machine with a different
+  default font. The committed versions are now the reproducible ones (matplotlib's bundled DejaVu Sans).
+* **The `manuscript_v9/` in the repository is the Phase 1 skeleton**, not the paper-editing copy the brief assumes, and
+  `scripts/make_tables_phase2.py` does not exist. Item 2 (claims) and item 3 (tag, zip) wait for the current
+  manuscript.

@@ -13,7 +13,7 @@ Usage: OMP_NUM_THREADS=1 python3 scripts/run_reduced_cert.py [cells] [build] [ch
 """
 from __future__ import annotations
 
-import argparse, json, os, sys, time
+import argparse, json, zlib, os, sys, time
 from multiprocessing import Pool
 from pathlib import Path
 
@@ -235,7 +235,7 @@ def do_timing(res, Ns=(256, 1024, 4096), Q=29, n_train=20, n_q=10, partition="CY
             f_form(); f_solve()                                  # warm-up
             order = [("form", f_form, 20), ("reduced_solve", f_solve, 20), ("ell", f_ell, 20),
                      ("eps_Q_graded", f_eps, 20), ("c_mu_optional", f_conv, 1)]
-            random.Random(hash(q.query_id) % 2 ** 32).shuffle(order)
+            random.Random(zlib.crc32(q.query_id.encode())).shuffle(order)
             row = {}
             for name, fn, inner in order:
                 row[name] = _median_time(fn, 5, inner)[0]
@@ -287,7 +287,7 @@ def do_timing_v3(res, Ns=(256, 512, 1024, 4096), Q=29, n_train=20, n_q=10, parti
                      for k, rc in rcs.items()}
             for f in calls.values():
                 f()
-            order = list(calls.items()); random.Random(hash(q.query_id) % 2 ** 32).shuffle(order)
+            order = list(calls.items()); random.Random(zlib.crc32(q.query_id.encode())).shuffle(order)
             for k, f in order:
                 rows[k].append(_median_time(f, 5, 20)[0])
             b0 = calls["before"]()[2]["eta_aug"]; b1 = calls["after"]()[2]["eta_aug"]

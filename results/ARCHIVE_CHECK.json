@@ -1,0 +1,147 @@
+{
+ "workdir": "/tmp/claude-1000/-home-davood-projects-certified-neural-glkn-cgmy/3499bc2f-db32-411f-8465-a9d23c2f4b3e/scratchpad/cleanclone",
+ "started": "2026-10-23T16:50:50-0500",
+ "steps": {
+  "clone": {
+   "cmd": "git clone --quiet /home/davood/projects/certified_neural_glkn_cgmy /tmp/claude-1000/-home-davood-projects-certified-neural-glkn-cgmy/3499bc2f-db32-411f-8465-a9d23c2f4b3e/scratchpad/cleanclone/repo && git -C /tmp/claude-1000/-home-davood-projects-certified-neural-glkn-cgmy/3499bc2f-db32-411f-8465-a9d23c2f4b3e/scratchpad/cleanclone/repo checkout --quiet d971756f4d412716279b77af0dcfd780d791942b",
+   "returncode": 0,
+   "wall_s": 0.21757745742797852,
+   "tail": ""
+  },
+  "venv": {
+   "cmd": "python3 -m venv /tmp/claude-1000/-home-davood-projects-certified-neural-glkn-cgmy/3499bc2f-db32-411f-8465-a9d23c2f4b3e/scratchpad/cleanclone/venv",
+   "returncode": 0,
+   "wall_s": 1.1240060329437256,
+   "tail": ""
+  },
+  "pip_install": {
+   "cmd": "/tmp/claude-1000/-home-davood-projects-certified-neural-glkn-cgmy/3499bc2f-db32-411f-8465-a9d23c2f4b3e/scratchpad/cleanclone/venv/bin/python3 -m pip install --quiet --upgrade pip && /tmp/claude-1000/-home-davood-projects-certified-neural-glkn-cgmy/3499bc2f-db32-411f-8465-a9d23c2f4b3e/scratchpad/cleanclone/venv/bin/python3 -m pip install --quiet -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu",
+   "returncode": 0,
+   "wall_s": 20.608625888824463,
+   "tail": ""
+  },
+  "build": {
+   "cmd": "bash build.sh",
+   "returncode": 0,
+   "wall_s": 4.398941516876221,
+   "tail": "built tables_v9/tab_assembly_v9.tex (0.0s)\nbuilt figures_v9/F2_spectral_bound (0.4s)\nbuilt figures_v9/F3_theta_and_effectivity (0.3s)\nbuilt tables_v9/tab_pcg_v9.tex (0.0s)\nwrote /tmp/claude-1000/-home-davood-projects-certified-neural-glkn-cgmy/3499bc2f-db32-411f-8465-a9d23c2f4b3e/scratchpad/cleanclone/repo/figures_v9/F4_eim.png\nbuilt figures_v9/F4_eim (0.4s)\nwrote /tmp/claude-1000/-home-davood-projects-certified-neural-glkn-cgmy/3499bc2f-db32-411f-8465-a9d23c2f4b3e/scratchpad/cleanclone/repo/tables_v9/tab_budget_v9.tex\nbuilt tables_v9/tab_budget_v9.tex (0.0s)\nbuilt tables_v9/tab_cost_v9.tex (0.0s)\nwrote /tmp/claude-1000/-home-davood-projects-certified-neural-glkn-cgmy/3499bc2f-db32-411f-8465-a9d23c2f4b3e/scratchpad/cleanclone/repo/figures_v9/F5a_acceptance.png\nbuilt figures_v9/F5a_acceptance (0.9s)\nfigures and table written\nbuilt figures_v9/F5b, F5c, tables_v9/tab_pod_ranks_v9.tex (0.7s)\nE2 figures/table written\nbuilt figures_v9/F6a, F6b, tables_v9/tab_benchmark_v9.tex (0.6s)\nF7 written\nbuilt figures_v9/F7_ood (0.3s)\nbuilt tables_v9/tab_ood_v9.tex (0.0s)\nbuilt figures_v9/F8_amortisation (0.4s)\nall tables and figures rebuilt from results/*.json in 4.3s\n"
+  },
+  "run_E0": {
+   "cmd": "/tmp/claude-1000/-home-davood-projects-certified-neural-glkn-cgmy/3499bc2f-db32-411f-8465-a9d23c2f4b3e/scratchpad/cleanclone/venv/bin/python3 scripts/run_E0.py --nproc 1",
+   "returncode": 0,
+   "wall_s": 1929.9941415786743,
+   "tail": "3.14 | eff_S med 8.77 max 17.35 | eff_X med 14.32 max 31.46\n    podgal32    : eta^X/eta^S median 1.73 max 2.99 | eff_S med 7.04 max 10.62 | eff_X med 12.72 max 19.19\n    podgal48    : eta^X/eta^S median 1.72 max 2.57 | eff_S med 6.16 max 10.20 | eff_X med 11.23 max 19.04\n    coarse_N/4  : eta^X/eta^S median 1.41 max 2.11 | eff_S med 6.08 max 23.52 | eff_X med 9.45 max 26.39\n    perturbed_z0: eta^X/eta^S median 1.54 max 3.06 | eff_S med 1.00 max 1.00 | eff_X med 1.00 max 1.00\n=== E0.3 done in 1318s\n=== E0.4\n  N=64: CG 42/45  PCG 7/8  GMRES 5.0/5\n  N=128: CG 74/82  PCG 9/9  GMRES 5.0/6\n  N=256: CG 130/154  PCG 9/10  GMRES 6.0/7\n  N=512: CG 226/292  PCG 10/10  GMRES 7.0/8\n  N=1024: CG 384/549  PCG 10/11  GMRES 7.1/12\n  N=2048: CG 646/1025  PCG 11/11  GMRES 8.0/13\n  N=4096: CG 1083/1911  PCG 11/13  GMRES 9.0/15\n=== E0.4 done in 123s\n=== E0.5\n  Y=0.5: alpha_lb 0.05000 (lmin 0.05237, r m_min 0.00667), sqrtTheta 1.47, GMRES max 5, perturbed eff 1.000000/1.000000, pod12 direct_accept bound 2.58e-11 err 1.55e-13\n  Y=0.8: alpha_lb 0.05000 (lmin 0.05363, r m_min 0.00667), sqrtTheta 1.37, GMRES max 5, perturbed eff 1.000000/1.000000, pod12 direct_accept bound 2.76e-11 err 2.93e-13\n  Y=0.95: alpha_lb 0.05000 (lmin 0.05469, r m_min 0.00667), sqrtTheta 1.32, GMRES max 5, perturbed eff 1.000000/1.000000, pod12 direct_accept bound 2.23e-11 err 1.80e-13\n=== E0.5 done in 1s\n/tmp/claude-1000/-home-davood-projects-certified-neural-glkn-cgmy/3499bc2f-db32-411f-8465-a9d23c2f4b3e/scratchpad/cleanclone/venv/lib/python3.10/site-packages/scipy/stats/_qmc.py:993: UserWarning: The balance properties of Sobol' points require n to be a power of 2.\n  sample = self._random(n, workers=workers)\n/tmp/claude-1000/-home-davood-projects-certified-neural-glkn-cgmy/3499bc2f-db32-411f-8465-a9d23c2f4b3e/scratchpad/cleanclone/venv/lib/python3.10/site-packages/scipy/stats/_qmc.py:993: UserWarning: The balance properties of Sobol' points require n to be a power of 2.\n  sample = self._random(n, workers=workers)\n"
+  },
+  "pytest_quick": {
+   "cmd": "CGMY_FULL_TESTS=0 /tmp/claude-1000/-home-davood-projects-certified-neural-glkn-cgmy/3499bc2f-db32-411f-8465-a9d23c2f4b3e/scratchpad/cleanclone/venv/bin/python3 -m pytest tests -q",
+   "returncode": 0,
+   "wall_s": 157.6653971672058,
+   "tail": ".......ss.....................ssss...ssssssss....................ss      [100%]\n=============================== warnings summary ===============================\ntests/test_spectral_riesz.py::test_pcg_iterations_and_bracket[64]\ntests/test_spectral_riesz.py::test_pcg_iterations_and_bracket[256]\ntests/test_spectral_riesz.py::test_pcg_iterations_and_bracket[1024]\ntests/test_spectral_riesz.py::test_pcg_iterations_and_bracket[4096]\n  /tmp/claude-1000/-home-davood-projects-certified-neural-glkn-cgmy/3499bc2f-db32-411f-8465-a9d23c2f4b3e/scratchpad/cleanclone/venv/lib/python3.10/site-packages/scipy/stats/_qmc.py:993: UserWarning: The balance properties of Sobol' points require n to be a power of 2.\n    sample = self._random(n, workers=workers)\n\ntests/test_symbols.py::test_bspline_ft_sq\n  /tmp/claude-1000/-home-davood-projects-certified-neural-glkn-cgmy/3499bc2f-db32-411f-8465-a9d23c2f4b3e/scratchpad/cleanclone/repo/tests/test_symbols.py:22: RuntimeWarning: overflow encountered in power\n    assert np.all(bspline_ft_sq(th) <= (2 / np.maximum(np.abs(th), 1e-300)) ** 6 + 1e-300)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n51 passed, 16 skipped, 5 warnings in 157.18s (0:02:37)\n"
+  }
+ },
+ "clone_commit": "d971756f4d412716279b77af0dcfd780d791942b",
+ "installed": "contourpy==1.3.2\ncycler==0.12.1\nexceptiongroup==1.3.1\nfilelock==4.1.0\nfonttools==4.65.0\nfsspec==2026.9.0\nh5py==3.16.0\niniconfig==2.3.1\nJinja2==3.1.6\nkiwisolver==1.5.1\nMarkupSafe==3.0.4\nmatplotlib==3.10.9\nmpmath==1.3.0\nnetworkx==3.4.2\nnumpy==1.26.4\npackaging==26.3\npandas==2.3.3\npillow==12.2.0\npluggy==1.7.0\nPygments==2.21.0\npyparsing==3.3.3\npytest==9.1.1\npython-dateutil==3.0.0\npytz==2026.5\nPyYAML==6.0.2\nscipy==1.15.3\nsix==1.17.0\nsympy==1.14.0\ntomli==2.5.0\ntorch==2.14.0+cpu\ntyping_extensions==4.16.0\ntzdata==2026.5\n",
+ "comparison": {
+  "tables_v9/tab_assembly_v9.tex": {
+   "kind": "table",
+   "identical": true
+  },
+  "tables_v9/tab_benchmark_v9.tex": {
+   "kind": "table",
+   "identical": true
+  },
+  "tables_v9/tab_budget_v9.tex": {
+   "kind": "table",
+   "identical": true
+  },
+  "tables_v9/tab_cost_v9.tex": {
+   "kind": "table",
+   "identical": true
+  },
+  "tables_v9/tab_ood_v9.tex": {
+   "kind": "table",
+   "identical": true
+  },
+  "tables_v9/tab_pcg_v9.tex": {
+   "kind": "table",
+   "identical": true
+  },
+  "tables_v9/tab_pod_ranks_v9.tex": {
+   "kind": "table",
+   "identical": true
+  },
+  "figures_v9/F2_spectral_bound.png": {
+   "kind": "figure",
+   "pixel_identical": true
+  },
+  "figures_v9/F3_theta_and_effectivity.png": {
+   "kind": "figure",
+   "pixel_identical": true
+  },
+  "figures_v9/F4_eim.png": {
+   "kind": "figure",
+   "pixel_identical": true
+  },
+  "figures_v9/F5a_acceptance.png": {
+   "kind": "figure",
+   "pixel_identical": true
+  },
+  "figures_v9/F5b_effectivity.png": {
+   "kind": "figure",
+   "pixel_identical": true
+  },
+  "figures_v9/F5c_online_time.png": {
+   "kind": "figure",
+   "pixel_identical": true
+  },
+  "figures_v9/F6a_benchmark.png": {
+   "kind": "figure",
+   "pixel_identical": true
+  },
+  "figures_v9/F6b_refinement.png": {
+   "kind": "figure",
+   "pixel_identical": true
+  },
+  "figures_v9/F7_ood.png": {
+   "kind": "figure",
+   "pixel_identical": true
+  },
+  "figures_v9/F8_amortisation.png": {
+   "kind": "figure",
+   "pixel_identical": true
+  }
+ },
+ "all_tables_identical": true,
+ "all_figures_pixel_identical": true,
+ "n_tables": 7,
+ "n_figures": 10,
+ "host": {
+  "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+  "python": "3.10.12"
+ },
+ "finished": "2026-10-23T17:26:04-0500",
+ "e0_rerun_comparison": {
+  "tab_assembly_v9": "byte-identical after the E0 rerun in the clean clone",
+  "tab_pcg_v9": "DIFFERS by +-1 iteration (e.g. N = 64 PCG 7/8 vs 8/9; N = 4096 PCG max 12 vs 13)",
+  "E0_json": "sqrtTheta medians identical to 1e-12; E0.2 ratios to 1e-11; POD-Galerkin effectivities (E0.3) to 1.6e-9",
+  "cause": "E0.4 (and the perturbed-z0 candidate of E0.3) seeded their random vectors with Python's hash(query_id), which is randomised per process (PYTHONHASHSEED); every run drew different test vectors. Fixed to zlib.crc32(query_id) (also the method-order shuffles of run_reduced_cert.py timing). The committed E0.json is kept as produced: Phase 4 reruns no experiment; a rerun of E0.3/E0.4 with the deterministic seeds (~30 min) is the user's decision"
+ },
+ "timing_summary_min": {
+  "pip_install": 0.3434770981470744,
+  "build": 0.07331569194793701,
+  "run_E0_nproc1": 32.16656902631124,
+  "pytest_quick": 2.62775661945343
+ },
+ "laptop_estimate": {
+  "workstation_cpu": "Intel Core Ultra 9 285K (single-thread, one process)",
+  "assumed_laptop_single_thread_ratio": [
+   0.6,
+   0.7
+  ],
+  "run_E0_estimate_min": [
+   46,
+   54
+  ],
+  "note": "estimate from typical single-thread benchmark ratios of a mainstream laptop core to the 285K, not a measurement; the plan's target is < 1 h"
+ }
+}
