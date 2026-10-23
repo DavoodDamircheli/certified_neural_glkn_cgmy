@@ -244,3 +244,17 @@
     Refinement (F6b, bench120[:20], N_T = 240): banded certificate / direct solve =
     0.052 (N = 64), 0.055 (N = 128), 0.045 (N = 256), 0.048 (N = 512), 0.050 (N = 1024), 0.056 (N = 2048), 0.054 (N = 4096). This is flat at ~5% from N = 64
     to 4096. The reduced online certificate (4.6 / 5.6 ms at r = 64 / 80) does not depend on N.
+31. **E4, 10^4 queries** (`results/E4.json`, F8; Sobol seed 4, eps_N, one thread, idle, one pass, method order shuffled
+    per query). Mean online time per query: direct 260 ms; certified POD-Galerkin r = 80: **9.0 ms** (99.77% reduced
+    accept, 0.14% banded, 0.02% exact, 0.07% rejected and corrected); r = 64: 21.2 ms mean / 7.2 ms median (89.7% reduced,
+    9.8% banded, 0.13% exact, 0.35% corrected); space-time POD-NN: 282 ms (100% cheap rejection and correction).
+    Offline cost C0 (POD-Galerkin, basis 800) ~ 1530 s: references 208 s (single-thread estimate: 800 x direct),
+    POD 797 s (4 BLAS threads), EIM 65 s, cell beta-bar 425 s (estimate: 1188 spectral_data evaluations x 0.48 s), tensors
+    39 s. Fitted T(Q) = 1533 s + 9.0 ms Q (r = 80) and 1533 s + 21.2 ms Q (r = 64), against 260 ms Q for direct.
+    **Break-even at ~6 100 (r = 80) and ~6 400 (r = 64) queries.** The space-time POD-NN never breaks even: its online
+    cost exceeds the direct solve, and its C0 (~26 700 s) is dominated by training (best run 5.9 h wall, 3 threads in an
+    8-run sweep on 24 threads; recorded, not single-thread).
+32. **E1 timing with the fast online path** (supersedes item 26; `E1.json` -> timing): the three-stage total at eps_N is
+    5.3-6.2 ms for r <= 48 (cheap rejection now costs ~3.5 ms instead of ~200 ms), 154 ms at r = 56 (banded/exact stages),
+    and equal to the reduced certificate for r >= 62 (4.4-8.3 ms). The uncertified direct solve takes 370 ms cold and
+    167 ms warm.

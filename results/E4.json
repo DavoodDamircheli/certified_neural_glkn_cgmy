@@ -1,0 +1,161 @@
+{
+ "meta": {
+  "description": "E4 (plan 3.5): 10^4-query demonstration at eps_N",
+  "n_queries": 10000,
+  "population": "sobol_queries(10000, seed=4)",
+  "eps": 0.0011846335568048742,
+  "loadavg_start": [
+   0.75,
+   0.89,
+   0.95
+  ],
+  "loadavg_last": [
+   1.06,
+   1.02,
+   1.0
+  ],
+  "hardware": {
+   "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+   "pinned_cores": [
+    3
+   ],
+   "governor": "powersave",
+   "energy_performance_preference": "balance_performance",
+   "cpuinfo_max_freq_khz": "6900000",
+   "no_turbo": "0",
+   "python": "3.10.12",
+   "numpy": "1.26.4",
+   "scipy": "1.15.3",
+   "torch": "2.14.0+cpu",
+   "git_sha": "40a4bf6bc86f71cca10b5ae0ce6e94ac33de0237-dirty",
+   "threads": {
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1"
+   }
+  },
+  "provenance": {
+   "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+   "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+   "cpu_count": 24,
+   "affinity_cpus": 1,
+   "thread_env": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1"
+   },
+   "python": "3.10.12",
+   "numpy": "1.26.4",
+   "scipy": "1.15.3",
+   "git_sha": "40a4bf6bc86f71cca10b5ae0ce6e94ac33de0237-dirty",
+   "timestamp": "2026-10-23T13:04:04-0500"
+  },
+  "protocol": "one pass, method order shuffled per query, one performance core, reusable setup"
+ },
+ "methods": {
+  "direct": {
+   "total_online_s": 2600.676540392451,
+   "C1_mean_s": 0.2600676540392451,
+   "median_s": 0.2572661694139242,
+   "model": "T(Q) = 260.07 ms * Q"
+  },
+  "podg80": {
+   "total_online_s": 90.29159944318235,
+   "C1_mean_s": 0.009029159944318235,
+   "median_s": 0.008585653267800808,
+   "status_fractions": {
+    "banded_accept": 0.0014,
+    "exact_accept": 0.0002,
+    "reduced_accept": 0.9977,
+    "reject_cheap": 0.0007
+   },
+   "fraction_corrected": 0.0007,
+   "C0_s": 1533.0050133345649,
+   "break_even_queries": 6106.653160351096,
+   "model": "T(Q) = 1533 s + 9.03 ms * Q"
+  },
+  "podg64": {
+   "total_online_s": 211.922018436715,
+   "C1_mean_s": 0.0211922018436715,
+   "median_s": 0.007183403708040714,
+   "status_fractions": {
+    "banded_accept": 0.0979,
+    "exact_accept": 0.0013,
+    "exact_reject": 0.0001,
+    "reduced_accept": 0.8973,
+    "reject_banded": 0.0001,
+    "reject_cheap": 0.0033
+   },
+   "fraction_corrected": 0.0035,
+   "C0_s": 1533.0050133345649,
+   "break_even_queries": 6417.591256214361,
+   "model": "T(Q) = 1533 s + 21.19 ms * Q"
+  },
+  "podnn_st": {
+   "total_online_s": 2820.020203488879,
+   "C1_mean_s": 0.2820020203488879,
+   "median_s": 0.28104218700900674,
+   "status_fractions": {
+    "reject_cheap": 1.0
+   },
+   "fraction_corrected": 1.0,
+   "C0_s": 26732.27757303696,
+   "break_even_queries": null,
+   "model": "T(Q) = 26732 s + 282.00 ms * Q"
+  }
+ },
+ "offline": {
+  "references": {
+   "recorded_wall_s": 101.25073432922363,
+   "recorded_parallelism": 22,
+   "single_thread_estimate_800": 207.5222883373499,
+   "single_thread_estimate_4000": 1037.6114416867495,
+   "note": "single-thread estimate = n x median direct solve time (E2, reusable setup)"
+  },
+  "pod_wall_s": {
+   "800": 796.8496687412262,
+   "4000": 3970.028701066971
+  },
+  "eim": {
+   "build_wall_s": 64.9475884437561,
+   "nproc": 12,
+   "select_wall_s": 66.03182649612427
+  },
+  "cells": {
+   "spectral_data_evaluations": 891,
+   "single_thread_estimate_s": 424.737470719032,
+   "note": "corner-rule beta-bar: n_corners x 33 Y points per cell x spectral_data (cost model constant); not separately logged"
+  },
+  "tensors_offline_s": {
+   "redcert_N1024_r64_n800_CYm_3x3x2_Q36c_b128.npz": 17.500747442245483,
+   "redcert_N1024_r80_n800_CYm_3x3x2_Q36c_b128.npz": 21.4472496509552,
+   "redcert_N1024_r48_n4000_CYm_3x3x2_Q36c.npz": 4.195839166641235,
+   "redcert_N1024_r48_n4000_CYm_3x3x2_Q37c.npz": 4.608463764190674
+  },
+  "training": {
+   "best_run": "podnn_N1024_r48_n4000_lamR1_seed2_spacetime",
+   "best_run_wall_s": 21226.14806818962,
+   "whole_sweep_wall_s_sum": 241935.77867531776,
+   "note": "wall time of each run with 3 threads, 8 runs in parallel on 24 threads (sweep_N1024.py); stated as recorded, not single-thread"
+  },
+  "C0_s": {
+   "podg": {
+    "references": 207.5222883373499,
+    "pod": 796.8496687412262,
+    "eim": 64.9475884437561,
+    "cells": 424.737470719032,
+    "tensors": 38.947997093200684,
+    "total": 1533.0050133345649
+   },
+   "podnn_st": {
+    "references": 1037.6114416867495,
+    "pod": 3970.028701066971,
+    "eim": 64.9475884437561,
+    "cells": 424.737470719032,
+    "tensors": 8.80430293083191,
+    "training": 21226.14806818962,
+    "total": 26732.27757303696
+   }
+  }
+ }
+}

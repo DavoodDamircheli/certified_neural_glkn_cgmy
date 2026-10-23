@@ -62695,9 +62695,9 @@
  "timing": {
   "per_rank": {
    "8": {
-    "reduced_solve": 0.746448989957571,
-    "reduced_certificate": 2.9248367063701153,
-    "three_stage_total": 206.63413358852267,
+    "reduced_solve": 0.7328069768846035,
+    "reduced_certificate": 2.9022740200161934,
+    "three_stage_total": 5.29050687327981,
     "rho": [
      185,
      206
@@ -62707,9 +62707,9 @@
     }
    },
    "16": {
-    "reduced_solve": 0.7866113446652889,
-    "reduced_certificate": 3.0502271838486195,
-    "three_stage_total": 205.2511819638312,
+    "reduced_solve": 0.7712985388934612,
+    "reduced_certificate": 3.0659744516015053,
+    "three_stage_total": 5.415590014308691,
     "rho": [
      254,
      289
@@ -62719,9 +62719,9 @@
     }
    },
    "24": {
-    "reduced_solve": 0.8285744115710258,
-    "reduced_certificate": 3.2050926238298416,
-    "three_stage_total": 204.83377994969487,
+    "reduced_solve": 0.8191829547286034,
+    "reduced_certificate": 3.184765577316284,
+    "three_stage_total": 5.5739847011864185,
     "rho": [
      312,
      359
@@ -62731,9 +62731,9 @@
     }
    },
    "32": {
-    "reduced_solve": 0.8845580741763115,
-    "reduced_certificate": 3.408676479011774,
-    "three_stage_total": 203.3079843968153,
+    "reduced_solve": 0.8599641732871532,
+    "reduced_certificate": 3.3794050104916096,
+    "three_stage_total": 5.776595789939165,
     "rho": [
      376,
      429
@@ -62743,9 +62743,9 @@
     }
    },
    "40": {
-    "reduced_solve": 0.9308047592639923,
-    "reduced_certificate": 3.6560771986842155,
-    "three_stage_total": 202.06806575879455,
+    "reduced_solve": 0.9238575585186481,
+    "reduced_certificate": 3.5970397293567657,
+    "three_stage_total": 5.968895275145769,
     "rho": [
      438,
      502
@@ -62755,9 +62755,9 @@
     }
    },
    "48": {
-    "reduced_solve": 0.9901043958961964,
-    "reduced_certificate": 3.8686846382915974,
-    "three_stage_total": 199.5474179275334,
+    "reduced_solve": 0.9751692414283752,
+    "reduced_certificate": 3.8684415630996227,
+    "three_stage_total": 6.247934885323048,
     "rho": [
      502,
      575
@@ -62767,9 +62767,9 @@
     }
    },
    "56": {
-    "reduced_solve": 1.0478589683771133,
-    "reduced_certificate": 4.240050446242094,
-    "three_stage_total": 717.3950974829495,
+    "reduced_solve": 1.0377196595072746,
+    "reduced_certificate": 4.20791283249855,
+    "three_stage_total": 153.6640077829361,
     "rho": [
      569,
      653
@@ -62781,9 +62781,9 @@
     }
    },
    "62": {
-    "reduced_solve": 1.115109771490097,
-    "reduced_certificate": 4.503293428570032,
-    "three_stage_total": 4.453124012798071,
+    "reduced_solve": 1.0873093269765377,
+    "reduced_certificate": 4.496857523918152,
+    "three_stage_total": 4.441129043698311,
     "rho": [
      622,
      713
@@ -62794,9 +62794,9 @@
     }
    },
    "64": {
-    "reduced_solve": 1.1059674434363842,
-    "reduced_certificate": 4.613303113728762,
-    "three_stage_total": 4.629190545529127,
+    "reduced_solve": 1.1103381402790546,
+    "reduced_certificate": 4.606329370290041,
+    "three_stage_total": 4.59342310205102,
     "rho": [
      639,
      732
@@ -62807,9 +62807,9 @@
     }
    },
    "80": {
-    "reduced_solve": 1.2952187098562717,
-    "reduced_certificate": 5.611646920442581,
-    "three_stage_total": 5.621251184493303,
+    "reduced_solve": 1.2955637648701668,
+    "reduced_certificate": 5.629700608551502,
+    "three_stage_total": 5.585130769759417,
     "rho": [
      786,
      896
@@ -62819,9 +62819,9 @@
     }
    },
    "96": {
-    "reduced_solve": 1.5269434079527855,
-    "reduced_certificate": 6.774337962269783,
-    "three_stage_total": 6.777083966881037,
+    "reduced_solve": 1.4942698180675507,
+    "reduced_certificate": 6.790062412619591,
+    "three_stage_total": 6.780596449971199,
     "rho": [
      942,
      1016
@@ -62831,9 +62831,9 @@
     }
    },
    "128": {
-    "reduced_solve": 2.029603347182274,
-    "reduced_certificate": 8.2357507199049,
-    "three_stage_total": 8.277316577732563,
+    "reduced_solve": 1.9707498140633106,
+    "reduced_certificate": 8.277977351099253,
+    "three_stage_total": 8.27717874199152,
     "rho": [
      1022,
      1022
@@ -62844,8 +62844,8 @@
    }
   },
   "direct_ms": {
-   "direct_cold": 368.86634305119514,
-   "direct_warm": 170.10458605363965
+   "direct_cold": 369.90490602329373,
+   "direct_warm": 167.3529134131968
   },
   "basis": 800,
   "Q": 36,
@@ -62853,14 +62853,14 @@
   "warmup": "validation30[0]",
   "unit": "ms (median of per-query medians)",
   "loadavg_before": [
-   0.45,
-   3.66,
-   2.48
+   0.42,
+   0.87,
+   0.94
   ],
   "loadavg_after": [
-   0.98,
-   2.4,
-   2.19
+   0.73,
+   0.89,
+   0.95
   ],
   "hardware": {
    "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
@@ -62875,7 +62875,7 @@
    "numpy": "1.26.4",
    "scipy": "1.15.3",
    "torch": "2.14.0+cpu",
-   "git_sha": "377c3d23f3eb2171e9bf5bd46139983340f6d262-dirty",
+   "git_sha": "40a4bf6bc86f71cca10b5ae0ce6e94ac33de0237",
    "threads": {
     "OMP_NUM_THREADS": "1",
     "MKL_NUM_THREADS": "1",
@@ -62895,8 +62895,8 @@
    "python": "3.10.12",
    "numpy": "1.26.4",
    "scipy": "1.15.3",
-   "git_sha": "377c3d23f3eb2171e9bf5bd46139983340f6d262-dirty",
-   "timestamp": "2026-10-21T14:07:26-0500"
+   "git_sha": "40a4bf6bc86f71cca10b5ae0ce6e94ac33de0237",
+   "timestamp": "2026-10-23T11:28:37-0500"
   }
  }
 }

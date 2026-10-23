@@ -453,3 +453,18 @@ projection of the references. Not evaluated further.
   changes the discrete operator itself, while K = 100 is fixed for every Phase 3 experiment (references and true
   errors are defined against the K = 100 system). The potential saving is reported in `spectral_fast.json` -> split.
   The decision is the user's.
+
+## E1 timing rerun, E4
+
+* E1's timing step was rerun with the fast online path (`E1.json` -> timing, F5c). The first numbers (fine spectral
+  data and Theta-bar) are superseded. E1's verdicts are unchanged (they were computed with the fine mode, which
+  differs from the fast one by +-0.2% at most).
+* E4 has no references for the 10^4 queries: the brief asks for acceptance fractions, correction fractions, online time
+  and the offline cost, not true errors. False accepts are checked on bench120 (E2), validation30 (E1) and the 264 OOD
+  queries (E3): zero everywhere.
+* E4's offline cost C0 uses the recorded logs where they exist (POD with 4 BLAS threads, EIM build, tensor build,
+  training wall times) and estimates where they don't. References: n x the measured single-thread direct solve
+  (generated with 22 processes). Cell beta-bar: 1188 spectral_data evaluations x the cost-model constant (not logged
+  when it ran). Training is the best run's recorded wall time on 3 threads in an 8-run sweep, stated as such.
+* A helper meant to archive the E2 dry run waited on a `pgrep -f` pattern that also matched its own command line, so
+  it never returned. The cold-split job waiting on its output sat idle for about a day. No result was affected.
