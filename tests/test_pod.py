@@ -91,7 +91,8 @@ DATA = ROOT / "data"
 MAN = ROOT / "results" / "MANIFEST.json"
 
 
-@pytest.mark.skipif(not MAN.exists(), reason="references not generated (scripts/gen_references.py)")
+@pytest.mark.skipif(not MAN.exists() or not (DATA / "references_N512_NT240_seed0_800.npz").exists(),
+                    reason="reference data files not present (not in the archive; scripts/gen_references.py)")
 def test_reference_files():
     man = json.loads(MAN.read_text())["files"]
     names = ["references_N512_NT240_seed0_800.npz", "references_N512_NT240_seed0_4000.npz",
