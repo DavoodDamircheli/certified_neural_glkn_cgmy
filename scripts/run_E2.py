@@ -112,12 +112,16 @@ class Pipeline:
         t0 = time.perf_counter()
         msh, z0 = self.setup(cold)
         fs = free_matrices(q, N); forc = free_forcing(fs, q.T, NT)
+        ta = time.perf_counter()
         tr = cn_march(fs, z0, q.T, NT, solver="gmres", forcing=forc)
         t1 = time.perf_counter()
-        sp = spectral_data(q, N)
+        sp = spectral_data(q, N, mode="fast")                     # online path: fast mode
+        ts = time.perf_counter()
         c = certify(fs, forc, tr.Z, z0, EPS_N, mode="banded", spec=sp)
         t2 = time.perf_counter()
-        return dict(Z=tr.Z, bound=c.etaX_aug, t_solve=t1 - t0, t_cert=t2 - t1, t_total=t2 - t0)
+        return dict(Z=tr.Z, bound=c.etaX_aug, t_solve=t1 - t0, t_cert=t2 - t1, t_total=t2 - t0,
+                    split=dict(setup_assembly_forcing=ta - t0, march=t1 - ta, spectral=ts - t1,
+                               residual=c.time_residual, banded_solves=c.time_banded))
 
     def certified(self, q, method, eps, cold=False):
         """Candidate -> three-stage -> (correction + recertify if rejected)."""
@@ -144,23 +148,32 @@ class Pipeline:
         dt = q.T / NT
         bL = lifting(q, msh, np.arange(NT + 1) * dt)
         red = rc.certify(q, alpha, dt, bL, info["ell"], info["eps_Q"], cid=cid)
+        t_red = time.perf_counter() - t1
+        split = dict(candidate=t_cand, reduced_stage=t_red, theta_bar=0.0, assembly=0.0, spectral=0.0, residual=0.0,
+                     banded_solves=0.0, pcg=0.0, correction=0.0, recertify=0.0)
         if red["eta_aug"] <= eps:
-            status = "reduced_accept"; t_cert = time.perf_counter() - t1
-            return dict(status=status, corrected=False, Z=V @ alpha, t_candidate=t_cand, t_certificate=t_cert,
-                        t_correction=0.0, t_recertify=0.0, t_total=time.perf_counter() - t0)
+            return dict(status="reduced_accept", corrected=False, Z=V @ alpha, t_candidate=t_cand, t_certificate=t_red,
+                        t_correction=0.0, t_recertify=0.0, t_total=time.perf_counter() - t0, split=split)
+        ta = time.perf_counter()
         fs = free_matrices(q, N); forc = free_forcing(fs, q.T, NT)
+        split["assembly"] = time.perf_counter() - ta
         ts = certify_three_stage(fs, forc, z0, eps, q=q, alpha=alpha, V=V, rc=rc, ell=info["ell"], eps_Q=info["eps_Q"],
                                  cid=cid, reduced=red)
-        t_cert = time.perf_counter() - t1
+        split["theta_bar"] = ts.times.get("theta_bar", 0.0)
+        if ts.full is not None:
+            split.update(spectral=ts.full["t_spectral"], residual=ts.full["t_residual"], banded_solves=ts.full["t_banded_solves"],
+                         pcg=ts.full.get("t_pcg", 0.0))
+        t_cert = time.perf_counter() - t1 - split["assembly"]
         out = dict(status=ts.status, corrected=False, Z=V @ alpha, t_candidate=t_cand, t_certificate=t_cert,
-                   t_correction=0.0, t_recertify=0.0)
+                   t_correction=0.0, t_recertify=0.0, split=split)
         if not ts.accepted:
             t2 = time.perf_counter()
             tr = cn_march(fs, z0, q.T, NT, solver="gmres", forcing=forc, x0_traj=V @ alpha)
             t3 = time.perf_counter()
-            sp = spectral_data(q, N)
+            sp = ts.full["spec"] if ts.full is not None else spectral_data(q, N, mode="fast")
             c = certify(fs, forc, tr.Z, z0, eps, mode="banded", spec=sp)
             t4 = time.perf_counter()
+            split.update(correction=t3 - t2, recertify=t4 - t3)
             out.update(corrected=True, Z=tr.Z, t_correction=t3 - t2, t_recertify=t4 - t3,
                        corrected_bound=c.etaX_aug, corrected_accepted=bool(c.etaX_aug <= eps))
         out["t_total"] = time.perf_counter() - t0
@@ -215,8 +228,14 @@ def do_bench(res):
             s = dict(median_time_ms=float(np.median(t) * 1e3), ratio_to_direct=geo_ratio_ci(t, tref))
             if name == "direct_banded":
                 frac = np.array([r["t_cert"] / r["t_total"] for r in rows])
+                proper = np.array([(r["split"]["residual"] + r["split"]["banded_solves"]) / r["t_solve"] for r in rows])
+                with_sym = np.array([(r["split"]["residual"] + r["split"]["banded_solves"] + r["split"]["spectral"]) / r["t_solve"]
+                                     for r in rows])
                 s.update(certificate_fraction_median=float(np.median(frac)),
-                         certificate_over_solve_median=float(np.median([r["t_cert"] / r["t_solve"] for r in rows])))
+                         certificate_over_solve_median=float(np.median([r["t_cert"] / r["t_solve"] for r in rows])),
+                         certificate_proper_over_solve_median=float(np.median(proper)),
+                         certificate_incl_symbol_work_over_solve_median=float(np.median(with_sym)),
+                         split_median_ms={k: float(np.median([r["split"][k] for r in rows]) * 1e3) for k in rows[0]["split"]})
             if "@" in name:
                 eps = float(name.split("@")[1])
                 st = [r["status"] for r in rows]
@@ -226,7 +245,10 @@ def do_bench(res):
                                                for r in rows)),
                          final_max_true_err=float(max(r["true_err"] for r in rows)),
                          time_split_median_ms={k: float(np.median([r[k] for r in rows]) * 1e3)
-                                               for k in ("t_candidate", "t_certificate", "t_correction", "t_recertify")})
+                                               for k in ("t_candidate", "t_certificate", "t_correction", "t_recertify")},
+                         component_split_mean_ms={k: float(np.mean([r["split"][k] for r in rows]) * 1e3) for k in rows[0]["split"]},
+                         symbol_work_mean_ms=float(np.mean([r["split"]["assembly"] + r["split"]["spectral"] + r["split"]["theta_bar"]
+                                                           for r in rows]) * 1e3))
             summ[name] = s
         out[setup] = dict(summary=summ, rows=per, wall_s=time.time() - t0)
         print(setup, {k: (round(v["median_time_ms"], 1), round(v["ratio_to_direct"]["geo_mean_ratio"], 3),
@@ -258,7 +280,7 @@ def do_refine(res, n_q=20, Ns=(64, 128, 256, 512, 1024, 2048, 4096)):
 
         def banded(q):
             x = ctx[q.query_id]
-            certify(x["fs"], x["forc"], x["Z"], x["z0"], EPS_N, mode="banded", spec=spectral_data(q, N_))
+            certify(x["fs"], x["forc"], x["Z"], x["z0"], EPS_N, mode="banded", spec=spectral_data(q, N_, mode="fast"))
 
         t = protocol(dict(direct_solve=solve, banded_certificate=banded), pop, warm, reps=5, seed=N_)
         ds, bc = np.array(t["direct_solve"]), np.array(t["banded_certificate"])
@@ -269,8 +291,8 @@ def do_refine(res, n_q=20, Ns=(64, 128, 256, 512, 1024, 2048, 4096)):
     red = e1["timing"]["per_rank"]
     res["refine"] = dict(per_N=out, n_queries=n_q, population="bench120[:20]", N_T=NT,
                          reduced_certificate_ms_N1024={r: red[r]["reduced_certificate"] for r in ("64", "80")},
-                         note="direct solve includes assembly; banded certificate includes spectral data, residual and banded "
-                              "solves; the reduced online certificate (E1 timing, N = 1024) does not depend on N",
+                         note="direct solve includes assembly; banded certificate includes spectral data (fast mode), residual "
+                              "and banded solves; the reduced online certificate (E1 timing, N = 1024) does not depend on N",
                          loadavg_before=la0, loadavg_after=loadavg(), hardware=hardware(), provenance=provenance())
     save(res)
 

@@ -73,6 +73,7 @@ class ThreeStage:
     eta_banded: float | None = None
     eta_exact: float | None = None
     times: dict = field(default_factory=dict)
+    full: dict | None = None             # stage-2/3 values incl. the component times and the spectral data
 
     @property
     def accepted(self) -> bool:
@@ -109,7 +110,7 @@ def certify_three_stage(fs, forcing, z_h0: np.ndarray, eps: float, *, q: Query, 
     if full is None:           # lazy (timed path): banded stage now, exact stage only if the banded one is undecided
         full = banded_values(fs, forcing, z_h0, V @ alpha, q, spec)
     times["banded"] = full["t_banded"]
-    out = ThreeStage("", 2, eps, red, lower, tbar, eta_banded=full["etaX"], times=times)
+    out = ThreeStage("", 2, eps, red, lower, tbar, eta_banded=full["etaX"], times=times, full=full)
     if full["etaX"] <= eps:
         out.status = "banded_accept"
         return out

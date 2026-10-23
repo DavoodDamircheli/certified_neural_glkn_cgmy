@@ -4569,5 +4569,78 @@
    "timestamp": "2026-10-22T12:41:28-0500",
    "nproc": 14
   }
+ },
+ "split": {
+  "median_ms": {
+   "assembly_symbol_K100": 106.89480928704143,
+   "assembly_total_K100": 107.36555652692914,
+   "assembly_total_Kadaptive": 36.33768204599619,
+   "forcing": 0.5981898866593838,
+   "initial_projection": 90.26215504854918,
+   "preconditioner": 0.016686972230672836,
+   "march": 159.82268331572413,
+   "spectral_fine": 477.51909168437123,
+   "spectral_fast": 2.4643908254802227
+  },
+  "K_adaptive_assembly": [
+   20,
+   40,
+   40,
+   40,
+   40,
+   40,
+   100,
+   20,
+   20,
+   100
+  ],
+  "note": "march includes the preconditioner construction (cn_march builds it); assembly_total = symbol on the L-grid + Toeplitz FFTs; the adaptive-K assembly is measured, not adopted (K = 100 is fixed in the production configuration)",
+  "population": "bench120[:10]",
+  "loadavg_before": [
+   0.12,
+   0.05,
+   0.01
+  ],
+  "loadavg_after": [
+   0.69,
+   0.23,
+   0.07
+  ],
+  "hardware": {
+   "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+   "pinned_cores": [
+    3
+   ],
+   "governor": "powersave",
+   "energy_performance_preference": "balance_performance",
+   "cpuinfo_max_freq_khz": "6900000",
+   "no_turbo": "0",
+   "python": "3.10.12",
+   "numpy": "1.26.4",
+   "scipy": "1.15.3",
+   "torch": "2.14.0+cpu",
+   "git_sha": "5289e43f0cbb1bb5c428d4bf7be1025bae95b2fe-dirty",
+   "threads": {
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1"
+   }
+  },
+  "provenance": {
+   "platform": "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+   "cpu_model": "Intel(R) Core(TM) Ultra 9 285K",
+   "cpu_count": 24,
+   "affinity_cpus": 1,
+   "thread_env": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1"
+   },
+   "python": "3.10.12",
+   "numpy": "1.26.4",
+   "scipy": "1.15.3",
+   "git_sha": "5289e43f0cbb1bb5c428d4bf7be1025bae95b2fe-dirty",
+   "timestamp": "2026-10-23T10:40:07-0500"
+  }
  }
 }
