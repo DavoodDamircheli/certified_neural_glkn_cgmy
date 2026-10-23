@@ -1494,5 +1494,37 @@
     "ell_epsQ": 32361
    }
   }
- ]
+ ],
+ "remarks": {
+  "adaptive_alias_assembly": {
+   "assembly_K100_ms": 107.36555652692914,
+   "assembly_adaptive_K_ms": 36.33768204599619,
+   "K_adaptive": [
+    20,
+    40,
+    40,
+    40,
+    40,
+    40,
+    100,
+    20,
+    20,
+    100
+   ],
+   "status": "remark, not a method: K = 100 is kept for every experiment because the assembled operator defines the discrete problem",
+   "source": "results/spectral_fast.json -> split (bench120[:10], N = 1024, one thread, idle)"
+  },
+  "cold_direct_split_ms": {
+   "assembly_total_K100": 107.36555652692914,
+   "forcing": 0.5981898866593838,
+   "initial_projection": 90.26215504854918,
+   "preconditioner": 0.016686972230672836,
+   "march": 159.82268331572413
+  },
+  "initial_projection": "query-independent (strike fixed): cached in the reusable setup, inside the timer in the cold setup (v8 protocol)",
+  "spectral_data_ms": {
+   "fine": 477.51909168437123,
+   "fast_online": 2.4643908254802227
+  }
+ }
 }

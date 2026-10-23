@@ -210,3 +210,17 @@
       precision 0.26 (r = 64) / 0.20 (r = 80); it discards all 196 / 210 good queries. The certificate has recall 1
       (by theorem) and precision 0.82 / 0.76: it discards only 15 / 17 good queries. The ensemble proxy of the
       space-time POD-NN could not make this comparison, because all its errors exceed eps_N.
+28. **Cold direct-solve split at N = 1024** (one thread, idle; `spectral_fast.json` -> split, `cost_model.json` ->
+    remarks): assembly 107 ms (almost all of it the symbol on the L-grid with K = 100), forcing 0.6 ms, initial
+    projection 90 ms (query-independent, cached in the reusable setup, inside the timer in the cold setup as in v8),
+    preconditioner < 0.1 ms, CN march 160 ms. Full-order certificate components: spectral data 2.5 ms (fast online
+    mode; 478 ms in the fine verification mode), residual ~6 ms, banded solves ~3 ms.
+    *Remark (not a method):* with the adaptive alias count of the fast spectral mode, the assembly would take 36 ms
+    instead of 107 ms. K = 100 is kept for every experiment, because the assembled operator defines the discrete
+    problem.
+29. **Fast online spectral data** (`results/spectral_fast.json`): coarse graded grid (1012 nodes), alias count
+    K' = 10, sin^{2p}(theta/2)-weighted tail bound (the dropped aliases carry this factor exactly), rigorous with the
+    same derivative margins. Fast / fine on spectral288 at N = 1024: beta 0.99992-0.99996, Theta 1.00005-1.0022,
+    alpha_lb 1.0000-1.008 (fast is exact at theta = 0, where s_mu = r), Theta-bar 0.998-1.002. eta^X on POD-Galerkin
+    changes by +0.002%. This turns the banded full-order certificate from ~490 ms (twice the solve) into ~12 ms
+    (fraction to be filled from the final E2).
