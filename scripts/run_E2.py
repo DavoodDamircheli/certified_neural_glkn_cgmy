@@ -26,6 +26,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+from cgmy_cert.figio import save_fig  # noqa: E402
 from cgmy_cert.params import Query, Mesh, load_queries_json  # noqa: E402
 from cgmy_cert.symbols import free_matrices  # noqa: E402
 from cgmy_cert.eim import load_eim  # noqa: E402
@@ -320,7 +321,7 @@ def do_figs(res):
         ax.set_xlabel("time / uncertified direct solve (geo-mean, 95% CI)", fontsize=8)
         for sp in ("top", "right"):
             ax.spines[sp].set_visible(False)
-    fig.tight_layout(); fig.savefig(FIG / "F6a_benchmark.png", dpi=200); plt.close(fig)
+    fig.tight_layout(); save_fig(fig, FIG / "F6a_benchmark.png"); plt.close(fig)
     if "refine" in res:
         r = res["refine"]; Ns = [int(k) for k in r["per_N"]]
         fig, ax = plt.subplots(1, 2, figsize=(9, 3.4))
@@ -337,7 +338,7 @@ def do_figs(res):
             a.grid(alpha=0.25, lw=0.5, which="both")
             for sp in ("top", "right"):
                 a.spines[sp].set_visible(False)
-        fig.tight_layout(); fig.savefig(FIG / "F6b_refinement.png", dpi=200); plt.close(fig)
+        fig.tight_layout(); save_fig(fig, FIG / "F6b_refinement.png"); plt.close(fig)
     # table
     lines = [r"\begin{table}[!htbp]", r"\centering\small",
              r"\caption{Matched benchmark on bench120 at $N=1024$, $N_T=240$ (one thread, idle machine, reusable setup): "

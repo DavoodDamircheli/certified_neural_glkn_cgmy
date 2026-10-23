@@ -16,6 +16,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+from cgmy_cert.figio import save_fig  # noqa: E402
 from cgmy_cert.eim import (build_eim, load_eim, eim_path, sha256, eim_test_queries, family_grid,  # noqa: E402
                            TOL_SWEEP, TRAIN_SHAPE)
 from cgmy_cert.symbols import free_matrices  # noqa: E402
@@ -238,7 +239,7 @@ def do_figure(res):
             a.spines[s].set_visible(False)
     fig.tight_layout()
     FIG.mkdir(exist_ok=True)
-    fig.savefig(FIG / "F4_eim.png", dpi=200)
+    save_fig(fig, FIG / "F4_eim.png")
     print("wrote", FIG / "F4_eim.png")
 
 

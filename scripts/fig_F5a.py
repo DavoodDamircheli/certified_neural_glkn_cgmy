@@ -15,6 +15,9 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
+import sys  # noqa: E402
+sys.path.insert(0, str(ROOT))
+from cgmy_cert.figio import save_fig  # noqa: E402
 RES = ROOT / "results"; FIG = ROOT / "figures_v9"
 PAL = ["#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7", "#56B4E9"]       # Okabe-Ito, fixed order
 CERTS = (("reduced", "reduced online"), ("banded_AI", "banded full-order"), ("exact_AI", "exact full-order"))
@@ -107,7 +110,7 @@ def main():
         ax.spines[sp].set_visible(False)
     FIG.mkdir(exist_ok=True)
     out = FIG / "F5a_acceptance.png"
-    fig.savefig(out, dpi=200, bbox_inches="tight")
+    save_fig(fig, out, bbox_inches="tight")
     print("wrote", out)
 
 

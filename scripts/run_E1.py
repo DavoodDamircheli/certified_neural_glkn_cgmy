@@ -25,6 +25,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+from cgmy_cert.figio import save_fig  # noqa: E402
 from cgmy_cert.params import Query, Mesh  # noqa: E402
 from cgmy_cert.symbols import free_matrices  # noqa: E402
 from cgmy_cert.eim import load_eim  # noqa: E402
@@ -373,7 +374,7 @@ def do_figs(res):
         for sp in ("top", "right"):
             a.spines[sp].set_visible(False)
     np.atleast_1d(ax)[0].set_ylabel("queries (validation30)", fontsize=8)
-    fig.tight_layout(); fig.savefig(FIG / "F5b_effectivity.png", dpi=200); plt.close(fig)
+    fig.tight_layout(); save_fig(fig, FIG / "F5b_effectivity.png"); plt.close(fig)
     # ---- F5c: online time vs r
     if "timing" in res:
         t = res["timing"]; rs = [int(r) for r in t["per_rank"]]
@@ -388,7 +389,7 @@ def do_figs(res):
         a.legend(fontsize=7, frameon=False); a.grid(alpha=0.25, lw=0.5, which="both")
         for sp in ("top", "right"):
             a.spines[sp].set_visible(False)
-        fig.tight_layout(); fig.savefig(FIG / "F5c_online_time.png", dpi=200); plt.close(fig)
+        fig.tight_layout(); save_fig(fig, FIG / "F5c_online_time.png"); plt.close(fig)
     # ---- table of ranks
     lines = [r"\begin{table}[!htbp]", r"\centering\small",
              r"\caption{POD-Galerkin on validation30 at $N=1024$ (basis 800): median true error, accepted queries (of 30) at "

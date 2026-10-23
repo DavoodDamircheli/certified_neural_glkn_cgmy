@@ -1,0 +1,19 @@
+\begin{table}[!htbp]
+\centering\small
+\caption{Out-of-distribution queries (E3): per shell, the number of queries, how many have true error $\le\varepsilon_N$ (the reduced model still works) and how many of those the exact / three-stage certificates accept, the median true error and the median $\varepsilon_Q$. Shells overlap; the reduced stage is not used outside the box.}
+\label{tab:ood}
+\begin{tabular}{lr rrr rrr r}
+\toprule
+ & & \multicolumn{3}{c}{POD-Galerkin $r=64$} & \multicolumn{3}{c}{POD-Galerkin $r=80$} & \\
+shell & queries & works & certified & med.\ err. & works & certified & med.\ err. & med.\ $\varepsilon_Q$\\
+\midrule
+all & 264 & 196 & 181 & $6.3e-05$ & 210 & 193 & $1.0e-05$ & $2.0e-07$\\
+$C>1$ & 122 & 96 & 93 & $3.5e-05$ & 104 & 95 & $3.7e-06$ & $5.3e-08$\\
+$Y<1.1$ & 39 & 31 & 25 & $3.6e-05$ & 36 & 31 & $6.1e-06$ & $1.4e-08$\\
+$Y>1.8$ & 36 & 15 & 15 & $3.1e-02$ & 18 & 15 & $2.8e-03$ & $6.1e-07$\\
+$G<1$ & 27 & 17 & 13 & $6.4e-04$ & 21 & 13 & $3.9e-04$ & $3.1e-06$\\
+$M>9$ & 111 & 93 & 88 & $4.0e-05$ & 101 & 94 & $8.6e-06$ & $2.5e-07$\\
+ext.\ vertices & 64 & 33 & 27 & $1.0e-03$ & 34 & 31 & $2.0e-04$ & $4.3e-06$\\
+\bottomrule
+\end{tabular}
+\end{table}

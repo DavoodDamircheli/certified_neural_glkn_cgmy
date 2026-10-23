@@ -17,6 +17,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT)); sys.path.insert(0, str(ROOT / "scripts"))
+from cgmy_cert.figio import save_fig  # noqa: E402
 from cgmy_cert.params import sobol_queries, Query  # noqa: E402
 from cgmy_cert.timing import pin, check_single_thread, hardware, loadavg  # noqa: E402
 from cgmy_cert.provenance import provenance  # noqa: E402
@@ -125,7 +126,14 @@ def do_summary():
                methods=meth, offline=off)
     OUT.write_text(json.dumps(res, indent=1, default=float))
     print(json.dumps({m: {k: v for k, v in s.items() if k != "status_fractions"} for m, s in meth.items()}, indent=1), flush=True)
-    # F8
+    plot_f8(res, prog)
+
+
+def plot_f8(res=None, prog=None):
+    """figures_v9/F8_amortisation.{png,pdf} from results/E4.json and results/E4_progress.json (no computation)."""
+    res = json.loads(OUT.read_text()) if res is None else res
+    prog = json.loads(PROG.read_text()) if prog is None else prog
+    rows, meth, n = prog["rows"], res["methods"], len(prog["rows"])
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -145,7 +153,7 @@ def do_summary():
     ax.legend(fontsize=7, frameon=False); ax.grid(alpha=0.25, lw=0.5, which="both")
     for sp in ("top", "right"):
         ax.spines[sp].set_visible(False)
-    fig.tight_layout(); fig.savefig(FIG / "F8_amortisation.png", dpi=200); plt.close(fig)
+    fig.tight_layout(); save_fig(fig, FIG / "F8_amortisation.png"); plt.close(fig)
 
 
 def main():

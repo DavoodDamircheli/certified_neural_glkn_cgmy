@@ -26,6 +26,7 @@ from scipy.stats import qmc
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+from cgmy_cert.figio import save_fig  # noqa: E402
 from cgmy_cert.params import Query, BOX  # noqa: E402
 from cgmy_cert.symbols import free_matrices  # noqa: E402
 from cgmy_cert.eim import load_eim  # noqa: E402
@@ -296,6 +297,30 @@ def do_breakdown(res):
     save(res)
 
 
+def do_table_ood(res):
+    """tables_v9/tab_ood_v9.tex from E3.json -> breakdown (per shell: queries, true error <= eps_N, certified by the exact
+    and the three-stage rule, median true error, median eps_Q), POD-Galerkin r = 64 and r = 80."""
+    bd = res["breakdown"]["per_candidate"]
+    lab = {"C>1": r"$C>1$", "Y<1.1": r"$Y<1.1$", "Y>1.8": r"$Y>1.8$", "G<1": r"$G<1$", "M>9": r"$M>9$",
+           "vertices": "ext.\\ vertices"}
+    lines = [r"\begin{table}[!htbp]", r"\centering\small",
+             r"\caption{Out-of-distribution queries (E3): per shell, the number of queries, how many have true error "
+             r"$\le\varepsilon_N$ (the reduced model still works) and how many of those the exact / three-stage "
+             r"certificates accept, the median true error and the median $\varepsilon_Q$. Shells overlap; the reduced stage "
+             r"is not used outside the box.}", r"\label{tab:ood}", r"\begin{tabular}{lr rrr rrr r}", r"\toprule",
+             r" & & \multicolumn{3}{c}{POD-Galerkin $r=64$} & \multicolumn{3}{c}{POD-Galerkin $r=80$} & \\",
+             r"shell & queries & works & certified & med.\ err. & works & certified & med.\ err. & med.\ $\varepsilon_Q$\\",
+             r"\midrule"]
+    rows = [("all", bd["podg64"]["all"], bd["podg80"]["all"])] + \
+           [(sh, bd["podg64"]["per_shell"][sh], bd["podg80"]["per_shell"][sh]) for sh in res["breakdown"]["shells"]]
+    for sh, a64, a80 in rows:
+        lines.append(f"{lab.get(sh, sh)} & {a64['n_queries']} & {a64['n_true_err_le_eps_N']} & {a64['exact_accepts']} & "
+                     f"${a64['median_true_err']:.1e}$ & {a80['n_true_err_le_eps_N']} & {a80['exact_accepts']} & "
+                     f"${a80['median_true_err']:.1e}$ & ${a80['median_eps_Q']:.1e}$\\\\")
+    lines += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
+    (ROOT / "tables_v9" / "tab_ood_v9.tex").write_text("\n".join(lines) + "\n")
+
+
 def do_fig(res):
     import matplotlib
     matplotlib.use("Agg")
@@ -327,7 +352,7 @@ def do_fig(res):
         for sp in ("top", "right"):
             ax.spines[sp].set_visible(False)
     axs[0].set_ylabel("certified bound"); axs[1].legend(fontsize=7, frameon=False, loc="upper left")
-    fig.tight_layout(); fig.savefig(FIG / "F7_ood.png", dpi=200); plt.close(fig)
+    fig.tight_layout(); save_fig(fig, FIG / "F7_ood.png"); plt.close(fig)
     print("F7 written")
 
 

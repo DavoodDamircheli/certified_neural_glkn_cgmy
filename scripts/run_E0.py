@@ -12,6 +12,7 @@ from scipy.linalg import norm, eigvalsh, eigh, toeplitz
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+from cgmy_cert.figio import save_fig  # noqa: E402
 from cgmy_cert.params import Query, Mesh, sobol_queries  # noqa: E402
 from cgmy_cert.symbols import free_matrices, legacy_principal_period_free, _dense_banded  # noqa: E402
 from cgmy_cert.spectral import spectral_data  # noqa: E402
@@ -86,21 +87,7 @@ def e01(res, nproc):
         rows.setdefault(N, []).append(row)
         print(f"  {key}: pp {row['pp']:.3f}  K5 {row['K5']:.2e} K20 {row['K20']:.2e} K100 {row['K100']:.2e} (eps100 {row['eps100']:.2e})")
     res["E0.1"] = {str(N): v for N, v in rows.items()}
-    # table
-    lines = [r"\begin{table}[!htbp]", r"\centering\small",
-             r"\caption{Assembly verification against the exact Galerkin matrix (40-digit real-line "
-             r"fixture): relative operator-norm error of the free matrix $A_I$, median / max over the "
-             r"ten cost-study queries ($N\le256$; three at $N=512$). The principal-period rule (v8) is the "
-             r"alias sum with $K=0$; $\varepsilon_K/\|A_I\|_2$ is the bound of Lemma~\ref{lem:tail}.}",
-             r"\label{tab:assembly-v9}", r"\begin{tabular}{rrrrrrr}", r"\toprule",
-             r"$N$ & queries & principal period & $K=5$ & $K=20$ & $K=100$ & $\varepsilon_{100}/\|A_I\|_2$ (max)\\", r"\midrule"]
-    for N in sorted(rows):
-        rr = rows[N]
-        def mm(k):
-            a = np.array([r[k] for r in rr]); return f"{fmt(np.median(a))} / {fmt(a.max())}"
-        lines.append(f"{N} & {len(rr)} & {mm('pp')} & {mm('K5')} & {mm('K20')} & {mm('K100')} & {fmt(max(r['eps100'] for r in rr))}\\\\")
-    lines += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
-    (TAB / "tab_assembly_v9.tex").write_text("\n".join(lines) + "\n")
+    plot_e01(res)
 
 
 # ====================================================================== E0.2
@@ -135,28 +122,7 @@ def e02(res, nproc):
                            ratio_rm=[float(r2.min()), float(np.median(r2)), float(r2.max())], violations=viol,
                            gen_violations=gviol)
     res["E0.2"] = out
-    # figure: box plots
-    import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
-    fig, axs = plt.subplots(1, 2, figsize=(8.5, 3.3))
-    for ax, key, lab in ((axs[0], "ratio_symbol", r"$\lambda_{\min}(S_I)/s_{\min}(\mu)$"),
-                         (axs[1], "ratio_rm", r"$\lambda_{\min}(S_I)/(r\,m_{\min})$")):
-        data = []
-        for N in ("64", "256", "1024"):
-            rows = out[N]["rows"]
-            data.append([r["lmin"] / (r["s_min"] if key == "ratio_symbol" else r["r_mmin"]) for r in rows[:-1]])
-        bp = ax.boxplot(data, tick_labels=["64", "256", "1024"], widths=0.5, patch_artist=True,
-                        medianprops=dict(color="black", lw=1.2), flierprops=dict(marker=".", ms=3, alpha=0.5))
-        for b in bp["boxes"]:
-            b.set(facecolor=PAL[0], alpha=0.35, edgecolor=PAL[0])
-        for i, N in enumerate(("64", "256", "1024")):
-            w = out[N]["rows"][-1]
-            ax.plot(i + 1, w["lmin"] / (w["s_min"] if key == "ratio_symbol" else w["r_mmin"]), marker="*", ms=11,
-                    color=PAL[3], ls="none", label="worst audit vertex" if i == 0 else None)
-        ax.set_yscale("log"); ax.axhline(1.0, color="gray", lw=0.8, ls="--"); ax.set_xlabel("$N$"); ax.set_ylabel(lab)
-        ax.grid(True, which="both", lw=0.3, alpha=0.4)
-    axs[0].legend(frameon=False, fontsize=8, loc="upper left")
-    fig.suptitle("Rigorous spectral lower bound over 288 queries (32 vertices + 256 Sobol), $K=100$", fontsize=10)
-    fig.tight_layout(); fig.savefig(FIG / "F2_spectral_bound.png", dpi=200); plt.close(fig)
+    plot_e02(res)
 
 
 # ====================================================================== E0.3
@@ -282,30 +248,7 @@ def e03(res, nproc):
                        note="candidates: POD-Galerkin (mass-weighted basis from 200 Sobol trajectories, seed 1; rank 16/32/48; "
                             "full operator, no EIM), the L2-prolonged N/4 exact solution, and exact dynamics from perturbed z^0")
     save(res)
-    import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
-    fig, axs = plt.subplots(1, 2, figsize=(8.5, 3.3))
-    ax = axs[0]
-    ax.plot(Ns, [theta[str(N)]["median"] for N in Ns], marker="o", ms=4, color=PAL[0], label="median")
-    ax.plot(Ns, [theta[str(N)]["q90"] for N in Ns], marker="s", ms=4, color=PAL[1], label="90th percentile")
-    ax.plot(Ns, [theta[str(N)]["max"] for N in Ns], marker="^", ms=4, color=PAL[3], label="max")
-    ax.set_xscale("log", base=2); ax.set_yscale("log"); ax.set_xlabel("$N$"); ax.set_ylabel(r"$\sqrt{\Theta_\mu}$")
-    ax.grid(True, which="both", lw=0.3, alpha=0.4); ax.legend(frameon=False, fontsize=8)
-    ax.set_title("A-priori effectivity bound of $\\eta^X$ (288 queries)", fontsize=9)
-    ax = axs[1]
-    names = list(eff["64"][0]["cands"].keys())
-    for i, N in enumerate(("64", "512")):
-        data = [[r["cands"][nm]["ratio"] for r in eff[N]] for nm in names]
-        pos = np.arange(len(names)) + (i - 0.5) * 0.36
-        bp = ax.boxplot(data, positions=pos, widths=0.3, patch_artist=True, medianprops=dict(color="black", lw=1.1),
-                        flierprops=dict(marker=".", ms=3, alpha=0.5))
-        for b in bp["boxes"]:
-            b.set(facecolor=PAL[i], alpha=0.4, edgecolor=PAL[i])
-        ax.plot([], [], color=PAL[i], lw=6, alpha=0.4, label=f"$N={N}$")
-    ax.set_xticks(np.arange(len(names))); ax.set_xticklabels(names, rotation=20, fontsize=8)
-    ax.set_ylabel(r"observed $\eta^X/\eta^S$"); ax.axhline(1, color="gray", lw=0.8, ls="--")
-    ax.legend(frameon=False, fontsize=8); ax.grid(True, axis="y", lw=0.3, alpha=0.4)
-    ax.set_title("Observed ratio on candidates (48 queries)", fontsize=9)
-    fig.tight_layout(); fig.savefig(FIG / "F3_theta_and_effectivity.png", dpi=200); plt.close(fig)
+    plot_e03(res)
 
 
 # ====================================================================== E0.4
@@ -330,13 +273,6 @@ def e04(res, nproc):
     with Pool(nproc) as pool:
         rows = pool.map(_e04_one, [(qdict(q), N) for N in Ns for q in qs], chunksize=2)
     out = {}
-    lines = [r"\begin{table}[!htbp]", r"\centering\small",
-             r"\caption{Iteration counts (median / max over 20 Sobol queries) to relative residual $10^{-12}$: "
-             r"conjugate gradients for the Riesz system $S_Iv=\rho$ with and without the circulant preconditioner "
-             r"built from the symbol samples, and circulant-preconditioned GMRES per Crank--Nicolson step for "
-             r"$B_+=M_I+\tfrac{\Delta\tau}{2}A_I$ (60 steps, warm start, mean over steps / max).}",
-             r"\label{tab:pcg-v9}", r"\begin{tabular}{rrrr}", r"\toprule",
-             r"$N$ & plain CG & circulant PCG & circulant GMRES ($B_+$)\\", r"\midrule"]
     for N in Ns:
         rr = [r for r in rows if r["N"] == N]
         cg = np.array([r["cg"] for r in rr]); pcg = np.array([r["pcg"] for r in rr])
@@ -344,10 +280,8 @@ def e04(res, nproc):
         out[str(N)] = dict(cg=[float(np.median(cg)), int(cg.max())], pcg=[float(np.median(pcg)), int(pcg.max())],
                            gmres=[float(np.median(gm)), int(gx.max())], rows=rr)
         print(f"  N={N}: CG {np.median(cg):.0f}/{cg.max()}  PCG {np.median(pcg):.0f}/{pcg.max()}  GMRES {np.median(gm):.1f}/{gx.max()}")
-        lines.append(f"{N} & {np.median(cg):.0f} / {cg.max()} & {np.median(pcg):.0f} / {pcg.max()} & {np.median(gm):.1f} / {gx.max()}\\\\")
-    lines += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
-    (TAB / "tab_pcg_v9.tex").write_text("\n".join(lines) + "\n")
     res["E0.4"] = out
+    plot_e04(res)
 
 
 # ====================================================================== E0.5
@@ -381,12 +315,113 @@ def e05(res, nproc):
     res["E0.5"] = out
 
 
+# ====================================================================== plot steps (JSON only)
+
+def plot_e01(res):
+    """tables_v9/tab_assembly_v9.tex from E0.json -> E0.1 (no computation)."""
+    rows = {int(N): v for N, v in res["E0.1"].items()}
+    lines = [r"\begin{table}[!htbp]", r"\centering\small",
+             r"\caption{Assembly verification against the exact Galerkin matrix (40-digit real-line "
+             r"fixture): relative operator-norm error of the free matrix $A_I$, median / max over the "
+             r"ten cost-study queries ($N\le256$; three at $N=512$). The principal-period rule (v8) is the "
+             r"alias sum with $K=0$; $\varepsilon_K/\|A_I\|_2$ is the bound of Lemma~\ref{lem:tail}.}",
+             r"\label{tab:assembly-v9}", r"\begin{tabular}{rrrrrrr}", r"\toprule",
+             r"$N$ & queries & principal period & $K=5$ & $K=20$ & $K=100$ & $\varepsilon_{100}/\|A_I\|_2$ (max)\\", r"\midrule"]
+    for N in sorted(rows):
+        rr = rows[N]
+        def mm(k):
+            a = np.array([r[k] for r in rr]); return f"{fmt(np.median(a))} / {fmt(a.max())}"
+        lines.append(f"{N} & {len(rr)} & {mm('pp')} & {mm('K5')} & {mm('K20')} & {mm('K100')} & {fmt(max(r['eps100'] for r in rr))}\\\\")
+    lines += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
+    (TAB / "tab_assembly_v9.tex").write_text("\n".join(lines) + "\n")
+
+
+def plot_e02(res):
+    """figures_v9/F2_spectral_bound.{png,pdf} from E0.json -> E0.2."""
+    out = res["E0.2"]
+    import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
+    fig, axs = plt.subplots(1, 2, figsize=(8.5, 3.3))
+    for ax, key, lab in ((axs[0], "ratio_symbol", r"$\lambda_{\min}(S_I)/s_{\min}(\mu)$"),
+                         (axs[1], "ratio_rm", r"$\lambda_{\min}(S_I)/(r\,m_{\min})$")):
+        data = []
+        for N in ("64", "256", "1024"):
+            rows = out[N]["rows"]
+            data.append([r["lmin"] / (r["s_min"] if key == "ratio_symbol" else r["r_mmin"]) for r in rows[:-1]])
+        bp = ax.boxplot(data, tick_labels=["64", "256", "1024"], widths=0.5, patch_artist=True,
+                        medianprops=dict(color="black", lw=1.2), flierprops=dict(marker=".", ms=3, alpha=0.5))
+        for b in bp["boxes"]:
+            b.set(facecolor=PAL[0], alpha=0.35, edgecolor=PAL[0])
+        for i, N in enumerate(("64", "256", "1024")):
+            w = out[N]["rows"][-1]
+            ax.plot(i + 1, w["lmin"] / (w["s_min"] if key == "ratio_symbol" else w["r_mmin"]), marker="*", ms=11,
+                    color=PAL[3], ls="none", label="worst audit vertex" if i == 0 else None)
+        ax.set_yscale("log"); ax.axhline(1.0, color="gray", lw=0.8, ls="--"); ax.set_xlabel("$N$"); ax.set_ylabel(lab)
+        ax.grid(True, which="both", lw=0.3, alpha=0.4)
+    axs[0].legend(frameon=False, fontsize=8, loc="upper left")
+    fig.suptitle("Rigorous spectral lower bound over 288 queries (32 vertices + 256 Sobol), $K=100$", fontsize=10)
+    fig.tight_layout(); save_fig(fig, FIG / "F2_spectral_bound.png"); plt.close(fig)
+
+
+def plot_e03(res):
+    """figures_v9/F3_theta_and_effectivity.{png,pdf} from E0.json -> E0.3."""
+    theta, eff = res["E0.3"]["sqrtTheta"], res["E0.3"]["effectivity"]
+    Ns = sorted(int(N) for N in theta)
+    import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
+    fig, axs = plt.subplots(1, 2, figsize=(8.5, 3.3))
+    ax = axs[0]
+    ax.plot(Ns, [theta[str(N)]["median"] for N in Ns], marker="o", ms=4, color=PAL[0], label="median")
+    ax.plot(Ns, [theta[str(N)]["q90"] for N in Ns], marker="s", ms=4, color=PAL[1], label="90th percentile")
+    ax.plot(Ns, [theta[str(N)]["max"] for N in Ns], marker="^", ms=4, color=PAL[3], label="max")
+    ax.set_xscale("log", base=2); ax.set_yscale("log"); ax.set_xlabel("$N$"); ax.set_ylabel(r"$\sqrt{\Theta_\mu}$")
+    ax.grid(True, which="both", lw=0.3, alpha=0.4); ax.legend(frameon=False, fontsize=8)
+    ax.set_title("A-priori effectivity bound of $\\eta^X$ (288 queries)", fontsize=9)
+    ax = axs[1]
+    names = list(eff["64"][0]["cands"].keys())
+    for i, N in enumerate(("64", "512")):
+        data = [[r["cands"][nm]["ratio"] for r in eff[N]] for nm in names]
+        pos = np.arange(len(names)) + (i - 0.5) * 0.36
+        bp = ax.boxplot(data, positions=pos, widths=0.3, patch_artist=True, medianprops=dict(color="black", lw=1.1),
+                        flierprops=dict(marker=".", ms=3, alpha=0.5))
+        for b in bp["boxes"]:
+            b.set(facecolor=PAL[i], alpha=0.4, edgecolor=PAL[i])
+        ax.plot([], [], color=PAL[i], lw=6, alpha=0.4, label=f"$N={N}$")
+    ax.set_xticks(np.arange(len(names))); ax.set_xticklabels(names, rotation=20, fontsize=8)
+    ax.set_ylabel(r"observed $\eta^X/\eta^S$"); ax.axhline(1, color="gray", lw=0.8, ls="--")
+    ax.legend(frameon=False, fontsize=8); ax.grid(True, axis="y", lw=0.3, alpha=0.4)
+    ax.set_title("Observed ratio on candidates (48 queries)", fontsize=9)
+    fig.tight_layout(); save_fig(fig, FIG / "F3_theta_and_effectivity.png"); plt.close(fig)
+
+
+def plot_e04(res):
+    """tables_v9/tab_pcg_v9.tex from E0.json -> E0.4."""
+    out = res["E0.4"]
+    Ns = sorted(int(N) for N in out)
+    lines = [r"\begin{table}[!htbp]", r"\centering\small",
+             r"\caption{Iteration counts (median / max over 20 Sobol queries) to relative residual $10^{-12}$: "
+             r"conjugate gradients for the Riesz system $S_Iv=\rho$ with and without the circulant preconditioner "
+             r"built from the symbol samples, and circulant-preconditioned GMRES per Crank--Nicolson step for "
+             r"$B_+=M_I+\tfrac{\Delta\tau}{2}A_I$ (60 steps, warm start, mean over steps / max).}",
+             r"\label{tab:pcg-v9}", r"\begin{tabular}{rrrr}", r"\toprule",
+             r"$N$ & plain CG & circulant PCG & circulant GMRES ($B_+$)\\", r"\midrule"]
+    for N in Ns:
+        rr = out[str(N)]["rows"]
+        cg = np.array([r["cg"] for r in rr]); pcg = np.array([r["pcg"] for r in rr])
+        gm = np.array([r["gmres_mean"] for r in rr]); gx = np.array([r["gmres_max"] for r in rr])
+        lines.append(f"{N} & {np.median(cg):.0f} / {cg.max()} & {np.median(pcg):.0f} / {pcg.max()} & {np.median(gm):.1f} / {gx.max()}\\\\")
+    lines += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
+    (TAB / "tab_pcg_v9.tex").write_text("\n".join(lines) + "\n")
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("items", nargs="*", default=["E0.1", "E0.2", "E0.3", "E0.4", "E0.5"])
+    ap.add_argument("items", nargs="*", default=["E0.1", "E0.2", "E0.3", "E0.4", "E0.5"],
+                    help="E0.x computes and plots; 'plot' regenerates the tables/figures from results/E0.json only")
     ap.add_argument("--nproc", type=int, default=2)
     a = ap.parse_args()
     res = load()
+    if a.items == ["plot"]:
+        plot_e01(res); plot_e02(res); plot_e03(res); plot_e04(res)
+        raise SystemExit(0)
     for item in a.items:
         print(f"=== {item}")
         t0 = time.time()
