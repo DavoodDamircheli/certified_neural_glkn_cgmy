@@ -332,6 +332,7 @@ def do_figs(res):
         ax[0].set_xlabel("N"); ax[0].set_ylabel("time per query (ms)"); ax[0].legend(fontsize=7, frameon=False)
         ax[1].semilogx(Ns, [r["per_N"][str(n)]["ratio_cert_over_solve"] for n in Ns], color=PAL[1], marker="s", lw=2)
         ax[1].set_xlabel("N"); ax[1].set_ylabel("banded certificate / direct solve")
+        ax[1].set_ylim(0, max(0.1, 1.2 * max(r["per_N"][str(n)]["ratio_cert_over_solve"] for n in Ns)))   # anchored at 0
         for a in ax:
             a.grid(alpha=0.25, lw=0.5, which="both")
             for sp in ("top", "right"):

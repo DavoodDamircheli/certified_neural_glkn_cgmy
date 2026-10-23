@@ -223,4 +223,24 @@
     same derivative margins. Fast / fine on spectral288 at N = 1024: beta 0.99992-0.99996, Theta 1.00005-1.0022,
     alpha_lb 1.0000-1.008 (fast is exact at theta = 0, where s_mu = r), Theta-bar 0.998-1.002. eta^X on POD-Galerkin
     changes by +0.002%. This turns the banded full-order certificate from ~490 ms (twice the solve) into ~12 ms
-    (fraction to be filled from the final E2).
+    (6.0% of the solve, 7.2% with the spectral data; see 30).
+30. **E2, matched benchmark on bench120** (`results/E2.json`, `tables_v9/tab_benchmark_v9.tex`, F6a/F6b; N = 1024,
+    one thread, idle, 5 repetitions, geometric-mean ratio to the uncertified direct solve with 95% query-bootstrap CI).
+    Reusable setup: direct 259 ms; direct + banded certificate
+    1.059x (the dry run with the fine spectral data gave 2.87x, i.e.
+    752 ms vs 258 ms; after the fix 275 ms). Certificate fraction of the solve:
+    **6.0% for the certificate proper** (residual + banded
+    solves) and **7.2% including the per-query
+    spectral data**. Cold: 3.0% /
+    3.8% of a larger cold solve.
+    POD-Galerkin r = 80 with the three-stage rule: 0.032x (reduced accept
+    on 120/120 at every eps); r = 64: 0.041x at eps_N (102 reduced +
+    18 banded accepts), 0.026x at 3 eps_N, and
+    0.55x at 0.3 eps_N (most queries need the banded or exact
+    stage; 4 corrected). Space-time POD-NN: 1.07x (cheap rejection
+    + correction on 120/120). False accepts: 0 for every method and eps. In the cold setup the ratios of the reduced methods
+    rise (r = 80: 0.30x) because z_h^0 (90 ms) is rebuilt per query
+    inside the timer.
+    Refinement (F6b, bench120[:20], N_T = 240): banded certificate / direct solve =
+    0.052 (N = 64), 0.055 (N = 128), 0.045 (N = 256), 0.048 (N = 512), 0.050 (N = 1024), 0.056 (N = 2048), 0.054 (N = 4096). This is flat at ~5% from N = 64
+    to 4096. The reduced online certificate (4.6 / 5.6 ms at r = 64 / 80) does not depend on N.
