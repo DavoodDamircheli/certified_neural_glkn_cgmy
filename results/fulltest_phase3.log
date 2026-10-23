@@ -1,0 +1,19 @@
+.......................................x...........................      [100%]
+=============================== warnings summary ===============================
+tests/test_direct_certificate.py::test_gmres_iterations_large_N[2048]
+tests/test_direct_certificate.py::test_gmres_iterations_large_N[4096]
+tests/test_spectral_riesz.py::test_pcg_iterations_and_bracket[64]
+tests/test_spectral_riesz.py::test_pcg_iterations_and_bracket[256]
+tests/test_spectral_riesz.py::test_pcg_iterations_and_bracket[1024]
+tests/test_spectral_riesz.py::test_pcg_iterations_and_bracket[4096]
+  /home/davood/.local/lib/python3.10/site-packages/scipy/stats/_qmc.py:993: UserWarning: The balance properties of Sobol' points require n to be a power of 2.
+    sample = self._random(n, workers=workers)
+
+tests/test_symbols.py::test_bspline_ft_sq
+  /home/davood/projects/certified_neural_glkn_cgmy/tests/test_symbols.py:22: RuntimeWarning: overflow encountered in power
+    assert np.all(bspline_ft_sq(th) <= (2 / np.maximum(np.abs(th), 1e-300)) ** 6 + 1e-300)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+XFAIL tests/test_reduced_cert.py::test_online_equals_full_order_pod_galerkin_strict - eps*kappa rounding floor ~1e-10 for POD-Galerkin residuals; see DEVIATIONS.md
+66 passed, 1 xfailed, 7 warnings in 3536.38s (0:58:56)
