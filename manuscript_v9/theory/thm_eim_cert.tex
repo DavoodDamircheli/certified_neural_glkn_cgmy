@@ -6,26 +6,44 @@ evaluated with $A_Q$.  Then its residual with respect to the true assembled
 system satisfies
 \[
  \norm{\rr^{n+1/2}}_{S_I^{-1}}\ \le\ \norm{\rho_Q^{n+1/2}}_{S_I^{-1}}
- +\varepsilon_Q(\mu)\,\alpha_{\rm lb}^{-1/2}\,\norm{\overline{\cc}_\theta^{\,n+1/2}}_2,
+ +\varepsilon_Q(\mu)\,\alpha_{\rm lb}^{-1/2}\,\norm{\overline{\bar\cc}_\theta^{\,n+1/2}}_2,
  \qquad \alpha_{\rm lb}=\smin(\mu),
 \]
-and Theorem~\ref{thm:fully-discrete-certificate} holds with
-$\eta^2=\beta_0^2+\dt\sum_n(\norm{\rho_Q}_{S^{-1}}+\varepsilon_Q\alpha_{\rm lb}^{-1/2}\norm{\overline{\cc}_\theta}_2)^2$.
+where $\bar\cc_\theta^n=Ez_\theta^n+b^n$ is the raw coefficient vector including the prescribed
+entries (the surrogate operator also enters the lifting term of $f_I$), and
+Theorem~\ref{thm:fully-discrete-certificate} holds with
+$\eta^2=\beta_0^2+\dt\sum_n(\norm{\rho_Q}_{S^{-1}}+\varepsilon_Q\alpha_{\rm lb}^{-1/2}\norm{\overline{\bar\cc}_\theta}_2)^2$.
 The same holds with $X_I$ in place of $S_I$ and $\min_\vartheta \sym{x}_\mu(\vartheta)\ (\ge \rf\,m_{\min})$ in place of $\alpha_{\rm lb}$.
 \end{theorem}
 \begin{proof}
-$\rho=\rho_Q+(\Ah-A_Q)\overline{\cc}_\theta$; bound the second term by
-$\norm{(\Ah-A_Q)\overline{\cc}}_2\lambda_{\min}(S_I)^{-1/2}$ and use
+$\rho=\rho_Q+E^\top(\bar A_h-\bar A_Q)\overline{\bar\cc}_\theta$ with the raw sections $\bar A_h,\bar A_Q$,
+for which Lemma~\ref{lem:eim} gives the same $\varepsilon_Q$; bound the second term by
+$\norm{(\bar A_h-\bar A_Q)\overline{\bar\cc}}_2\lambda_{\min}(S_I)^{-1/2}$ and use
 Theorem~\ref{thm:spectral}.  This is exactly the allowance structure of
 Remark~\ref{rem:arithmetic-scope}, with $d_n$ now explicit.
 \end{proof}
+The allowance is of size $\varepsilon_Q\norm{\bar\cc}_2/\sqrt{\alpha_{\rm lb}}$ per step and is
+\emph{not} negligible for accurate candidates: with $\varepsilon_Q\approx10^{-9}\norm{\Ah}_2$,
+$\norm{\Ah}_2\sim h^{-Y}$ and $\norm{\bar\cc}_2\sim K\sqrt{N}\sqrt h$, it reaches $10^{-4}$ in the
+$M_I$ norm at $N=512$, comparable with the residual of a rank-$56$ reduced solution.  Two
+consequences: the EIM tolerance must be chosen as a function of the target,
+$\varepsilon_Q\norm{\bar\cc}_2\sqrt{T/\alpha_{\rm lb}}\le\varepsilon/10$, and the full-order
+certificate should evaluate the residual with the exact operator $\Ah$ (two FFTs per step, no
+allowance), reserving $A_Q$ for the reduced solve and for the $N$-independent online certificate.
 \begin{remark}[Reduced online certificate]\label{rem:reduced-online}
-With a fixed comparison norm $\bar X=\Tn{}{\bar{\sym{x}}}$ (one per cell of a coarse
-partition of the $(\rf,C)$ range) and the affine $A_Q$, the standard
-offline/online decomposition of the residual norm applies: the online cost of
-$\eta^{\bar X}$ for a rank-$r$ candidate is $Q^2(2r+1)^2$ operations,
-independent of $N_h$, and
-$\rho^\top S_I^{-1}\rho\le\bigl(\inf_\vartheta \sym{s}_\mu/\bar{\sym{x}}\bigr)^{-1}\rho^\top\bar X^{-1}\rho$
-by Lemma~\ref{lem:toeplitz}, the infimum being again an explicit
-one-dimensional computation at the query.
+With a fixed comparison norm $\bar X=\Tn{}{\bar{\sym{x}}}$, $\bar{\sym{x}}=\bar r\,\sym{m}+\bar\beta\,\sym{g}_1$,
+chosen for a cell of parameter space such that $\bar r\le \rf$ and $\bar\beta\le\beta_\mu$ on the cell,
+and the affine $A_Q$, the offline/online decomposition of the residual norm applies: the online cost of
+$\eta^{\bar X}$ for a rank-$r$ candidate is $O(Q^2r^2)$ operations, independent of $N_h$.  Since
+$\bar{\sym{x}}\le\sym{x}_\mu\le\sym{s}_\mu$ on the cell, $\rho^\top S_I^{-1}\rho\le\rho^\top\bar X^{-1}\rho$ with no
+further factor; the optional factor $(\inf_\vartheta\sym{s}_\mu/\bar{\sym{x}})^{-1}\le1$ of
+Lemma~\ref{lem:toeplitz} tightens the bound at the cost of one symbol evaluation.  Because
+$\sym{s}_\mu-\rf\,\sym{m}$ is proportional to $C$, $\beta_\mu=C\tilde\beta(G,M,Y)$, and since
+$I_a(\xi)$ is decreasing in $a$ (the factor $e^{-ax}$), $\tilde\beta$ is nonincreasing in $G$ and in
+$M$; the cells are therefore taken in $(C,Y,\min(G,M))$, not in $\rf$, the minimum over $C$ and over
+$(G,M)$ is attained at the cell's corner $(C_{\min},G_{\max},M_{\max})$ exactly, and only the
+one-dimensional minimum over $Y$ is taken on a grid with the safety factor $0.99$.  The offline/online evaluation of a residual norm is
+subject to cancellation when the residual is small relative to its constituents
+\cite{CasenaveErnLelievre2014,BuhrEngwerOhlbergerRave2014}; the implementation uses the
+$R$-factor form of these references with an explicit rounding term rather than the Gram-matrix form.
 \end{remark}

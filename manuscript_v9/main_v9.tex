@@ -93,18 +93,26 @@ error estimation, residual certification, operator learning, option pricing}
 
 \begin{document}
 \begin{abstract}
-We certify reduced and neural approximations of European-put pricing trajectories under
-the Carr--Geman--Madan--Yor model by residual bounds for the spline Galerkin discretisation.
-The Galerkin matrices are Toeplitz sections of an explicit periodised Fourier symbol; the
-alias series is summed exactly up to a stated tail, so the assembled system \emph{is} the
-exact Galerkin system to $10^{-8}$.  A L\'evy--Khintchine argument gives a parameter-explicit
-lower bound $\lambda_{\min}(S_I)\ge\min_\vartheta s_\mu(\vartheta)\ge r\,m_{\min}$, valid for
-$Y\in(0,2)\setminus\{1\}$, which replaces numerical spectral estimates and positivity audits.
-A banded comparison norm yields a rigorous certificate at $O(N)$ cost with explicit
-effectivity $\sqrt{\Thmu}$, and a two-stage rule falls back to a circulant-preconditioned
-exact Riesz solve.  The symbol family is affine in the parameters with about $25$ terms, which
-gives an $N$-independent certified reduced model.  \todo{Phase 2--3: affine structure, POD-NN,
-out-of-distribution detection, the honest one-dimensional speed-up, the American extension.}
+We certify reduced and neural approximations of European-put price trajectories under the
+Carr--Geman--Madan--Yor model by residual bounds for the spline Galerkin discretisation of the
+tempered-fractional pricing equation.  The Galerkin matrices are Toeplitz sections of an explicit
+periodised Fourier symbol; summing the alias series to a stated tail makes the assembled system
+the exact Galerkin system to $10^{-8}$.  A L\'evy--Khintchine argument gives the parameter-explicit
+lower bound $\lambda_{\min}(S_I)\ge\min_\vartheta s_\mu(\vartheta)-\varepsilon_K\ge r\,m_{\min}$ for
+the symmetric part, valid for $Y\in(0,2)\setminus\{1\}$, which replaces numerical spectral estimates
+and positivity audits.  A banded comparison norm built from the mass and stiffness symbols yields a
+rigorous certificate at $O(N)$ cost with explicit effectivity, and empirical interpolation of the
+symbol family makes the operator affine in about 36 terms with a rigorous error transfer, so that a
+reduced model is certified at a cost independent of $N$; a three-stage rule escalates to the
+full-order bounds only when needed.  At the resolution that prices the whole parameter box to one
+cent ($N=1024$), the full-order certificate costs $6\%$ of a direct solve, the certified
+POD--Galerkin model of rank $80$ costs $3\%$ of it and settles $99.8\%$ of $10^4$ queries without
+touching the full space, and no false accept occurs in $10^4$ in-distribution and $264$
+out-of-distribution queries, on $92\%$ of which the reduced model is still accepted.  The neural
+reduced models trained here fail the one-cent tolerance by a factor of at least $47$; the certificate
+detects this at every query for a few milliseconds and explains it as a trade-off between
+temporal smoothness and coefficient accuracy.  A residual certificate for the American put
+in the same framework is proved as an outlook.
 \end{abstract}
 \maketitle
 
@@ -153,16 +161,32 @@ and a two-stage rule with a circulant-preconditioned exact Riesz solve
 (Theorem~\ref{thm:comparison}, Proposition~\ref{prop:twostage});
 \item an affine decomposition of the symbol family with rigorous error transfer, hence an
 $N$-independent certified reduced model (Lemma~\ref{lem:eim}, Theorem~\ref{thm:eim-cert});
-\item matched evaluations of reduced, neural and deterministic methods.  \todo{Phase 3.}
+\item matched evaluations at the resolution that prices the parameter box to one cent: the cost
+of the certificate at full and reduced order, a certified reduced model an order of magnitude
+faster than the direct solve, out-of-distribution detection, and a negative result for the neural
+reduced models that the certificate itself establishes and explains.
 \end{enumerate}
-\todo{Reframe the introduction (plan 4.1): rigor, certification cost, OOD, American target;
-COS stated on page 1; RB/SCM literature (Huynh--Rozza--Sen--Patera 2007; Burkovska et al.\ 2015;
-Gass--Glau--Mahlstedt--Mair 2018); Chan--Strang; Grenander--Szeg\H{o} / B\"ottcher--Silbermann.}
-The principal computational finding is that certification enables reliable
-selection of candidate trajectories, but the tested neural approximation
-requires correction at every benchmark query and offers no speed advantage
-over an optimised direct solve. A sufficiently rich POD space passes the
-same tolerance directly and reduces online cost.
+The discrete price is compared with the COS reference \cite{FangOosterlee2008} throughout, so that
+the certified trajectory bound is a stated part of a one-cent price budget rather than a substitute
+for it.
+The principal computational finding is that the guarantee is cheap and the reduced model
+earns it: at $N=1024$ the full-order certificate costs $6\%$ of the direct solve, the certified
+reduced model of rank $80$ runs at $3\%$ of it with $99.8\%$ of $10^4$ queries settled at the
+$N$-independent stage, while the neural reduced models trained here fail the tolerance by a
+factor of at least $47$ and are rejected at every query for a few milliseconds.
+
+Query-wise bounds for parametric evolution problems are the subject of the certified
+reduced-basis literature \cite{GreplPatera2005,RozzaHuynhPatera2008,HaasdonkOhlberger2008},
+where the coercivity constant is obtained by the successive constraint method
+\cite{HuynhRozzaSenPatera2007} and non-affine operators by empirical interpolation
+\cite{BarraultMadayNguyenPatera2004,GreplMadayNguyenPatera2007}; option-pricing applications
+include \cite{ContLantosPironneau2011,BurkovskaHaasdonkSalomonWohlmuth2015} and parametric
+Chebyshev interpolation of prices \cite{GassGlauMahlstedtMair2018}.  What is specific here is that
+the discretisation is shift-invariant, so that the symbol calculus of Toeplitz sections
+\cite{GrenanderSzego1958,BottcherSilbermann1999} replaces the successive constraint method by a
+closed-form constant, the interpolation acts on a function of one variable, and the circulant
+preconditioner of Chan and Strang \cite{ChanStrang1989} makes the exact Riesz solve a dozen
+iterations at any resolution.
 
 The analysis distinguishes the assembled discrete system from the exact
 Galerkin discretisation and the continuum price. Residual certification
@@ -176,8 +200,8 @@ Section~\ref{sec:certificate} develops certification and correction,
 Section~\ref{sec:affine} the affine structure and the candidate approximations,
 Section~\ref{sec:numerics} evaluates them, and
 Section~\ref{sec:conclusion} interprets the findings.
-Appendix~\ref{app:proofs} gives uniform-stability proofs and supporting
-extensions. Throughout, $\psi$ denotes the payoff, $g$ its exterior lifting,
+Appendix~\ref{app:proofs} gives the uniform-stability proof with the explicit
+constant, supporting extensions and the American-put certificate. Throughout, $\psi$ denotes the payoff, $g$ its exterior lifting,
 $\mu=(C,G,M,Y,r)$ the spatial-operator parameters, and $T$ the maturity.
 \section{CGMY model and constrained discretisation}
 \label{sec:model}\label{sec:galerkin}
@@ -514,6 +538,17 @@ Appendix~\ref{ssec:total-error}; its size is assessed by independent prices and 
 \label{ssec:spectral}
 \input{theory/lem_LK}
 \input{theory/thm_spectral}
+\begin{remark}[Assembled versus exact sections]\label{rem:compression}
+The matrices actually assembled are the sections built from the $L$-point DFT coefficients of
+$\sym{s}_{\mu,K}$ (Section~\ref{ssec:assembly}).  Up to the diagonal unitary similarity
+$\operatorname{diag}((-1)^k)$, such a section is the leading $N_h\times N_h$ compression of the
+$L\times L$ circulant whose eigenvalues are the samples $\sym{s}_{\mu,K}(\vartheta_j)$, so for the
+assembled matrix $\lambda_{\min}(S_I)\ge\min_j\sym{s}_{\mu,K}(\vartheta_j)$ holds \emph{exactly},
+and likewise $\norm{\Tn{N_h}{f}-\Tn{N_h}{g}}_2\le\max_j|f(\vartheta_j)-g(\vartheta_j)|$ for two
+symbols sampled on the same grid.  The derivative margin of the grid minimum and the tail
+$\varepsilon_K$ are needed only to relate the assembled system to the exact Galerkin matrix; the
+implementation keeps both, so that $\alpha_{\rm lb}$ is valid for either matrix.
+\end{remark}
 Over 32 box vertices and 256 Sobol points at $N=64$, $256$ and $1024$,
 $\lambda_{\min}(S_I)/\smin(\mu)\in[1.003,17.8]$ and $\lambda_{\min}(S_I)/(\rf m_{\min})\in[7.5,133]$
 (Figure~\ref{fig:spectral-bound}), the ratio closest to one being attained at the worst vertex of
@@ -743,6 +778,14 @@ length $2N_h$ for $A_I$, a banded product for $M_I$) and the banded dual norm (o
 Cholesky factorisation of $X_I$ per query, one banded solve per step), cost $O(N_h\log N_h)$ and
 $O(N_h)$ respectively; the certificate is therefore cheaper than one Krylov step of the direct
 solve, which is the one-dimensional ceiling discussed in Section~\ref{ssec:cost}.
+
+When the candidate comes with the $N$-independent reduced estimator of Section~\ref{ssec:eim}, the
+rule gains a first stage that never touches the full space:
+\input{theory/prop_threestage}
+The lower bound $\lambda^{\bar X}_{\rm aug}$ is tight in practice (within $7\%$ of $\eta^S_{\rm aug}$ on the
+reduced candidates of Section~\ref{ssec:e1}), so the cheap rejection settles every clearly
+inadequate candidate, and the full-order stages are reached only for candidates whose bound lies
+within a factor $\sqrt{\bar\Theta_\mu}\approx4$ of the tolerance.
 \subsection{Efficiency and spot-price bounds}
 \label{ssec:efficiency}\label{ssec:greeks-cert}
 For $\Sh\succ0$, define
@@ -911,12 +954,34 @@ $(\log G,\log M,Y)$ selects magic points $\vartheta_1,\dots,\vartheta_Q$ and par
 $\nu_1,\dots,\nu_Q$ such that $\ell(\nu)$ is the solution of a $Q\times Q$ triangular system; the
 family is analytic in $(\delta,Y)$ with its nearest singularity at $\delta=0$, so the
 interpolation error decays geometrically in $Q$ at a rate set by $G_{\max}/G_{\min}$ and
-$M_{\max}/M_{\min}$ rather than by $h$.  \todo{Phase 2.1: $Q$ versus tolerance at
-$N=64,512$ and the singular values of the snapshot matrix (Figure~F4); the prototype gives
-$Q=23$ ($N=64$) and $Q=30$ ($N=512$) for $10^{-10}$ relative sup-error, and $Q\approx25$ for $10^{-8}$.}
+$M_{\max}/M_{\min}$ rather than by $h$.  Figure~\ref{fig:eim} shows the test error on $1000$ Sobol parameters and the singular values
+of the training snapshots: $Q=23$, $26$, $27$, $29$, $29$ terms reach a relative sup-norm error of
+$10^{-9}$ at $N=64$, $128$, $256$, $512$, $1024$, and the curves for $N=512$ and $1024$ coincide,
+so the rank saturates in $h$.  For the operator the relevant number is $\varepsilon_Q$ relative to
+$\norm{\Ah}_2$: at most $1.7\times10^{-9}$ ($N=64$) and $5.7\times10^{-10}$ ($N=512$) with these $Q$,
+with the observed operator-norm error never exceeding $0.93\,\varepsilon_Q$.  The operational rank
+is chosen per target tolerance by the condition $\varepsilon_Q\norm{\bar\cc}_2\sqrt{T/\alpha_{\rm lb}}
+\le\varepsilon/10$ of Theorem~\ref{thm:eim-cert}: $Q=36$ at $\varepsilon_N$ and $Q=37$ at
+$\varepsilon_N/10$ for the production configuration of Section~\ref{ssec:calibration}.
+\begin{figure}[!htbp]
+\centering
+\IfFileExists{../figures_v9/F4_eim.png}{\includegraphics[width=0.94\linewidth]{F4_eim.png}}{\todo{F4 pending}}
+\caption{Empirical interpolation of the fractional symbol family.  (a) Relative sup-norm error on
+$1000$ Sobol test parameters (solid) and normalised singular values of the $16^3$ training snapshots
+(dotted), $N=64$--$1024$.  (b) Rank $Q$ needed for a given test tolerance; the curves for $N=512$ and
+$N=1024$ coincide.  The operational $Q$ additionally satisfies the operator-norm check
+(one extra term at $N=64$).}
+\label{fig:eim}
+\end{figure}
 The error $\varepsilon_Q(\mu)$ is evaluated, not estimated: it is the sup-norm of the
-interpolation error of the exact symbol at the query, with the grid-to-continuum margin of
-Lemma~\ref{lem:eim}, and costs $O(LK)$ operations, the same as assembling the symbol.
+interpolation error of the exact symbol at the query with the grid-to-continuum margin of
+Lemma~\ref{lem:eim}.  Evaluated on the assembly grid it costs $O(LK)$ operations, which grows with
+$N$; the implementation instead evaluates it on a fixed set of $161$ nodes (the graded grid of
+Section~\ref{ssec:spectral}, coarsened) with the cell-wise derivative margin, which bounds the
+continuous sup-norm and hence, by Remark~\ref{rem:compression}, the assembled operator difference,
+at a cost of about $1.6$~ms independent of $N$ and at most $2.1$ times the value on the full grid.
+Outside the training box of the interpolant the same evaluation remains rigorous and simply grows
+(Section~\ref{ssec:ood}).
 \input{theory/thm_eim_cert}
 Theorem~\ref{thm:eim-cert} is what allows a reduced model to be built on $A_Q$ while the
 certificate refers to the true operator $\Ah$; the price is the allowance
@@ -939,9 +1004,13 @@ The neural-operator candidate is a DeepONet with payoff and parameter branches a
 trunk, latent dimension 64 and 80,002 trainable parameters, followed by a coefficient decoder
 that supplies the spline-valued output. The experiments fix $K=100$;
 functional-input notation accommodates a payoff encoder but the benchmark
-tests a parameter map for this single strike.  \todo{Phase 2.5: state whether the DeepONet was
-retrained on the exact-assembly references or kept as the earlier checkpoint; in the latter case
-it is a candidate trained on a different discrete problem, and its certified bound measures that.}
+tests a parameter map for this single strike.  It was trained on the principal-period discretisation of the earlier version of this work, and
+we did not retrain it on the exact-assembly references.  Certified as a candidate of the exact
+system ($N=64$, $N_T=60$, 120 benchmark queries), it is rejected at every tolerance of the sweep
+$10^{-3}\times\{0.1,\dots,10\}$: the median true error is $0.78$ (relative $3.1\times10^{-3}$), the
+median exact bound $3.4$, with no false accept.  The certificate thus measures, correctly, the
+distance between two discrete problems; the neural candidate of the production study is the
+POD-NN below.
 
 The initial vector is the solver's specified target: solve the raw mass
 projection $\bar M\bar\cc^0=\bar\bb^0$, with
@@ -992,8 +1061,8 @@ with the initial term; it is distinct from the normalised data loss.
 The training set consists of 800 Sobol-sampled trajectories (seed 0) of the exact-assembly
 reference at the production resolution, with a separate 30-query validation set (seed 999999)
 used for checkpoint selection, and a 4000-trajectory set for the data-size study.
-\todo{Phase 2.4: optimiser, schedule, epochs, seeds, wall time and hardware from
-\texttt{results/training\_log.json} (Table~T8).}  Evaluation uses fixed checkpoints,
+Table~\ref{tab:training} lists the optimiser, schedule, parameter counts and wall times.
+Evaluation uses fixed checkpoints,
 with compatibility checks for the mesh, time grid and parameter box; the training scripts are
 part of the archive (Section~\ref{ssec:archive}).
 
@@ -1028,17 +1097,31 @@ either at full order, by Theorem~\ref{thm:eim-cert} with $\eta^X$ or $\eta^S$ an
 term, or online as follows.
 
 \paragraph{Reduced online certificate.}
-Fix a comparison matrix $\bar X=\rf_{\rm cell}M_I+\bar\beta\,h^2R^{(1)}_I$ per cell of a
-$2\times2$ partition of the $(\rf,C)$ range in logarithmic coordinates, with
-$\bar\beta=0.99\min_{\rm cell}\beta_\mu$ (the minimum over a $5\times5$ grid of the cell and the
-extreme values of $(G,M,Y)$).  Then $\rho^\top\bar X^{-1}\rho$ is a quadratic form in the
+Fix a comparison matrix $\bar X=r_{\min}M_I+\bar\beta\,h^2R^{(1)}_I$ per cell of a coarse
+partition of the $(C,Y,\min(G,M))$ range, with $\bar\beta=0.99\min_{\rm cell}\beta_\mu$ evaluated on
+a grid of the cell (Remark~\ref{rem:reduced-online}).  Then $\rho^\top\bar X^{-1}\rho$ is a quadratic form in the
 $Q+2$ scalar coefficients and the reduced states, whose $(Q+2)^2$ Gram blocks
 $R_q^\top\bar X^{-1}R_{q'}$, $R_q\in\{M_IV,\,T_qV,\,D_IV,\,\text{forcing directions}\}$, are
-computed offline by banded solves.  Online, $\eta^{\bar X}$ costs $Q^2(2r+1)^2$ operations
-independently of $N_h$, and Lemma~\ref{lem:toeplitz} converts it into a bound for the exact dual
-norm with the factor $(\inf_\vartheta\sym{s}_\mu/\bar{\sym{x}})^{-1}$ evaluated at the query
-(Remark~\ref{rem:reduced-online}).  \todo{Phase 2.3: measured online time at $r=48$, $Q=25$ and
-the identity $\eta^{\bar X}_{\rm online}=\rho^\top\bar X^{-1}\rho$ to $10^{-10}$.}
+computed offline by banded solves.  Online, $\eta^{\bar X}$ costs $O(Q^2r^2)$ operations
+independently of $N_h$ and is an upper bound for the exact dual norm without any further factor
+(Remark~\ref{rem:reduced-online}); the symbol quantities that accompany it, $\varepsilon_Q(\mu)$ and
+the optional tightening factor, are evaluated on an $N$-independent graded grid with derivative
+margins.  Two implementation facts matter.  First, the Gram-tensor form of the offline/online
+decomposition is numerically unusable here: for accurate candidates the residual is $10^{-8}$ of
+the terms it is assembled from, and the Gram form loses all digits.  The implementation uses the
+$R$-factor form \cite{CasenaveErnLelievre2014,BuhrEngwerOhlbergerRave2014}, compressed offline by a
+singular value decomposition with a rigorous term for the discarded part; the online cost is then
+$O(\varrho\,(Q+2)(2r+1))$ with $\varrho$ retained rows ($185$--$1022$ for $r=8$--$128$ at $N=1024$;
+$\varrho$ saturates below $N_h$, which is what makes the cost independent of $N$).  The online
+value agrees with the full-order $\rho^\top\bar X^{-1}\rho$ to $3\times10^{-15}$ for $O(1)$ residuals
+and to $2\times10^{-10}$ for POD--Galerkin candidates, the latter being the double-precision floor
+(confirmed in extended precision); the compressed bound exceeds the uncompressed one by at most
+$5\times10^{-4}$ relative.  Second, the cell norm costs a factor $1.87$ (median) against the
+query's own $X_I$ and about $4$ against $\eta^S$ (Table~\ref{tab:pod-ranks}).  On an idle core the
+complete online certificate (interpolation coefficients, $\varepsilon_Q$, quadratic form) takes
+$2.9$, $3.8$, $4.6$, $5.5$, $6.7$, $8.2$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$ ($Q=36$), of which
+$2.7$~ms are rank-independent; the reduced solve takes $0.7$--$1.9$~ms.  The offline tensors
+occupy $9$~MB ($r=8$) to $688$~MB ($r=128$) for the 18 cells.
 
 \paragraph{POD-NN.}
 The neural reduced candidate maps $(\mu,T)$ to the $r\times N_T$ matrix of POD coefficients
@@ -1049,7 +1132,14 @@ coordinates (the mass-weighted loss \eqref{eq:data-loss}, since $V^\top M_IV=I$)
 $\lambda_R$ times the reduced online certificate $\eta^{\bar X}$ of the previous paragraph,
 which is a differentiable quadratic form in the network output and costs nothing per sample;
 this is the residual regulariser \eqref{eq:residual-loss} with the exact dual norm replaced by a
-rigorous majorant.  \todo{Phase 2.4: architecture and $\lambda_R$ values actually used.}
+rigorous majorant.  The network is evaluated in double precision: single-precision rounding of the
+predicted coefficients alone produces residuals whose certified bound is of the order $10^{-3}$ at
+$N=512$, i.e.\ the tolerance itself.  The standard output has $r\times N_T=11\,520$ coefficients ($3.09$~M parameters, of which $2.96$~M in
+the output layer).  A second variant predicts the coefficients of a temporal POD of the reduced
+trajectories, $r\times r_t$ with $r_t=23$ modes chosen so that the temporal projection error is
+below $\varepsilon_N/10$ ($0.42$~M parameters); it removes the time-difference noise that the
+residual penalises by construction.  Both are trained with $\lambda_R\in\{0,10^{-2},10^{-1},1\}$ on
+800 and 4000 trajectories (Table~\ref{tab:training}).
 
 \subsection{Cost model}
 \label{ssec:cost}
@@ -1061,27 +1151,30 @@ flops.  Per query,
  \text{full-order certificate }(\eta^X):&\quad N_T\,(2\cdot5N_h\log_2N_h)+N_T(2p-1)N_h+O(p^2N_h),\\
  \text{full-order certificate }(\eta^S):&\quad N_T\,{\rm it}_{\rm PCG}\,(2\cdot5N_h\log_2N_h)+\text{the above},\\
  \text{reduced solve:}&\quad (Q+2)r^2+N_T\,r^2,\\
- \text{reduced certificate }(\eta^{\bar X}):&\quad Q^2(2r+1)^2+N_T\,r\,(Q+2),
+ \text{reduced certificate }(\eta^{\bar X}):&\quad \varrho\,(Q+2)(2r+1)+N_T\,r\,(Q+2),\qquad \varrho\le N_h\ \text{retained rows},
 \end{align*}
 plus the symbol evaluation $O(LK)$ common to all certified variants.  Two conclusions are
 independent of the implementation.  First, at full order the certificate $\eta^X$ costs one
 residual evaluation per step, i.e.\ about $1/{\rm it}_B$ of the direct solve: in one space
 dimension with FFT-applied Toeplitz operators the certificate can be at most $5$--$10$ times
 cheaper than the solve it certifies, whatever the candidate.  Second, the reduced solve and the
-reduced certificate do not involve $N_h$ at all; the scalable statement of this paper is that a
-certified reduced query costs $O(Q^2r^2)$ operations at any resolution, with the rigorous link to
-the full-order problem supplied by Theorem~\ref{thm:eim-cert} and Lemma~\ref{lem:toeplitz}.
-\todo{Phase 2.6: insert the measured counts from \texttt{results/cost\_model.json} as Table~T7.}
+reduced certificate do not involve $N_h$ once the offline compression has fixed $\varrho$; the
+scalable statement of this paper is that a certified reduced query costs $O(\varrho\,Q\,r)$
+operations at any resolution, with the rigorous link to the full-order problem supplied by
+Theorem~\ref{thm:eim-cert} and Lemma~\ref{lem:toeplitz}.
+Table~\ref{tab:cost} in Section~\ref{ssec:benchmark} gives the measured constants.
 
 \section{Numerical evaluation}
 \label{sec:numerics}
 \subsection{Experimental design}
 \label{ssec:design}
 All studies use the exact assembly of Section~\ref{ssec:assembly} ($K=100$), quadratic splines,
-the box of Table~\ref{tab:proposed-box}, 60 Crank--Nicolson steps unless stated, and the free system.
-The implementation is the package \texttt{cgmy\_cert} (Section~\ref{ssec:archive}); every number
-below is read from \texttt{results/E0.json}.
-\todo{Phase 3: production $(N,N_T,\varepsilon)$ from Section~\ref{ssec:calibration}; update Table~\ref{tab:populations}.}
+the box of Table~\ref{tab:proposed-box} and the free system.  The verification studies of
+Sections~\ref{ssec:e0-assembly}--\ref{ssec:e0-initial} use 60 Crank--Nicolson steps at several $N$;
+the production studies from Section~\ref{ssec:calibration} on use the configuration fixed there,
+$N=1024$, $N_T=240$, $\varepsilon_N=1.18\times10^{-3}$, and report every verdict at the sweep
+$\varepsilon_N\times\{0.1,0.3,1,3,10\}$.  The implementation is the package \texttt{cgmy\_cert}
+(Section~\ref{ssec:archive}); every number below is read from the result files listed there.
 Table~\ref{tab:populations} distinguishes the study populations.
 Statistics over spots first take the maximum within each query, and
 bootstrap intervals resample queries, rather than spots or repeated timings.
@@ -1089,17 +1182,17 @@ bootstrap intervals resample queries, rather than spots or repeated timings.
 \centering\small
 \caption{Query populations; statistics refer to the indicated study only.}
 \label{tab:populations}
-\begin{tabular}{lp{0.68\linewidth}}
+\begin{tabular}{p{0.3\linewidth}p{0.62\linewidth}}
 \toprule
 Study & Design\\
 \midrule
 Spectral and comparison-norm verification & 32 box vertices and 256 Sobol points (288 queries)\\
 Initial-error tests & 48 audit queries (first 16 per stratum of the earlier audit)\\
-Matched benchmark & 120 Sobol queries\\
-POD rank study & Separate 30-query validation set\\
-Price diagnostics & 30 queries, five spots $0.8K,0.9K,K,1.1K,1.2K$;
-first eight queries for refinement\\
-Cost refinement & 30 queries for $N\le256$; predeclared subset of six at $N=512$\\
+Calibration & 30 price-diagnostic queries and two box corners, five spots $0.8K,\dots,1.2K$\\
+Training & 800 and 4000 Sobol trajectories (seed 0); 30-query validation set (seed 999999)\\
+Reduced-model and candidate study & the 30-query validation set\\
+Matched benchmark, multi-query & 120 Sobol queries; $10^4$ Sobol queries\\
+Out-of-distribution & 200 Sobol queries outside the box and 64 extended vertices\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1138,8 +1231,8 @@ $4096$, $16384$; maxima $1.75$, $3.78$, $4.93$, $8.30$, $13.6$), because the tem
 below the resolution of a degree-$(p-1)$ trigonometric minorant.  The observed ratio
 $\eta^X/\eta^S$ on candidates is smaller: median $1.08$--$1.13$ at $N=64$ and $1.4$--$1.7$ at
 $N=512$ (maximum $3.1$), so at the production resolution the banded certificate costs a factor
-below two in effectivity.  \todo{Phase 2: replace the stand-in candidates by DeepONet / POD-NN /
-corrected trajectories.}
+below two in effectivity; the production candidates of Section~\ref{ssec:e1} confirm the factor
+$\eta^X/\eta^S\approx2$ at $N=1024$.
 \subsection{Riesz solves and reference trajectories}
 \label{ssec:e0-riesz}
 \IfFileExists{../tables_v9/tab_pcg_v9.tex}{\input{../tables_v9/tab_pcg_v9}}{\todo{Table pending (run\_E0.py E0.4)}}
@@ -1158,52 +1251,250 @@ perturbed exact dynamics; the discrete framework therefore covers the finite-var
 without change.
 \subsection{Resolution and tolerance calibration}
 \label{ssec:calibration}
-\todo{Phase 3.1.}
-\subsection{Reduced model, neural candidates and benchmarks}
-\label{ssec:benchmark}\label{ssec:pod-results}\label{ssec:scaling-results}
-\todo{Phase 3.2--3.5 (E1--E4).}
-\subsection{Reproducibility archive}
+The production resolution is the smallest $N$ at which the discrete put price is within one cent
+of the COS reference \cite{FangOosterlee2008} (8192 modes, range parameter 30; agreement with
+Carr--Madan to $2.6\times10^{-12}$ on the checked rows) at the five spots $0.8K,\dots,1.2K$, over the
+30 price-diagnostic queries and the two short-maturity, weakly diffusive box corners
+($C=0.05$, $Y=1.1$, $T=0.1$) that had price gaps above two dollars at $N=64$.
+Table~\ref{tab:budget} gives the maxima.  The 30 queries alone would pass at $N=512$ ($0.11$ cent),
+the corners do not ($2.4$ and $3.2$ cent); at $N=1024$ all are below $0.24$ cent with 240 steps,
+whereas 60 steps give $4.6$ cent on the 30 queries at that resolution.  With the spot factor
+$\max_s\beta_I(x_s)=8.44$ of \eqref{eq:gamma-infty}, one cent corresponds to the trajectory
+tolerance $\varepsilon_N=1.18\times10^{-3}$; this configuration is fixed once and not changed by
+any later experiment.  A tenth of a cent ($\varepsilon_N/10$) is reported as a certificate
+tolerance only, since the discretisation error at $N=1024$ is $0.24$ cent.
+\IfFileExists{../tables_v9/tab_budget_v9.tex}{\input{../tables_v9/tab_budget_v9}}{\todo{Table pending}}
+\subsection{Reduced model and neural candidates}
+\label{ssec:e1}\label{ssec:pod-results}
+Table~\ref{tab:pod-ranks} and Figure~\ref{fig:acceptance} report the POD--Galerkin candidates on
+the validation set at the production configuration.  The mass-weighted basis from 800 trajectories
+reaches a median error of $3.1\times10^{-4}$ at $r=48$ and $1.7\times10^{-5}$ at $r=64$; five times
+more training data does not enlarge the space noticeably (singular values within $10\%$).  The
+exact certificate has effectivity $9$--$15$ for $r\le80$, consistent with Theorem~\ref{thm:efficiency}
+(efficiency holds in the energy norm, which weights the high-frequency part of the error far more
+than the mass norm in which the error is measured); the banded certificate is a further factor
+$\approx2$ above it, as predicted by $\sqrt{\Thmu}$, and the reduced online certificate a further
+factor $\approx2$, the cell factor.  Acceptance at one cent therefore starts at $r=56$ under the
+exact certificate (28 of 30), at $r=62$--$64$ under all three, and is complete at $r\ge80$.  The
+three-stage rule settles every query at $r\le48$ by cheap rejection and every query at $r\ge80$ by
+reduced acceptance; the full-order stages are reached only in the band $r=56$--$64$.  No false
+accept occurs under any certificate at any tolerance.  At $r\ge96$ the true error ($4\times10^{-8}$)
+falls below the floor set by the EIM allowance at $Q=36$, which raises the reduced effectivity to
+$120$--$140$ without affecting acceptance.
+\IfFileExists{../tables_v9/tab_pod_ranks_v9.tex}{\input{../tables_v9/tab_pod_ranks_v9}}{\todo{Table pending}}
+\begin{figure}[!htbp]
+\centering
+\IfFileExists{../figures_v9/F5a_acceptance.png}{\includegraphics[width=0.98\linewidth]{F5a_acceptance.png}}{\todo{F5a pending}}
+\caption{Top: accepted fraction of the 30 validation queries as a function of the tolerance
+$\varepsilon$ (dashed line: $\varepsilon_N$) for POD--Galerkin candidates of rank $48$--$80$ and the
+two best POD-NN checkpoints, under the reduced online, banded full-order and exact full-order
+certificates.  Bottom: the stage at which the three-stage rule of Proposition~\ref{prop:threestage}
+settles each query at $\varepsilon_N$, per rank.}
+\label{fig:acceptance}
+\end{figure}
+
+The neural candidates are reported in Table~\ref{tab:podnn}.  None passes at $\varepsilon_N$, nor
+at $10^{-3}$: the best standard-output network ($4000$ trajectories, $\lambda_R=1$) has a median true
+error of $0.46$ and a median exact bound of $1.25$, about $10^3\varepsilon_N$; the space--time
+variant reduces both by an order of magnitude ($0.015$ and $0.056$, $47\,\varepsilon_N$).  Three
+observations explain the result.  With $\lambda_R=0$ the network fits the coefficients best (error
+$0.08$) but its trajectory is noisy in time, and the residual, which contains the time difference
+divided by $\dt$, gives a bound of $12$ (effectivity $150$); with $\lambda_R>0$ the bound drops by a
+factor ten while the error rises by a factor five, so the residual term buys temporal smoothness
+with accuracy, and selecting checkpoints by the rigorous bound picks the smoother, less accurate
+network.  The space--time representation removes the temporal noise by construction and wins on
+both measures.  The projection of the reference trajectories onto the same basis, certified at
+$3.2\times10^{-3}$, shows that the basis is not the obstacle; the selected epochs ($1890$--$2000$ of
+$2000$) show that the networks had not converged, but longer training cannot close a gap of
+$47$--$1000$.  Every neural query is settled by the cheap rejection of the first stage; the
+certificate is thus what identifies the failure, at a cost of milliseconds and with no false
+accept, and the reduced model with $r\ge64$ is the surrogate that delivers one-cent prices.
+\IfFileExists{../tables_v9/tab_podnn_v9.tex}{\input{../tables_v9/tab_podnn_v9}}{\todo{Table pending}}
+\IfFileExists{../tables_v9/tab_training_v9.tex}{\input{../tables_v9/tab_training_v9}}{\todo{Table pending}}
+Figure~\ref{fig:online-time} shows the online cost of the reduced model on the validation queries:
+the reduced solve takes $0.75$--$2.0$~ms and the reduced certificate $2.9$--$8.2$~ms for
+$r=8$--$128$; the three-stage total at $\varepsilon_N$ equals the reduced certificate wherever the
+first stage decides ($r\le48$ by cheap rejection, $r\ge62$ by acceptance) and rises to $154$~ms only
+at $r=56$, where the full-order stages are needed.  The two selections of the neural checkpoints
+differ as expected: selecting by the rigorous bound picks $\lambda_R=1$ (bound $1.26$, error $0.46$),
+selecting by the true error picks $\lambda_R=0$ (bound $12.2$, error $0.082$); the certified user
+sees only the former.
+\begin{figure}[!htbp]
+\centering
+\IfFileExists{../figures_v9/F5c_online_time.png}{\includegraphics[width=0.72\linewidth]{F5c_online_time.png}}{\todo{F5c pending}}
+\caption{Online time per query of the reduced model at the production configuration (one thread,
+idle machine): reduced solve, reduced online certificate, and the three-stage total at
+$\varepsilon_N$, against the uncertified direct solve.}
+\label{fig:online-time}
+\end{figure}
+\subsection{Matched benchmark and cost under refinement}
+\label{ssec:benchmark}\label{ssec:scaling-results}
+Table~\ref{tab:benchmark} and Figure~\ref{fig:benchmark} report the 120 benchmark queries at the
+production configuration.  The baseline is the \emph{uncertified} circulant-preconditioned GMRES
+solve of Section~\ref{ssec:e0-riesz} ($259$~ms with reusable setup, $370$~ms cold); every ratio is a
+geometric mean over queries with a $95\%$ query-bootstrap interval, and the certificate cost of the
+direct solve is shown separately.  Three results.
+
+First, the full-order certificate is cheap: the banded certificate $\eta^X$ with the exact
+operator costs $6.0\%$ of the solve ($7.2\%$ including the per-query spectral data in the fast
+online mode of Section~\ref{ssec:spectral}), so a certified direct solve takes $1.06$ times an
+uncertified one, and this fraction stays at $4.5$--$5.6\%$ from $N=64$ to $N=4096$
+(Figure~\ref{fig:benchmark}, right), as the cost model of Section~\ref{ssec:cost} predicts
+(Table~\ref{tab:cost}).  The spectral quantities evaluated on the fine verification grid of
+Section~\ref{ssec:e0-spectral} would instead cost $478$~ms and make the certified solve $2.87$
+times the uncertified one; the fast mode (a coarse graded grid of $1012$ nodes with ten aliases and
+a rigorous $\sin^{2p}$-weighted tail) reproduces $\beta_\mu$ and $\Thmu$ to $0.2\%$ and changes
+$\eta^X$ by $0.002\%$.
+
+Second, the certified reduced model is an order of magnitude faster than the direct solve
+whenever the three-stage rule stops at the reduced stage: POD--Galerkin with $r=80$ takes
+$0.032$ of the direct time ($8.3$~ms) at every tolerance of the sweep, with all 120 queries accepted
+at the $N$-independent stage; with $r=64$ it takes $0.041$ at $\varepsilon_N$ (102 reduced and 18
+banded accepts), $0.026$ at $3\varepsilon_N$, and $0.55$ at $0.3\varepsilon_N$, where most queries
+need a full-order stage and four need correction.  Without reusable setup the ratio of the
+reduced methods rises to $0.30$ because the query-independent initial projection
+($90$~ms, Table~\ref{tab:cost}) is rebuilt inside the timer.
+
+Third, the neural candidate costs $1.07$ times the direct solve at every tolerance: every query is
+rejected at the reduced stage in a few milliseconds and then corrected by a full-order march
+warm-started from the candidate and re-certified, so its cost is the direct solve plus the
+certificate.  No false accept occurs for any method or tolerance.
+\IfFileExists{../tables_v9/tab_benchmark_v9.tex}{\input{../tables_v9/tab_benchmark_v9}}{\todo{Table pending}}
+\IfFileExists{../tables_v9/tab_cost_v9.tex}{\input{../tables_v9/tab_cost_v9}}{\todo{Table pending}}
+\begin{figure}[!htbp]
+\centering
+\IfFileExists{../figures_v9/F6a_benchmark.png}{\includegraphics[width=0.98\linewidth]{F6a_benchmark.png}}{\todo{F6a pending}}\\[2mm]
+\IfFileExists{../figures_v9/F6b_refinement.png}{\includegraphics[width=0.98\linewidth]{F6b_refinement.png}}{\todo{F6b pending}}
+\caption{Top: time ratio to the uncertified direct solve on the 120 benchmark queries at
+$\varepsilon=0.3\varepsilon_N$, $\varepsilon_N$, $3\varepsilon_N$ (geometric means, $95\%$
+query-bootstrap intervals, reusable setup).  Bottom left: direct solve and banded full-order
+certificate per query as functions of $N$ (20 benchmark queries, $N_T=240$), with the reduced
+online certificate at $r=64$ and $80$, which does not depend on $N$.  Bottom right: the certificate
+as a fraction of the solve, $4.5$--$5.6\%$ for $N=64$--$4096$.}
+\label{fig:benchmark}
+\end{figure}
+\subsection{Out-of-distribution detection}
+\label{ssec:ood}
+The certificate makes no assumption about where a query lies, so the natural test is to leave the
+parameter box.  Table~\ref{tab:ood} reports 264 queries outside the box of Table~\ref{tab:proposed-box}
+(200 Sobol points in the shells $C\in[1,2]$, $Y\in[0.9,1.1)\cup(1.8,1.95]$, $G\in[0.5,1)$,
+$M\in[9,15]$, excluding $|Y-1|<0.02$ where $\Gamma(-Y)$ is singular, and the 64 vertices of the
+extended box).  Every query is certifiable: $\alpha_{\rm lb}=\rf-\varepsilon_K>0$ and the Toeplitz
+aliasing stays below $10^{-15}$ even for $G<1$.  Outside the cells of Section~\ref{ssec:eim} the
+three-stage rule starts at the banded stage with the query's own $X_I$, and the EIM error
+$\varepsilon_Q$, evaluated at the query, grows by two orders of magnitude (median $2\times10^{-7}$
+against $1.7\times10^{-9}$ inside the box) because the interpolant extrapolates in $Y$ and $G$; it
+enters the allowance, not the verdict.
+
+Three facts follow.  There is no false accept for any candidate under any certificate at any
+tolerance of the sweep, as Theorem~\ref{thm:fully-discrete-certificate} requires.  The reduced
+model keeps working on most of the extended domain: POD--Galerkin with $r=80$ is within one cent
+on 210 of the 264 queries, and the certificate accepts 193 of them (92\%), with 17 false rejects
+from the effectivity of about ten; its failures concentrate in the shells $Y>1.8$ and $G<1$, which
+are also the shells of largest $\varepsilon_Q$.  A detector that rejects everything outside the
+training box has the same recall as the certificate but discards all 210 working queries
+(precision $0.20$ against $0.76$); the seed-ensemble disagreement of the neural candidate, the usual
+heuristic, cannot even be scored here because every space--time POD-NN error exceeds
+$\varepsilon_N$ in and out of the box.  Figure~\ref{fig:ood} shows the certified bound against the
+true error for all queries; every point lies above the diagonal.
+\IfFileExists{../tables_v9/tab_ood_v9.tex}{\input{../tables_v9/tab_ood_v9}}{\todo{Table pending}}
+\begin{figure}[!htbp]
+\centering
+\IfFileExists{../figures_v9/F7_ood.png}{\includegraphics[width=0.94\linewidth]{F7_ood.png}}{\todo{F7 pending (Phase 3 zip)}}
+\caption{Certified bound against true error for the 264 out-of-box queries and the 30 validation
+queries (POD--Galerkin $r=64$ and $80$, space--time POD-NN), under the three certificates; the lines
+mark $\varepsilon_N$ and bound $=$ error.}
+\label{fig:ood}
+\end{figure}
+\subsection{Multi-query cost and amortisation}
+\label{ssec:multiquery}
+Figure~\ref{fig:amortisation} reports $10^4$ Sobol queries at $\varepsilon_N$ on one core, with
+every method's offline cost as the intercept.  The direct solve averages $260$~ms per query.
+Certified POD--Galerkin with $r=80$ averages $9.0$~ms: $99.77\%$ of the queries are settled at the
+reduced stage, $0.14\%$ at the banded stage, $0.02\%$ at the exact stage, and $0.07\%$ are rejected
+and corrected; with $r=64$ the mean is $21.2$~ms (median $7.2$~ms; $89.7\%$ reduced, $9.8\%$ banded,
+$0.35\%$ corrected).  The offline cost of the reduced model is about $1530$~s: reference
+trajectories $208$~s, POD $797$~s, EIM $65$~s, cell constants $425$~s, offline tensors $39$~s
+(single-thread equivalents; the POD used four BLAS threads).  The fitted totals
+$T(Q)=1533\,\mathrm s+9.0\,\mathrm{ms}\cdot Q$ ($r=80$) and $1533\,\mathrm s+21.2\,\mathrm{ms}\cdot Q$
+($r=64$) break even with $260\,\mathrm{ms}\cdot Q$ after about $6100$ and $6400$ queries.  The
+space--time POD-NN never breaks even: its online cost exceeds the direct solve ($282$~ms, since
+every query is corrected), and its offline cost ($2.7\times10^4$~s) is dominated by training.
+No reference solutions exist for these $10^4$ queries, so this experiment reports verdicts and
+times only; the false-accept checks are those of Sections~\ref{ssec:e1}--\ref{ssec:ood}.
+\begin{figure}[!htbp]
+\centering
+\IfFileExists{../figures_v9/F8_amortisation.png}{\includegraphics[width=0.8\linewidth]{F8_amortisation.png}}{\todo{F8 pending}}
+\caption{Cumulative wall time, offline cost included, against the number of queries at the
+production configuration (one thread); dots mark the break-even with the uncertified direct
+solver.}
+\label{fig:amortisation}
+\end{figure}
+\subsection{Reproducibility}
 \label{ssec:archive}
-\todo{Phase 4.4.}
+All computations use the package \texttt{cgmy\_cert} (Python 3.10, NumPy 1.26, SciPy 1.15, mpmath
+1.3, PyTorch 2.14 on CPU) on one core of an Intel Core Ultra 9 285K, with the thread count pinned to
+one for every timed quantity, a warm-up query, five repetitions in shuffled order and medians of
+per-query medians; load averages are stored with every timing.  The archive contains the package
+with its test suite (66 tests, including the 40-digit assembly fixture, the 459-coordinate
+regression against the earlier implementation and the done-when criteria of every section), the
+scripts that regenerate every result file, the result files themselves with hardware, software
+versions and commit hashes, the trained checkpoints, and the SHA-256 manifest of the data files
+(reference trajectories, bases, offline tensors) that are regenerated by the scripts.  Every number
+in this section is read from a result file; the script that builds the tables from them is part of
+the archive.  \todo{Phase 4.4: archive URL and the end-to-end regeneration check.}
 \FloatBarrier
 
 \section{Interpretation and conclusion}
 \label{sec:conclusion}\label{sec:discussion}
-The residual framework turns a candidate spline trajectory into a
-query-wise bound through the governing discrete equation. Restricting to
-the free coefficient space and retaining the initial discrepancy are
-necessary for a consistent treatment of neural and reduced trajectories.
-The Riesz bracket separates validity from iterative convergence under its
-spectral lower-bound hypothesis. The deterministic discretisation supplies
-the training data, operator, exterior constraints and correction mechanism;
-certification therefore remains anchored in numerical stability.
+The discrete problem of this paper is the exact spline Galerkin system of the CGMY operator, and
+the paper's first point is that for shift-invariant bases ``exact'' is cheap: the matrices are
+Toeplitz sections of a periodised symbol whose alias series is summed to a stated tail, and the
+same symbol gives, in closed form, the spectral lower bound, the banded comparison norm and the
+affine structure on which everything else rests.  Positivity of the symmetric part, which the
+earlier version of this work assessed by an audit of 459 parameter points and a numerical
+eigenvalue estimate, is a theorem with the explicit constant $\alpha_{\rm lb}=\rf-\varepsilon_K$,
+and it holds for $Y\in(0,2)\setminus\{1\}$.
 
-The benchmark identifies the practical distinction between prediction
-accuracy and tolerance-controlled cost. The neural model requires
-correction throughout the tested population, while rank-48 POD passes
-directly and reduces online time. Assembly and certification dominate the
-optimised free solver costs, making their reduction a prerequisite for
-larger surrogate gains. This finding applies to the tested resolution,
-parameter family and available checkpoints; it establishes neither a
-general neural speed advantage nor a lifecycle cost advantage.
+The second point is about the cost of a guarantee.  At full order the certificate is one residual
+evaluation per time step plus a banded solve, $5$--$6\%$ of the direct solve at every resolution
+tested; in one space dimension with FFT-applied operators it cannot be much less, because the
+solve itself is a handful of residual evaluations per step.  The scalable statement is the reduced
+one: with the affine operator and a fixed comparison norm per cell of parameter space, the
+certificate of a reduced trajectory costs a few milliseconds independently of $N$, and the
+three-stage rule escalates to the full-order bounds only for candidates within a known factor of
+the tolerance.  On the benchmark this gives a certified one-cent price in $0.03$ of the direct time
+from rank $80$ on, and on $10^4$ queries $99.8\%$ of the verdicts are settled without touching the
+full space.
 
-Discrete certification and continuum pricing accuracy require separate
-assessment. The principal-period matrix differs from exact Galerkin
-assembly, and the coarse mesh gives substantial price errors at difficult
-corners. Refinement provides empirical convergence evidence, but no
-computable continuum-price bound for this assembled scheme. Similarly,
-ordinary floating-point checks do not supply machine-enclosed guarantees;
-validated spectral bounds and arithmetic would strengthen the implemented
-certificate.
+The third point is the negative one.  No neural reduced model trained here comes within a factor
+$47$ of the tolerance, although the basis it predicts in certifies at $3\times10^{-3}$ and the
+projection-based reduced model on the same basis passes at rank $56$--$64$.  The certificate is
+what establishes this, query by query, at no cost and with no false accept in $10^4$ in-box and
+$264$ out-of-box queries, and it also explains it: the residual penalises temporal roughness that
+a least-squares fit of the coefficients does not see, so the networks that the rigorous bound
+selects are the smoother, less accurate ones, and the space--time representation that removes the
+roughness by construction is the best of them.  Whether a better architecture, more data or a
+different loss closes the remaining gap is a question the framework can now answer at the price of
+a few milliseconds per candidate.
 
-The resulting method provides scheme-consistent residual certification of
-neural and reduced European-put trajectories, together with a matched
-assessment of its online value. Its next computational priorities are
-inexpensive fine-mesh spectral bounds, efficient Riesz evaluation and
-spatial resolution adequate for the required price budget. Broader payoff
-families and mesh-transfer strategies require further evaluation.
+Outside the training box the same certificate accepts $92\%$ of the queries on which the reduced
+model still delivers one cent, where any detector based on the box itself would discard them all;
+this is the operational meaning of a bound that depends on nothing but the discrete equations.
+What the certificate does not do is bound the continuum price: the resolution was chosen so that
+the discretisation error is below one cent on the diagnostic queries, including two corners that
+required $N=1024$, and the certified bound is added to that budget, not instead of it.  Two further
+limitations are stated where they arise: the grid evaluation of the symbol extrema is not a
+validated enclosure (Section~\ref{ssec:spectral}), and the floating-point evaluation of the
+residual is covered by an allowance rather than by interval arithmetic
+(Remark~\ref{rem:arithmetic-scope}).
+
+The American put is the natural next target.  Theorem~\ref{thm:vi} in Appendix~\ref{ssec:vi} gives
+the residual certificate for the backward-Euler discrete variational inequality in the same spline
+space, with the complementarity term as the only addition; exact assembly, the spectral bound, the
+banded norm and the affine operator apply verbatim, and a certified reduced model for the
+American price is a matter of the obstacle solver and training data, not of new theory.
 \FloatBarrier
-\todo{Rewrite the interpretation for v9; the American theorem (Appendix~\ref{ssec:vi}) as outlook.}
 
 \appendix
 \section{Uniform stability and supporting derivations}
@@ -1659,6 +1950,12 @@ C. R. Math. Acad. Sci. Paris 339 (2004), 667--672.
 \bibitem{GreplMadayNguyenPatera2007}
 M.~A. Grepl, Y. Maday, N.~C. Nguyen and A.~T. Patera, \emph{Efficient reduced-basis treatment of
 nonaffine and nonlinear partial differential equations}, M2AN 41 (2007), 575--605.
+\bibitem{BuhrEngwerOhlbergerRave2014}
+A. Buhr, C. Engwer, M. Ohlberger and S. Rave, \emph{A numerically stable a posteriori error
+estimator for reduced basis approximations of elliptic equations}, in: Proc. WCCM XI, 2014.
+\bibitem{CasenaveErnLelievre2014}
+F. Casenave, A. Ern and T. Leli\`evre, \emph{Accurate and online-efficient evaluation of the a
+posteriori error bound in the reduced basis method}, M2AN 48 (2014), 207--229.
 \bibitem{ChanStrang1989}
 R.~H. Chan and G. Strang, \emph{Toeplitz equations by conjugate gradients with circulant
 preconditioner}, SIAM J. Sci. Statist. Comput. 10 (1989), 104--119.

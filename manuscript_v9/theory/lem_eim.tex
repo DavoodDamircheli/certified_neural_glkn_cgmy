@@ -21,8 +21,9 @@ Let $e_\nu:=\Phi_\nu-\sum_q\ell_q(\nu)\Phi_{\nu_q}$.  Then
 and $\norm{e_\nu}_\infty\le\max_{j}|e_\nu(\vartheta_j)|+\tfrac{\pi}{L}\norm{e_\nu'}_\infty$
 on an $L$-point grid, with $e_\nu'$ obtained from the explicit derivative
 $\partial_\vartheta(\delta+i\vartheta)^Y=iY(\delta+i\vartheta)^{Y-1}$ and the
-same tail bound.  Evaluating $\varepsilon_Q(\mu)$ at a new query costs
-$O(LK)$ scalar operations and no linear algebra.
+same tail bound.  For the assembled matrices (DFT sections on the same grid) the grid maximum
+alone is a rigorous bound, by Remark~\ref{rem:compression}.  Evaluating $\varepsilon_Q(\mu)$ at
+a new query costs $O(LK)$ scalar operations and no linear algebra.
 \end{lemma}
 \begin{proof}
 Lemma~\ref{lem:toeplitz}, second inequality, and the mean value theorem.

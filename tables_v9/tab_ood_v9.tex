@@ -1,19 +1,36 @@
+% Numbers from results/E3.json (summary, breakdown) and results/NOTES_FOR_PAPER.md item 27 (checked against the Phase 3 zip, 2026-10-23).
 \begin{table}[!htbp]
 \centering\small
-\caption{Out-of-distribution queries (E3): per shell, the number of queries, how many have true error $\le\varepsilon_N$ (the reduced model still works) and how many of those the exact / three-stage certificates accept, the median true error and the median $\varepsilon_Q$. Shells overlap; the reduced stage is not used outside the box.}
+\caption{Out-of-distribution study: 264 queries outside the parameter box (200 Sobol points in the
+shells $C\in[1,2]$, $Y\in[0.9,1.1)\cup(1.8,1.95]$, $G\in[0.5,1)$, $M\in[9,15]$, and 64 vertices of the
+extended box) at the production configuration.  Top: queries on which the candidate's true error
+is below $\varepsilon_N$ (``works''), queries the exact certificate accepts (``certified''), and
+precision of two rules as detectors of ``true error $>\varepsilon_N$'': the certificate (recall 1 by
+theorem) and the naive rule that rejects every query outside the training box (recall 1, but it
+discards every working query).  Bottom: POD--Galerkin $r=80$ by shell (a query leaving the box in
+several coordinates counts in each), with the median true error and the median EIM error
+$\varepsilon_Q$ (inside the box: $1.7\times10^{-9}$).}
 \label{tab:ood}
-\begin{tabular}{lr rrr rrr r}
+\begin{tabular}{lrrrr}
 \toprule
- & & \multicolumn{3}{c}{POD-Galerkin $r=64$} & \multicolumn{3}{c}{POD-Galerkin $r=80$} & \\
-shell & queries & works & certified & med.\ err. & works & certified & med.\ err. & med.\ $\varepsilon_Q$\\
+candidate & works & certified & precision (certificate) & precision (naive rule)\\
 \midrule
-all & 264 & 196 & 181 & $6.3e-05$ & 210 & 193 & $1.0e-05$ & $2.0e-07$\\
-$C>1$ & 122 & 96 & 93 & $3.5e-05$ & 104 & 95 & $3.7e-06$ & $5.3e-08$\\
-$Y<1.1$ & 39 & 31 & 25 & $3.6e-05$ & 36 & 31 & $6.1e-06$ & $1.4e-08$\\
-$Y>1.8$ & 36 & 15 & 15 & $3.1e-02$ & 18 & 15 & $2.8e-03$ & $6.1e-07$\\
-$G<1$ & 27 & 17 & 13 & $6.4e-04$ & 21 & 13 & $3.9e-04$ & $3.1e-06$\\
-$M>9$ & 111 & 93 & 88 & $4.0e-05$ & 101 & 94 & $8.6e-06$ & $2.5e-07$\\
-ext.\ vertices & 64 & 33 & 27 & $1.0e-03$ & 34 & 31 & $2.0e-04$ & $4.3e-06$\\
+POD--Galerkin $r=64$ & 196 & 181 & 0.82 & 0.26\\
+POD--Galerkin $r=80$ & 210 & 193 & 0.76 & 0.20\\
+space--time POD-NN & 0 & 0 & -- & --\\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{tabular}{lrrrrr}
+\toprule
+shell ($r=80$) & queries & works & certified & median error & median $\varepsilon_Q$\\
+\midrule
+$C>1$ & 122 & 104 & 95 & $3.7\times10^{-6}$ & $5.3\times10^{-8}$\\
+$Y<1.1$ & 39 & 36 & 31 & $6.1\times10^{-6}$ & $1.4\times10^{-8}$\\
+$Y>1.8$ & 36 & 18 & 15 & $2.8\times10^{-3}$ & $6.1\times10^{-7}$\\
+$G<1$ & 27 & 21 & 13 & $3.9\times10^{-4}$ & $3.1\times10^{-6}$\\
+$M>9$ & 111 & 101 & 94 & $8.6\times10^{-6}$ & $2.5\times10^{-7}$\\
+vertices & 64 & 34 & 31 & $2.0\times10^{-4}$ & $4.3\times10^{-6}$\\
 \bottomrule
 \end{tabular}
 \end{table}
