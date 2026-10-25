@@ -204,6 +204,34 @@ Section~\ref{sec:conclusion} interprets the findings.
 Appendix~\ref{app:proofs} gives the uniform-stability proof with the explicit
 constant, supporting extensions and the American-put certificate. Throughout, $\psi$ denotes the payoff, $g$ its exterior lifting,
 $\mu=(C,G,M,Y,r)$ the spatial-operator parameters, and $T$ the maturity.
+Table~\ref{tab:notation} collects the symbols used throughout.
+\begin{table}[ht]
+\centering\footnotesize
+\caption{Notation.}
+\label{tab:notation}
+\begin{tabular}{@{}l@{\ \ }>{\raggedright\arraybackslash}p{4.6cm}@{\quad}l@{\ \ }>{\raggedright\arraybackslash}p{4.6cm}@{}}
+\toprule
+$\mu=(C,G,M,Y,r)$, $T$, $\mathcal K$ & model parameters, maturity, strike &
+$N$, $h$, $p$ & cells, mesh width, spline order ($p=3$)\\
+$N_h$, $N_T$, $\dt$ & free unknowns, time steps, step size &
+$A_\mu(\xi)$ & full-line symbol of $\Aop$, \eqref{eq:symbol}\\
+$\sym{a}_\mu$, $\sym{s}_\mu=\Real\sym{a}_\mu$ & periodised symbol, its real part &
+$\sym{m},\sym{d}_1,\sym{g}_1$ & mass, drift, stiffness symbols\\
+$K$, $\varepsilon_K$ & alias truncation, tail bound &
+$\Tn{n}{f}$ & $n\times n$ Toeplitz section of $f$\\
+$M_I,A_I,S_I$ & free mass, operator, symmetric part &
+$\alpha_{\rm lb}$, $\smin$ & spectral lower bound, $\min_\vartheta\sym{s}_\mu$\\
+$X_I$, $\beta_\mu$, $\Thmu$ & banded comparison norm, its factors &
+$\bar X$, $\bar\Theta_\mu$ & cell comparison norm (reduced stage)\\
+$\rr^{n+1/2}$, $\beta_0$ & CN residual, initial discrepancy &
+$\eta^S,\eta^X,\eta^{\bar X}$ & exact, banded, reduced estimators\\
+$Q$, $\varepsilon_Q$, $A_Q$ & EIM rank, error, affine operator &
+$r$, $V$, $\varrho$ & POD rank, basis, retained rows\\
+$\varepsilon$, $\varepsilon_N$ & tolerance; one cent at $N=1024$ &
+$\eta_{\rm aug}$, $\lambda^{\bar X}_{\rm aug}$ & augmented bound, lower companion\\
+\bottomrule
+\end{tabular}
+\end{table}
 \section{CGMY model and constrained discretisation}
 \label{sec:model}\label{sec:galerkin}
 \subsection{CGMY backward operator}
@@ -290,7 +318,7 @@ Table~\ref{tab:proposed-box}.
 \label{tab:proposed-box}
 \begin{tabular}{lllllll}
 \toprule
-$C$ & $G$ & $M$ & $Y$ & $r$ & $T$ (years) & $K$\\
+$C$ & $G$ & $M$ & $Y$ & $r$ & $T$ (years) & $\mathcal K$ (strike)\\
 \midrule
 $[0.05,1]$ & $[1,5]$ & $[2,9]$ & $[1.1,1.8]$ & $[0.01,0.1]$ & $[0.1,1]$ & $100$\\
 \bottomrule
@@ -304,7 +332,7 @@ the family.
 
 Nonlocal exterior values enter through $V=g+U$, with $U$ extended by zero
 outside $\Omega$. For a put, a smooth lifting is
-$g(x,\tau)=(Ke^{-r\tau}-e^x)\zeta(x)$, where $\zeta$ equals one to the left
+$g(x,\tau)=(\mathcal Ke^{-r\tau}-e^x)\zeta(x)$, where $\zeta$ equals one to the left
 of the domain and zero to its right. With $s_\mu=Y/2$, define
 \begin{equation}
   \Vmu=\Hs(\Omega)
@@ -338,7 +366,8 @@ where the lifting functional is
 All exterior data enter only through $\Aop g$ evaluated on $\Omega$.
 
 
-The put payoff is $\psi_K(x)=(K-e^x)^+$. The main study fixes $K=100$ and
+The put payoff is $\psi(x)=(\mathcal K-e^x)^+$ with strike $\mathcal K$ (the letter $K$ is reserved
+for the alias truncation of Section~\ref{ssec:assembly}). The main study fixes $\mathcal K=100$ and
 learns variation in $(\mu,T)$; this is a parameter-to-trajectory map within
 one payoff family.
 
@@ -366,7 +395,7 @@ $Y\in(0,2)\setminus\{1\}$.
 \input{theory/rem_coercivity}
 
 \subsection{Spline space and assembly}
-\label{ssec:spline-space}\label{rem:basis-identification}
+\label{ssec:spline-space}
 Let $N_p$ be the cardinal spline of order $p$ (degree $p-1$),
 $h=(x_{\max}-x_{\min})/N$, and
 $\phi_{h,k}(x)=h^{-1/2}N_p((x-x_{\min})/h-k)$. The homogeneous space is
@@ -387,22 +416,21 @@ so that
 \begin{equation}
  \Ah(\mu)
  =-(\rf-\omega_S)D_h
-  -C\Gamma(-Y)K_M^+
-  -C\Gamma(-Y)K_G^-
+  -C\Gamma(-Y)T_M^+
+  -C\Gamma(-Y)T_G^-
   +\lambda_0\Mh,
  \label{eq:Ah}
 \end{equation}
 where $D_h$ is the first-derivative matrix and the fractional blocks are
 Toeplitz with the $h^{-Y}$ scaling
 \begin{equation}
- (K_G^-)_{kk'}=h^{-Y}\Lambda_G^-(k-k';Gh),
+ (T_G^-)_{kk'}=h^{-Y}\Lambda_G^-(k-k';Gh),
  \qquad
- (K_M^+)_{kk'}=h^{-Y}\Lambda_M^+(k-k';Mh),
+ (T_M^+)_{kk'}=h^{-Y}\Lambda_M^+(k-k';Mh),
  \label{eq:toeplitz-blocks}
 \end{equation}
 the tempered connection coefficients $\Lambda_G^-,\Lambda_M^+$ being the absolutely convergent
-Fourier-symbol integrals made explicit in Section~\ref{ssec:assembly} (we write $T_G,T_M$ for
-these blocks when the sign convention is immaterial).  The matrices $\Mh$ and $D_h$
+Fourier-symbol integrals made explicit in Section~\ref{ssec:assembly}.  The matrices $\Mh$ and $D_h$
 are banded; the Toeplitz blocks are applied by circulant embedding in
 $O(N_h\log N_h)$ operations with no compression error.  The semidiscrete
 system is
@@ -458,7 +486,7 @@ boundary. Every admissible trajectory has the form
  \quad \bar S=\tfrac12(\bar A+\bar A^\top).
 \]
 For the implementation, the left prescribed coefficients equal
-$K e^{-r\tau_n}\sqrt h$ and the right ones equal zero. These are
+$\mathcal K e^{-r\tau_n}\sqrt h$ and the right ones equal zero. These are
 coefficient constraints; they are not four extra PIDE equations.
 Restricting the CN equations to the free rows gives
 \begin{equation}
@@ -719,7 +747,7 @@ $\sres^\top\Sh^{-1}\sres\le
 \eqref{eq:bracket-width}.
 \end{proof}
 \begin{corollary}[Augmented upper certificate]
-\label{cor:guaranteed}\label{def:guaranteed}
+\label{cor:guaranteed}
 Under the hypotheses of Theorem~\ref{thm:fully-discrete-certificate} and
 $0<\alpha_{\rm lb}\le\lambda_{\min}(\Sh)$, let $v^{n+1/2}$ be any
 approximate Riesz vectors. Define
@@ -850,14 +878,19 @@ level (the pre-projection discrepancy is kept as a diagnostic). Compute
 $\beta_0=\|\zz_\theta^0-\zz_h^0\|_{M_I}$.
 \item Check that the time grid and residual match the uniform CN scheme, and form free residuals with the same operator, stored forcing
 and lifting as the reference.
+\item If the candidate comes from the reduced model with the affine operator, evaluate the
+$N$-independent estimator $\eta^{\bar X}_{\rm aug}$ and its lower companion $\lambda^{\bar X}_{\rm aug}$
+(Proposition~\ref{prop:threestage}): return \textsc{reduced accept} if the former is at most
+$\varepsilon$, continue with correction (step 6) if the latter exceeds $\varepsilon$, and otherwise
+proceed at full order.
 \item Evaluate $\alpha_{\rm lb}(\mu)$, $\beta_\mu$, $X_I$ and $\Thmu$ from the symbol
 (Theorems~\ref{thm:spectral} and \ref{thm:comparison}).
 \item Compute the cheap augmented bound $\eta^X_{\rm aug}=(\beta_0^2+(\eta^X)^2)^{1/2}$
-(banded Cholesky).  If it is at most $\varepsilon$, return \textsc{direct accept}.  If
-$(\beta_0^2+(\eta^X)^2/\Thmu)^{1/2}>\varepsilon$, no exact bound can pass: continue with correction.
+(banded Cholesky).  If it is at most $\varepsilon$, return \textsc{banded accept}.  If
+$(\beta_0^2+(\eta^X)^2/\Thmu)^{1/2}>\varepsilon$, no exact bound can pass (\textsc{cheap reject}): continue with correction.
 Otherwise compute $\eta^S_{\rm aug}$ by the preconditioned bracket; if it passes, return
-\textsc{direct accept}.
-\item Otherwise correct by a free CN march from $\zz_h^0$, warm-started by the
+\textsc{exact accept}, else \textsc{exact reject} and continue with correction.
+\item Correct by a free CN march from $\zz_h^0$, warm-started by the
 candidate, monitor linear-solve residuals, and recertify the
 corrected trajectory. If its bound passes, return \textsc{corrected accept}
 with linear-solve convergence status recorded.
@@ -866,8 +899,9 @@ fallback and recertify it (\textsc{qualified fallback}), or return
 \textsc{over budget} or \textsc{numerical failure}. A certified output is returned only when the recomputed bound passes.
 \end{enumerate}
 \end{minipage}
-\caption{Tolerance-checked online rule. The status distinguishes a returned
-approximation from a returned approximation certified to the requested budget.}
+\caption{Tolerance-checked online rule (the three-stage rule of Proposition~\ref{prop:threestage}
+followed by correction). The status names are those used in the tables of Section~\ref{sec:numerics};
+they distinguish a returned approximation from a returned approximation certified to the requested budget.}
 \label{alg:pcc}
 \end{figure}
 
@@ -878,17 +912,17 @@ relative tolerance $10^{-13}$.  Tolerances are reported as a sweep (Section~\ref
 \begin{proposition}[Guaranteed acceptance]
 \label{prop:two-stage}
 Assume the hypotheses of Theorem~\ref{thm:fully-discrete-certificate},
-exact residual evaluation, and $\beta_0\ge\|\ee^0\|_{\Mh}$. Let $\eta_{\rm aug}$ be either
-$\eta^X_{\rm aug}$ or $(\beta_0^2+\etaGuar^2)^{1/2}$ with $\alpha_{\rm lb}$ from \eqref{eq:alpha-lb}.
+exact residual evaluation, and $\beta_0\ge\|\ee^0\|_{\Mh}$. Let $\eta_{\rm aug}$ be
+$\eta^{\bar X}_{\rm aug}$, $\eta^X_{\rm aug}$ or $(\beta_0^2+\etaGuar^2)^{1/2}$ with $\alpha_{\rm lb}$ from \eqref{eq:alpha-lb}.
 If the rule in Figure~\ref{alg:pcc} returns
-\textsc{direct accept} or \textsc{corrected accept} with $\eta_{\rm aug}\le\varepsilon$, then
+\textsc{reduced accept}, \textsc{banded accept}, \textsc{exact accept} or \textsc{corrected accept} with $\eta_{\rm aug}\le\varepsilon$, then
 \begin{equation}
   \max_{1\le m\le N_T}\norm{V_h^m-V_{\theta,h}^m}_{L^2(\Omega)}
   \le \eta_{\rm aug}\le\varepsilon .
   \label{eq:soundness}
 \end{equation}
 The conclusion is independent of the PCG stopping error, by Lemma~\ref{lem:guaranteed} for
-$\etaGuar$ and by Corollary~\ref{cor:cheap} for $\eta^X$. The same proof
+$\etaGuar$, by Corollary~\ref{cor:cheap} for $\eta^X$ and by Proposition~\ref{prop:threestage} for $\eta^{\bar X}$. The same proof
 applies to a corrected trajectory whose recomputed augmented bound passes
 (\textsc{corrected accept}) and to a direct fallback (\textsc{qualified fallback}).
 When $\ee^0=0$, one may take $\beta_0=0$ and recover the residual-only
@@ -909,7 +943,7 @@ The exact correction recovering the reference trajectory solves
 \begin{equation}
   \Mh\frac{\dd^{n+1}-\dd^n}{\dt}+\Ah\overline\dd^{\,n+1/2}
   =-\rr_\theta^{n+1/2},
-  \qquad \dd^0=\cc_h^0-\cc_\theta^0=\ee^0,
+  \qquad \dd^0=\cc_h^0-\cc_\theta^0=\ee^0.
   \label{eq:correction-equation}
 \end{equation}
 The initial correction is zero only when the candidate reproduces the
@@ -1002,7 +1036,7 @@ the same affine space as the reference. Residuals use the assembled operator
 of Section~\ref{ssec:assembly}, and spline derivatives are available analytically.
 The neural-operator candidate is a DeepONet with payoff and parameter branches and a time
 trunk, latent dimension 64 and 80,002 trainable parameters, followed by a coefficient decoder
-that supplies the spline-valued output. The experiments fix $K=100$;
+that supplies the spline-valued output. The experiments fix $\mathcal K=100$;
 functional-input notation accommodates a payoff encoder but the benchmark
 tests a parameter map for this single strike.  It was trained on the principal-period discretisation of the earlier version of this work, and
 we did not retrain it on the exact-assembly references.  Certified as a candidate of the exact
@@ -1038,7 +1072,7 @@ The relative mass-weighted data loss is
  \label{eq:data-loss}
 \end{equation}
 which is the relative squared $L^2(\Omega)$ error of the homogeneous
-spline field, with regularisation $\epsilon$,
+spline field, with a small regularisation $\epsilon>0$ in the denominator.
 
 A compatible residual regulariser is
 \begin{equation}
@@ -1077,7 +1111,7 @@ supply 192,800 snapshots ($241$ time levels each). The reduced equations are
  \frac{\alpha^{n+1}-\alpha^n}{\dt}
  + (V^\top A_I V)\frac{\alpha^{n+1}+\alpha^n}{2}
  = V^\top f_I^{n+1/2},\qquad
- \alpha^0=V^\top M_I \zz_h^0,
+ \alpha^0=V^\top M_I \zz_h^0.
  \label{eq:repaired-pod-cn}
 \end{equation}
 
@@ -1088,7 +1122,9 @@ candidate.
 
 \paragraph{POD--Galerkin with the affine operator.}
 With $A_Q$ in place of $A_I$ the reduced operator is
-$V^\top A_Q(\mu)V=-(\rf-\omega_S)\,V^\top D_IV+\lambda_0 I-C\Gamma(-Y)h^{-Y}\sum_q\ell_q(\nu)\,V^\top T_qV$,
+\[
+V^\top A_Q(\mu)V=-(\rf-\omega_S)\,V^\top D_IV+\lambda_0 I-C\Gamma(-Y)h^{-Y}\sum_q\ell_q(\nu)\,V^\top T_qV,
+\]
 a combination of $Q+2$ precomputed $r\times r$ matrices with scalar coefficients, and the
 reduced forcing is affine in the same scalars and in the two lifting values $b_L(\tau_n)$, through
 the precomputed vectors $V^\top M_I e_{\rm bd}$, $V^\top T_q e_{\rm bd}$.  The online solve therefore
@@ -1188,7 +1224,7 @@ Study & Design\\
 \midrule
 Spectral and comparison-norm verification & 32 box vertices and 256 Sobol points (288 queries)\\
 Initial-error tests & 48 audit queries (first 16 per stratum of the earlier audit)\\
-Calibration & 30 price-diagnostic queries and two box corners, five spots $0.8K,\dots,1.2K$\\
+Calibration & 30 price-diagnostic queries and two box corners, five spots $0.8\mathcal K,\dots,1.2\mathcal K$\\
 Training & 800 and 4000 Sobol trajectories (seed 0); 30-query validation set (seed 999999)\\
 Reduced-model and candidate study & the 30-query validation set\\
 Matched benchmark, multi-query & 120 Sobol queries; $10^4$ Sobol queries\\
@@ -1224,7 +1260,7 @@ at $N=64$ and $N=512$.}
 \label{fig:theta}
 \end{figure}
 The bound of Theorem~\ref{thm:spectral} and the two-sided comparison \eqref{eq:comparison} hold at
-all $289\times3$ tested (query, $N$) pairs; the generalised eigenvalues of $(S_I,X_I)$ lie in
+all $289\times3$ tested (query, $N$) pairs (the 288 verification queries and the worst audit vertex); the generalised eigenvalues of $(S_I,X_I)$ lie in
 $[1,\Thmu]$ in every case.  The a-priori factor $\sqrt{\Thmu}$ grows like
 $(\min(G,M)h)^{(Y-2)/2}$ (median $1.15$, $1.74$, $2.05$, $2.91$, $4.11$ at $N=64$, $512$, $1024$,
 $4096$, $16384$; maxima $1.75$, $3.78$, $4.93$, $8.30$, $13.6$), because the tempering scale moves
@@ -1253,7 +1289,7 @@ without change.
 \label{ssec:calibration}
 The production resolution is the smallest $N$ at which the discrete put price is within one cent
 of the COS reference \cite{FangOosterlee2008} (8192 modes, range parameter 30; agreement with
-Carr--Madan to $2.6\times10^{-12}$ on the checked rows) at the five spots $0.8K,\dots,1.2K$, over the
+Carr--Madan to $2.6\times10^{-12}$ on the checked rows) at the five spots $0.8\mathcal K,\dots,1.2\mathcal K$, over the
 30 price-diagnostic queries and the two short-maturity, weakly diffusive box corners
 ($C=0.05$, $Y=1.1$, $T=0.1$) that had price gaps above two dollars at $N=64$.
 Table~\ref{tab:budget} gives the maxima.  The 30 queries alone would pass at $N=512$ ($0.11$ cent),
@@ -1307,7 +1343,7 @@ network.  The space--time representation removes the temporal noise by construct
 both measures.  The projection of the reference trajectories onto the same basis, certified at
 $3.2\times10^{-3}$, shows that the basis is not the obstacle; the selected epochs ($1890$--$2000$ of
 $2000$) show that the networks had not converged, but longer training cannot close a gap of
-$47$--$1000$.  Every neural query is settled by the cheap rejection of the first stage; the
+$46$--$1000$.  Every neural query is settled by the cheap rejection of the first stage; the
 certificate is thus what identifies the failure, at a cost of milliseconds and with no false
 accept, and the reduced model with $r\ge64$ is the surrogate that delivers one-cent prices.
 \IfFileExists{../tables_v9/tab_podnn_v9.tex}{\input{../tables_v9/tab_podnn_v9}}{\todo{Table pending}}
@@ -1325,7 +1361,8 @@ sees only the former.
 \IfFileExists{../figures_v9/F5c_online_time.pdf}{\includegraphics[width=0.72\linewidth]{F5c_online_time.pdf}}{\IfFileExists{../figures_v9/F5c_online_time.png}{\includegraphics[width=0.72\linewidth]{F5c_online_time.png}}{\todo{F5c pending}}}
 \caption{Online time per query of the reduced model at the production configuration (one thread,
 idle machine): reduced solve, reduced online certificate, and the three-stage total at
-$\varepsilon_N$, against the uncertified direct solve.}
+$\varepsilon_N$, against the uncertified direct solve (dashed: cold-start and reusable-setup medians of the
+benchmark of Section~\ref{ssec:benchmark}).}
 \label{fig:online-time}
 \end{figure}
 \subsection{Matched benchmark and cost under refinement}
@@ -1685,13 +1722,13 @@ high-frequency argument that required $Y_{\min}>1$ at every step; the L\'evy--Kh
 removes both the loss and that requirement from the coercivity part of the proof.
 
 \subsection{Exact-assembly consequences and constrained dual norms}
-\label{ssec:exact-assembly}\label{lem:Sh-spd}\label{eq:Sh-spd}
+\label{ssec:exact-assembly}
 Under exact assembly, $z^\top\Sh z=a_\mu(z_h,z_h)$, so uniform coercivity
 implies $\Sh\succ0$. The symmetric parts of $\Mh+\dt\Ah/2$ and
 $\Mh+\dt\Ah$ are positive definite, giving nonsingularity.
 \begin{lemma}[Positive-rate mass lower bound for exact assembly]
 \label{lem:mass-lower}
-Under the exact-assembly hypothesis of Lemma~\ref{lem:Sh-spd}, for
+Under exact assembly (Section~\ref{ssec:exact-assembly}), for
 $\mu\in\Pset$ (so $\rf>0$),
 \begin{equation}
   \Sh(\mu)\succeq \rf\,\Mh
@@ -1766,8 +1803,8 @@ Riesz action and spectral bound must use the same constrained space.
 \label{ssec:solution-operator}
 \begin{proposition}[Discrete parameter stability of the solution map]
 \label{prop:discrete-lipschitz}
-Fix a mesh, a time grid, and a payoff $\psi$. Assume that the first
-assembled symmetric matrix $\Sh(\mu_1)$ is positive definite, and let
+Fix a mesh, a time grid, and a payoff $\psi$; the assembled symmetric
+matrix $\Sh(\mu_1)$ is positive definite by Theorem~\ref{thm:spectral}. Let
 $\mu_1,\mu_2\in\Pset$
 with $\cc_h(\mu_1),\cc_h(\mu_2)$ the corresponding Crank--Nicolson
 trajectories of \eqref{eq:cn-reference}.  Then, for every
@@ -1880,11 +1917,11 @@ Since the common lifting cancels,
  \qquad \Lambda_j=O(h^{-2j}).
 \]
 Indeed, $\ee^\top R_h^{(j)}\ee\le\Lambda_j\ee^\top\Mh\ee$.
-With $\Delta=e^{-x}V_x$ and $\Gamma=e^{-2x}(V_{xx}-V_x)$,
+With the Greeks $\Delta=e^{-x}V_x$ and $\Gamma_{\rm opt}=e^{-2x}(V_{xx}-V_x)$,
 \[
  \|\Delta_h-\Delta_\theta\|_{L^2}
  \le e^{-x_{\min}}\sqrt{\Lambda_1}\eta_{\rm aug},\qquad
- \|\Gamma_h-\Gamma_\theta\|_{L^2}
+ \|\Gamma_{{\rm opt},h}-\Gamma_{{\rm opt},\theta}\|_{L^2}
  \le e^{-2x_{\min}}(\sqrt{\Lambda_2}+\sqrt{\Lambda_1})\eta_{\rm aug}.
 \]
 These global factors can be conservative on a wide log-price domain and
@@ -1905,8 +1942,8 @@ Combining this estimate with \eqref{eq:total-error-split} gives
  \le C_\mu(h^{p-Y/2}+\dt^2+\varepsilon_b)+\eta_{\rm aug}.
 \]
 The deterministic constants and buffer error are not evaluated as
-computable bounds here, and this exact-assembly estimate is not transferred
-to the principal-period matrix.
+computable bounds here; the first term is assessed instead by the price comparison of
+Section~\ref{ssec:calibration}, and the certificate supplies the second.
 
 \subsection{Residual certificate for the American put}
 \label{ssec:vi}

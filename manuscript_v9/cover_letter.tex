@@ -1,0 +1,49 @@
+\documentclass[11pt]{letter}
+\usepackage[margin=1in]{geometry}
+\usepackage{url}
+\signature{Davood Damircheli}
+\address{Department of Mathematics\\Louisiana State University\\Baton Rouge, LA 70803, USA\\\url{ddamircheli@lsu.edu}}
+\begin{document}
+\begin{letter}{Editorial Board\\SIAM Journal on Scientific Computing}
+\opening{Dear Editors,}
+
+Please consider the enclosed manuscript, \emph{Symbol-based residual certification of reduced and
+neural surrogates for tempered-fractional CGMY pricing}, for publication in SIAM Journal on
+Scientific Computing.
+
+The paper certifies reduced and neural approximations of European-put price trajectories under the
+CGMY model by residual bounds for the spline Galerkin discretisation of the tempered-fractional
+pricing equation. Its contribution relative to the certified reduced-basis literature is that the
+discretisation is shift-invariant, so that the whole certification apparatus is read off one
+explicit periodised Fourier symbol: the Galerkin matrices are assembled exactly as Toeplitz sections
+of that symbol (with a stated truncation bound), the coercivity constant of the symmetric part is a
+closed-form Lévy--Khintchine lower bound that replaces the successive constraint method, a banded
+comparison norm built from the mass and stiffness symbols gives an $O(N)$ certificate with explicit
+effectivity, and empirical interpolation acts on the symbol, a function of one variable, so that the
+non-affine dependence on the tempering and activity parameters $(G,M,Y)$ becomes affine in about 36
+terms with a rigorous error transfer to the operator norm. The resulting reduced model is certified
+at a cost independent of the resolution, and a three-stage rule escalates to the full-order bounds
+only when needed.
+
+The numerical part is a matched evaluation at the resolution that prices the parameter box to one
+cent: the full-order certificate costs 6\% of a direct solve, a certified POD--Galerkin model of rank
+80 runs at 3\% of it and settles 99.8\% of $10^4$ queries without touching the full space, the
+certificate detects out-of-distribution queries without any assumption on where a query lies, and
+the neural reduced models trained for the same task fail the tolerance by a factor of at least 46,
+a negative result that the certificate establishes query by query and explains. No false accept
+occurs on any of the 414 queries with a reference solution. A residual certificate for the American
+put in the same framework is proved as an outlook.
+
+Every number in the paper is read from a result file by a checked script, and a public archive
+regenerates every table and figure from those files and reruns the verification study in about half
+an hour on one core; the archive address is given in Section~5.10.
+
+An earlier version of this work, with a numerically estimated coercivity constant and a
+principal-period assembly, was [circulated as a preprint / not previously submitted]; the present
+manuscript replaces its spectral estimate and positivity audit by theorems, its assembly by the exact
+one, and its benchmark by the matched production study, and is not under consideration elsewhere.
+Suggested referees can be provided on request.
+
+\closing{Sincerely,}
+\end{letter}
+\end{document}

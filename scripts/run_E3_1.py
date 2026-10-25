@@ -184,11 +184,11 @@ def fmt(x):
 def do_table(res):
     t = res["table"]
     lines = [r"\begin{table}[!htbp]", r"\centering\small",
-             r"\caption{Resolution and tolerance calibration (Phase 3.1): maximum price error $\max|V_h(T,S)-V_{\mathrm{COS}}|$ "
-             r"over the 30 ref queries and the two v8 corner queries, spots $S\in\{0.8,\dots,1.2\}K$; COS with 8192 modes, "
+             r"\caption{Resolution and tolerance calibration: maximum price error $\max|V_h(T,S)-V_{\mathrm{COS}}|$ "
+             r"over the 30 price-diagnostic queries and the two box corners, spots $S\in\{0.8,\dots,1.2\}\mathcal K$; COS with 8192 modes, "
              r"range parameter 30. $\varepsilon_N=\tau_\$/\max_s\beta_I(x_s)$ with $\tau_\$=1$ cent.}",
              r"\label{tab:budget}", r"\begin{tabular}{rrrrrrr}", r"\toprule",
-             r"$N$ & $N_T$ & ref30 & Corner A & Corner B & $\max_s\beta_I$ & $\varepsilon_N$\\", r"\midrule"]
+             r"$N$ & $N_T$ & 30 queries & corner A & corner B & $\max_s\beta_I$ & $\varepsilon_N$\\", r"\midrule"]
     for k, r in t.items():
         lines.append(f"{r['N']} & {r['N_T']} & ${fmt(r['max_err_ref30'])}$ & ${fmt(r['err_cornerA'])}$ & "
                      f"${fmt(r['err_cornerB'])}$ & ${r['max_beta']:.3f}$ & ${fmt(r['eps_1cent'])}$\\\\")

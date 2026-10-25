@@ -323,16 +323,16 @@ def plot_e01(res):
     lines = [r"\begin{table}[!htbp]", r"\centering\small",
              r"\caption{Assembly verification against the exact Galerkin matrix (40-digit real-line "
              r"fixture): relative operator-norm error of the free matrix $A_I$, median / max over the "
-             r"ten cost-study queries ($N\le256$; three at $N=512$). The principal-period rule (v8) is the "
-             r"alias sum with $K=0$; $\varepsilon_K/\|A_I\|_2$ is the bound of Lemma~\ref{lem:tail}.}",
-             r"\label{tab:assembly-v9}", r"\begin{tabular}{rrrrrrr}", r"\toprule",
+             r"ten cost-study queries ($N\le256$; three at $N=512$). The principal-period rule of the earlier "
+             r"version is the alias sum with $K=0$; $\varepsilon_K/\|A_I\|_2$ is the bound of Lemma~\ref{lem:tail}.}",
+             r"\label{tab:assembly-v9}", r"\resizebox{\textwidth}{!}{%", r"\begin{tabular}{rrrrrrr}", r"\toprule",
              r"$N$ & queries & principal period & $K=5$ & $K=20$ & $K=100$ & $\varepsilon_{100}/\|A_I\|_2$ (max)\\", r"\midrule"]
     for N in sorted(rows):
         rr = rows[N]
         def mm(k):
             a = np.array([r[k] for r in rr]); return f"{fmt(np.median(a))} / {fmt(a.max())}"
         lines.append(f"{N} & {len(rr)} & {mm('pp')} & {mm('K5')} & {mm('K20')} & {mm('K100')} & {fmt(max(r['eps100'] for r in rr))}\\\\")
-    lines += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
+    lines += [r"\bottomrule", r"\end{tabular}}", r"\end{table}"]
     (TAB / "tab_assembly_v9.tex").write_text("\n".join(lines) + "\n")
 
 

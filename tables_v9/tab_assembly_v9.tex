@@ -1,7 +1,8 @@
 \begin{table}[!htbp]
 \centering\small
-\caption{Assembly verification against the exact Galerkin matrix (40-digit real-line fixture): relative operator-norm error of the free matrix $A_I$, median / max over the ten cost-study queries ($N\le256$; three at $N=512$). The principal-period rule (v8) is the alias sum with $K=0$; $\varepsilon_K/\|A_I\|_2$ is the bound of Lemma~\ref{lem:tail}.}
+\caption{Assembly verification against the exact Galerkin matrix (40-digit real-line fixture): relative operator-norm error of the free matrix $A_I$, median / max over the ten cost-study queries ($N\le256$; three at $N=512$). The principal-period rule of the earlier version is the alias sum with $K=0$; $\varepsilon_K/\|A_I\|_2$ is the bound of Lemma~\ref{lem:tail}.}
 \label{tab:assembly-v9}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{rrrrrrr}
 \toprule
 $N$ & queries & principal period & $K=5$ & $K=20$ & $K=100$ & $\varepsilon_{100}/\|A_I\|_2$ (max)\\
@@ -11,5 +12,5 @@ $N$ & queries & principal period & $K=5$ & $K=20$ & $K=100$ & $\varepsilon_{100}
 256 & 10 & 0.358 / 0.404 & $2.3\times10^{-5}$ / $5.1\times10^{-5}$ & $2.0\times10^{-7}$ / $6.6\times10^{-7}$ & $7.1\times10^{-10}$ / $3.6\times10^{-9}$ & $4.1\times10^{-9}$\\
 512 & 3 & 0.333 / 0.402 & $1.6\times10^{-5}$ / $4.9\times10^{-5}$ & $1.2\times10^{-7}$ / $6.4\times10^{-7}$ & $3.6\times10^{-10}$ / $3.5\times10^{-9}$ & $4.0\times10^{-9}$\\
 \bottomrule
-\end{tabular}
+\end{tabular}}
 \end{table}

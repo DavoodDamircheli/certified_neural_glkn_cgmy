@@ -4,10 +4,13 @@ Fix $\mu$ and define
 \[
  \beta_\mu:=\inf_{\vartheta\ne0}\frac{\sym{s}_\mu(\vartheta)-\rf\,\sym{m}(\vartheta)}{\sym{g}_1(\vartheta)}>0,
  \qquad
- \sym{x}_\mu:=\rf\,\sym{m}+\beta_\mu \sym{g}_1,\qquad
- X_I:=\Tn{N_h}{\sym{x}_\mu}=\rf\,M_I+\beta_\mu h^2R^{(1)}_I,
+ \Thmu:=\sup_\vartheta\frac{\sym{s}_\mu(\vartheta)}{\sym{x}_\mu(\vartheta)},
  \qquad
- \Thmu:=\sup_\vartheta\frac{\sym{s}_\mu(\vartheta)}{\sym{x}_\mu(\vartheta)}.
+ \sym{x}_\mu:=\rf\,\sym{m}+\beta_\mu \sym{g}_1,
+\]
+and the banded matrix
+\[
+ X_I:=\Tn{N_h}{\sym{x}_\mu}=\rf\,M_I+\beta_\mu h^2R^{(1)}_I.
 \]
 $X_I$ is symmetric positive definite and banded with bandwidth $p-1$, and
 for every $\rho\in\R^{N_h}$
