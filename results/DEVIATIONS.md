@@ -478,9 +478,13 @@ projection of the references. Not evaluated further.
 * **Non-deterministic seeding found and fixed.** E0.4 (and the perturbed-z0 candidate of E0.3) seeded their random
   vectors with Python's `hash(query_id)`, which is randomised per process. The clean-clone rerun therefore gave
   `tab_pcg_v9.tex` iteration counts differing by +-1. The seeding is now `zlib.crc32(query_id)`; the method-order
-  shuffles in `run_reduced_cert.py` were fixed the same way. The committed `E0.json` / `tab_pcg_v9.tex` are kept as
-  originally produced, because Phase 4 reruns no experiment. Rerunning E0.3/E0.4 with the fixed seeds (~30 min) is
-  the user's decision. All other E0 numbers reproduce (to 1e-9 or better).
+  shuffles in `run_reduced_cert.py` were fixed the same way. All other E0 numbers reproduce (to 1e-9 or better).
+  **E0.3 and E0.4 were rerun with the fixed seeds (2026-10-25, at the user's request; 254 s + 20 s with 20 processes).**
+  The regenerated `E0.json`, `tab_pcg_v9.tex` and F3 are the archive's numbers. A second E0.4 run with a different
+  `PYTHONHASHSEED` reproduces `tab_pcg_v9.tex` byte-identically. Changes relative to the earlier table (and to the
+  manuscript bundle's copy): N = 64 PCG 8/9 -> 8/8; N = 512 CG 226/291 -> 224/292; N = 2048 CG 646 -> 648;
+  N = 4096 CG 1078/1909 -> 1080/1915. The sqrtTheta statistics (symbol only) and the POD-Galerkin effectivity ratios
+  are unchanged to 1e-9.
 * **F2/F3 PNGs regenerated.** Same data; the Phase 1 files had been rendered on another machine with a different
   default font. The committed versions are now the reproducible ones (matplotlib's bundled DejaVu Sans).
 * **The `manuscript_v9/` in the repository is the Phase 1 skeleton**, not the paper-editing copy the brief assumes, and

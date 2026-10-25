@@ -124,7 +124,8 @@
   "tab_assembly_v9": "byte-identical after the E0 rerun in the clean clone",
   "tab_pcg_v9": "DIFFERS by +-1 iteration (e.g. N = 64 PCG 7/8 vs 8/9; N = 4096 PCG max 12 vs 13)",
   "E0_json": "sqrtTheta medians identical to 1e-12; E0.2 ratios to 1e-11; POD-Galerkin effectivities (E0.3) to 1.6e-9",
-  "cause": "E0.4 (and the perturbed-z0 candidate of E0.3) seeded their random vectors with Python's hash(query_id), which is randomised per process (PYTHONHASHSEED); every run drew different test vectors. Fixed to zlib.crc32(query_id) (also the method-order shuffles of run_reduced_cert.py timing). The committed E0.json is kept as produced: Phase 4 reruns no experiment; a rerun of E0.3/E0.4 with the deterministic seeds (~30 min) is the user's decision"
+  "cause": "E0.4 (and the perturbed-z0 candidate of E0.3) seeded their random vectors with Python's hash(query_id), which is randomised per process (PYTHONHASHSEED); every run drew different test vectors. Fixed to zlib.crc32(query_id) (also the method-order shuffles of run_reduced_cert.py timing). The committed E0.json is kept as produced: Phase 4 reruns no experiment; a rerun of E0.3/E0.4 with the deterministic seeds (~30 min) is the user's decision",
+  "resolution": "2026-10-25: E0.3/E0.4 rerun with zlib.crc32 seeds; E0.json, tab_pcg_v9.tex, F3 regenerated and committed as the archive's numbers; a further E0.4 run under PYTHONHASHSEED=12345 reproduces tab_pcg_v9.tex byte-identically"
  },
  "timing_summary_min": {
   "pip_install": 0.3434770981470744,

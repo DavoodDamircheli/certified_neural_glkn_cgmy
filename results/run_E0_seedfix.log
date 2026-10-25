@@ -1,0 +1,39 @@
+=== E0.3
+/home/davood/.local/lib/python3.10/site-packages/scipy/stats/_qmc.py:993: UserWarning: The balance properties of Sobol' points require n to be a power of 2.
+  sample = self._random(n, workers=workers)
+  Theta: 2592 evaluations in 238s
+    N=64: sqrt(Theta) median 1.15 max 1.75
+    N=128: sqrt(Theta) median 1.29 max 2.23
+    N=256: sqrt(Theta) median 1.49 max 2.90
+    N=512: sqrt(Theta) median 1.74 max 3.78
+    N=1024: sqrt(Theta) median 2.05 max 4.93
+    N=2048: sqrt(Theta) median 2.43 max 6.42
+    N=4096: sqrt(Theta) median 2.91 max 8.30
+    N=8192: sqrt(Theta) median 3.45 max 10.65
+    N=16384: sqrt(Theta) median 4.11 max 13.55
+  POD basis N=64: 200 trajectories, 12200 snapshots, 1s; sigma_r/sigma_1 at r=16,32,48: 5.5e-05 1.7e-07 2.1e-10
+  POD basis N=512: 200 trajectories, 12200 snapshots, 3s; sigma_r/sigma_1 at r=16,32,48: 1.4e-04 4.2e-06 1.7e-07
+  effectivity N=64: 48 queries in 5s
+    podgal16    : eta^X/eta^S median 1.13 max 1.57 | eff_S med 5.14 max 9.19 | eff_X med 5.97 max 10.41
+    podgal32    : eta^X/eta^S median 1.12 max 1.31 | eff_S med 4.92 max 7.52 | eff_X med 5.48 max 8.30
+    podgal48    : eta^X/eta^S median 1.08 max 1.18 | eff_S med 4.73 max 6.32 | eff_X med 5.09 max 7.30
+    coarse_N/4  : eta^X/eta^S median 1.13 max 1.49 | eff_S med 1.67 max 3.78 | eff_X med 1.85 max 4.00
+    perturbed_z0: eta^X/eta^S median 1.10 max 1.58 | eff_S med 1.00 max 1.00 | eff_X med 1.00 max 1.00
+/home/davood/.local/lib/python3.10/site-packages/scipy/stats/_qmc.py:993: UserWarning: The balance properties of Sobol' points require n to be a power of 2.
+  sample = self._random(n, workers=workers)
+  effectivity N=512: 48 queries in 6s
+    podgal16    : eta^X/eta^S median 1.57 max 3.14 | eff_S med 8.77 max 17.35 | eff_X med 14.32 max 31.46
+    podgal32    : eta^X/eta^S median 1.73 max 2.99 | eff_S med 7.04 max 10.62 | eff_X med 12.72 max 19.19
+    podgal48    : eta^X/eta^S median 1.72 max 2.57 | eff_S med 6.16 max 10.20 | eff_X med 11.23 max 19.04
+    coarse_N/4  : eta^X/eta^S median 1.41 max 2.11 | eff_S med 6.08 max 23.52 | eff_X med 9.45 max 26.39
+    perturbed_z0: eta^X/eta^S median 1.53 max 3.06 | eff_S med 1.00 max 1.00 | eff_X med 1.00 max 1.00
+=== E0.3 done in 254s
+=== E0.4
+  N=64: CG 42/45  PCG 8/8  GMRES 5.0/5
+  N=128: CG 74/82  PCG 9/9  GMRES 5.0/6
+  N=256: CG 130/154  PCG 9/10  GMRES 6.0/7
+  N=512: CG 224/292  PCG 10/10  GMRES 7.0/8
+  N=1024: CG 384/548  PCG 10/11  GMRES 7.1/12
+  N=2048: CG 648/1025  PCG 11/11  GMRES 8.0/13
+  N=4096: CG 1080/1915  PCG 11/12  GMRES 9.0/15
+=== E0.4 done in 20s
