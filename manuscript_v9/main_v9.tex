@@ -873,7 +873,7 @@ approximation from a returned approximation certified to the requested budget.}
 
 
 The bracket is evaluated at the converged PCG iterate (relative residual $10^{-12}$, at most
-$15$ iterations in all reported runs).  Correction uses circulant-preconditioned GMRES with
+$12$ iterations in all reported runs, Table~\ref{tab:pcg-v9}).  Correction uses circulant-preconditioned GMRES with
 relative tolerance $10^{-13}$.  Tolerances are reported as a sweep (Section~\ref{ssec:calibration}).
 \begin{proposition}[Guaranteed acceptance]
 \label{prop:two-stage}
@@ -1280,7 +1280,7 @@ three-stage rule settles every query at $r\le48$ by cheap rejection and every qu
 reduced acceptance; the full-order stages are reached only in the band $r=56$--$64$.  No false
 accept occurs under any certificate at any tolerance.  At $r\ge96$ the true error ($4\times10^{-8}$)
 falls below the floor set by the EIM allowance at $Q=36$, which raises the reduced effectivity to
-$120$--$140$ without affecting acceptance.
+$230$--$420$ without affecting acceptance.
 \IfFileExists{../tables_v9/tab_pod_ranks_v9.tex}{\input{../tables_v9/tab_pod_ranks_v9}}{\todo{Table pending}}
 \begin{figure}[!htbp]
 \centering
@@ -1296,7 +1296,7 @@ settles each query at $\varepsilon_N$, per rank.}
 The neural candidates are reported in Table~\ref{tab:podnn}.  None passes at $\varepsilon_N$, nor
 at $10^{-3}$: the best standard-output network ($4000$ trajectories, $\lambda_R=1$) has a median true
 error of $0.46$ and a median exact bound of $1.26$, about $10^3\varepsilon_N$; the space--time
-variant reduces both by an order of magnitude (errors $0.014$--$0.016$ and bounds $0.055$--$0.058$ over three seeds,
+variant reduces both by an order of magnitude (errors $0.014$--$0.016$ and bounds $0.054$--$0.058$ over three seeds,
 $46$--$49\,\varepsilon_N$).  Three
 observations explain the result.  With $\lambda_R=0$ the network fits the coefficients best (error
 $0.08$) but its trajectory is noisy in time, and the residual, which contains the time difference
