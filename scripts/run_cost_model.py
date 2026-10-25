@@ -187,33 +187,47 @@ def main():
     print(json.dumps(fits, indent=1))
 
 
+def _tex_e(x, d):
+    """x in LaTeX scientific notation with d decimals: 1.25e-07 -> $1.25\\times10^{-7}$ (0 -> 0)."""
+    if x == 0:
+        return "0"
+    m, e = f"{x:.{d}e}".split("e")
+    return f"{m}\\times10^{{{int(e)}}}"
+
+
 def write_table(out):
+    """tables_v9/tab_cost_v9.tex (layout and caption as edited in the manuscript; numbers from cost_model.json)."""
     f = out["fits"]; med = out["median_times_full_order"]; mr = out["median_times_reduced"]
+    fast_ms = out.get("remarks", {}).get("spectral_data_ms", {}).get("fast_online")
     lines = [r"\begin{table}[!htbp]", r"\centering\small",
-             r"\caption{Cost model with measured constants (one thread, idle machine; median over 5 bench queries). "
-             r"Times in ms; $c$ = fitted seconds per operation of the stated count (one constant), fit residual = max relative "
-             r"deviation; for components with a per-step interpreter overhead also $t=c'\,\mathrm{ops}+d\,\mathrm{calls}$.}",
-             r"\label{tab:cost}", r"\begin{tabular}{lrrrrrrr}", r"\toprule",
+             r"\caption{Cost model of Section~\ref{ssec:cost} with measured constants (one thread, idle machine; medians over "
+             r"five benchmark queries; $m=2N_h$, $i_n$ and $p_n$ the GMRES and PCG iteration counts per step). Times in ms; $c$ is "
+             r"the fitted time per operation of the stated count with its maximum relative deviation; where the per-step "
+             r"interpreter overhead matters the two-constant fit $t=c'\,\mathrm{ops}+d\,\mathrm{calls}$ is also given. The "
+             r"spectral-data row is the fine verification grid; the online path uses the fast mode ($" + f"{fast_ms:.1f}" +
+             r"$~ms, Section~\ref{ssec:benchmark}). The reduced rows do not depend on $N$ by construction.}",
+             r"\label{tab:cost}", r"\resizebox{\textwidth}{!}{%", r"\begin{tabular}{lrrrrrrr}", r"\toprule",
              r"component & op count & " + " & ".join(f"$N={N}$" for N in NS) + r" & $c$ (fit res.)\\", r"\midrule"]
-    names = dict(assembly=("assembly", r"$L(2K+1)$"), spectral_data=("spectral data", r"$n_g(2K+1)$"),
+    names = dict(assembly=("assembly", r"$L(2K+1)$"),
+                 spectral_data=(r"spectral data (fine mode; online fast mode $" + f"{fast_ms:.1f}" + r"$~ms)", r"$n_g(2K+1)$"),
                  direct_solve=("direct solve", r"$(\sum_n i_n+N_T)\,m\log m$"), residual=("residual", r"$N_T\,m\log m$"),
                  banded=(r"banded $\eta^X$", r"$N_T N_h$"), exact=(r"exact $\eta^S$", r"$\sum_n p_n\,m\log m$"))
-    for k, (lab, opc) in names.items():
+
+    def fitcol(k):
         tc = f[k].get("two_constant")
-        extra = f"; $c'={tc['c_s_per_op']:.1e}$, $d={tc['d_s_per_call']:.1e}$ ({tc['fit_max_rel'] * 100:.0f}\\%)" if tc else ""
-        lines.append(f"{lab} & {opc} & " + " & ".join(f"{med[str(N)][k] * 1e3:.2f}" for N in NS)
-                     + f" & ${f[k]['constant_s_per_op']:.2e}$ ({f[k]['fit_max_rel'] * 100:.0f}\\%){extra}\\\\")
+        extra = f"; $c'={_tex_e(tc['c_s_per_op'], 1)}$, $d={_tex_e(tc['d_s_per_call'], 1)}$ ({tc['fit_max_rel'] * 100:.0f}\\%)" if tc else ""
+        return f"${_tex_e(f[k]['constant_s_per_op'], 2)}$ ({f[k]['fit_max_rel'] * 100:.0f}\\%){extra}"
+
+    for k, (lab, opc) in names.items():
+        lines.append(f"{lab} & {opc} & " + " & ".join(f"{med[str(N)][k] * 1e3:.2f}" for N in NS) + f" & {fitcol(k)}\\\\")
     lines += [r"\midrule", r"\multicolumn{8}{l}{reduced model at $N=1024$, $Q=" + str(out['meta']['Q']) + r"$ (independent of $N$ by construction)}\\",
               r"component & op count & " + " & ".join(f"$r={r}$" for r in list(mr)[:5]) + r" & $c$ (fit res.)\\"]
     for k, (lab, opc) in dict(reduced_solve=("reduced solve", r"$(Q{+}2)r^2+r^3+3N_Tr^2$"),
                               reduced_form=("reduced certificate", r"$\rho(r{+}1)(Q{+}2{+}2N_T)$"),
                               ell_epsQ=(r"$\ell(\nu)+\varepsilon_Q$", r"$161(2K+1)$")).items():
-        tc = f[k].get("two_constant")
-        extra = f"; $c'={tc['c_s_per_op']:.1e}$, $d={tc['d_s_per_call']:.1e}$ ({tc['fit_max_rel'] * 100:.0f}\\%)" if tc else ""
-        lines.append(f"{lab} & {opc} & " + " & ".join(f"{mr[r][k] * 1e3:.2f}" for r in list(mr)[:5])
-                     + f" & ${f[k]['constant_s_per_op']:.2e}$ ({f[k]['fit_max_rel'] * 100:.0f}\\%){extra}\\\\")
+        lines.append(f"{lab} & {opc} & " + " & ".join(f"{mr[r][k] * 1e3:.2f}" for r in list(mr)[:5]) + f" & {fitcol(k)}\\\\")
     lines.append(r"$\rho$ (retained rows) & & " + " & ".join(f"{mr[r]['rho_median']:.0f}" for r in list(mr)[:5]) + r" & \\")
-    lines += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
+    lines += [r"\bottomrule", r"\end{tabular}}", r"\end{table}"]
     TAB.mkdir(exist_ok=True)
     (TAB / "tab_cost_v9.tex").write_text("\n".join(lines) + "\n")
 

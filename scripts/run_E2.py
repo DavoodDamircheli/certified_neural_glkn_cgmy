@@ -339,19 +339,25 @@ def do_figs(res):
             for sp in ("top", "right"):
                 a.spines[sp].set_visible(False)
         fig.tight_layout(); save_fig(fig, FIG / "F6b_refinement.png"); plt.close(fig)
-    # table
+    # table (layout and caption as edited in the manuscript; numbers from E2.json)
+    db = b["direct_banded"]
     lines = [r"\begin{table}[!htbp]", r"\centering\small",
-             r"\caption{Matched benchmark on bench120 at $N=1024$, $N_T=240$ (one thread, idle machine, reusable setup): "
-             r"geometric-mean time ratio to the uncertified direct solve (95\% query-bootstrap CI), three-stage outcome "
-             r"(reduced accept / reject cheap / banded or exact accept / corrected), false accepts.}", r"\label{tab:benchmark}",
+             r"\caption{Matched benchmark on the 120 benchmark queries at the production configuration (one thread, idle "
+             r"machine, reusable setup, five repetitions): geometric-mean time ratio to the uncertified direct solve with 95\% "
+             r"query-bootstrap interval, three-stage outcome (reduced accept / cheap reject / banded or exact accept / corrected), "
+             r"and false accepts.  The direct solve takes " + f"${b['direct']['median_time_ms']:.0f}$~ms; the certificate proper is "
+             f"${100 * db['certificate_proper_over_solve_median']:.1f}\\%$ of it and "
+             f"${100 * db['certificate_incl_symbol_work_over_solve_median']:.1f}\\%$ with the per-query spectral data." + "}",
+             r"\label{tab:benchmark}",
              r"\begin{tabular}{llrcr}", r"\toprule", r"$\varepsilon$ & method & time ratio (CI) & outcome & f.a.\\", r"\midrule"]
-    s = b["direct_banded"]
-    lines.append(rf"-- & direct + banded & {s['ratio_to_direct']['geo_mean_ratio']:.2f} ({s['ratio_to_direct']['ci95'][0]:.2f}--{s['ratio_to_direct']['ci95'][1]:.2f}) & cert.\ fraction {s['certificate_fraction_median']:.2f} & --\\")
+    labels_tab = {"podg64": r"POD--Galerkin $r=64$", "podg80": r"POD--Galerkin $r=80$", "podnn_st": "space--time POD-NN"}
+    s = db
+    lines.append(rf"-- & direct $+$ banded certificate & {s['ratio_to_direct']['geo_mean_ratio']:.2f} ({s['ratio_to_direct']['ci95'][0]:.2f}--{s['ratio_to_direct']['ci95'][1]:.2f}) & cert.\ fraction {s['certificate_fraction_median']:.2f} & --\\")
     for eps in EPS:
         for m in ("podg64", "podg80", "podnn_st"):
             s = b[f"{m}@{eps:.4g}"]; sc = s["status_counts"]
             mid = sc.get("banded_accept", 0) + sc.get("exact_accept", 0)
-            lines.append(rf"${eps / EPS_N:g}\varepsilon_N$ & {labels[m]} & {s['ratio_to_direct']['geo_mean_ratio']:.3g} "
+            lines.append(rf"${eps / EPS_N:g}\varepsilon_N$ & {labels_tab[m]} & {s['ratio_to_direct']['geo_mean_ratio']:.3g} "
                          rf"({s['ratio_to_direct']['ci95'][0]:.3g}--{s['ratio_to_direct']['ci95'][1]:.3g}) & "
                          rf"{sc.get('reduced_accept', 0)}/{sc.get('reject_cheap', 0)}/{mid}/{s['corrected']} & {s['false_accepts']}\\")
     lines += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]

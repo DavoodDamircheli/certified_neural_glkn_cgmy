@@ -298,25 +298,41 @@ def do_breakdown(res):
 
 
 def do_table_ood(res):
-    """tables_v9/tab_ood_v9.tex from E3.json -> breakdown (per shell: queries, true error <= eps_N, certified by the exact
-    and the three-stage rule, median true error, median eps_Q), POD-Galerkin r = 64 and r = 80."""
+    """tables_v9/tab_ood_v9.tex (layout and caption as edited in the manuscript; numbers from E3.json summary/breakdown)."""
     bd = res["breakdown"]["per_candidate"]
-    lab = {"C>1": r"$C>1$", "Y<1.1": r"$Y<1.1$", "Y>1.8": r"$Y>1.8$", "G<1": r"$G<1$", "M>9": r"$M>9$",
-           "vertices": "ext.\\ vertices"}
-    lines = [r"\begin{table}[!htbp]", r"\centering\small",
-             r"\caption{Out-of-distribution queries (E3): per shell, the number of queries, how many have true error "
-             r"$\le\varepsilon_N$ (the reduced model still works) and how many of those the exact / three-stage "
-             r"certificates accept, the median true error and the median $\varepsilon_Q$. Shells overlap; the reduced stage "
-             r"is not used outside the box.}", r"\label{tab:ood}", r"\begin{tabular}{lr rrr rrr r}", r"\toprule",
-             r" & & \multicolumn{3}{c}{POD-Galerkin $r=64$} & \multicolumn{3}{c}{POD-Galerkin $r=80$} & \\",
-             r"shell & queries & works & certified & med.\ err. & works & certified & med.\ err. & med.\ $\varepsilon_Q$\\",
-             r"\midrule"]
-    rows = [("all", bd["podg64"]["all"], bd["podg80"]["all"])] + \
-           [(sh, bd["podg64"]["per_shell"][sh], bd["podg80"]["per_shell"][sh]) for sh in res["breakdown"]["shells"]]
-    for sh, a64, a80 in rows:
-        lines.append(f"{lab.get(sh, sh)} & {a64['n_queries']} & {a64['n_true_err_le_eps_N']} & {a64['exact_accepts']} & "
-                     f"${a64['median_true_err']:.1e}$ & {a80['n_true_err_le_eps_N']} & {a80['exact_accepts']} & "
-                     f"${a80['median_true_err']:.1e}$ & ${a80['median_eps_Q']:.1e}$\\\\")
+    st = [k for k in bd if "spacetime" in k]
+    e_in = res["summary"]["distributions"]["eps_Q_in_validation30"]["median"]
+
+    def tex_e(x):
+        m, e = f"{x:.1e}".split("e")
+        return f"${m}\\times10^{{{int(e)}}}$"
+
+    lines = [r"% Numbers from results/E3.json (summary, breakdown) and results/NOTES_FOR_PAPER.md item 27 (checked against the Phase 3 zip, 2026-10-23).",
+             r"\begin{table}[!htbp]", r"\centering\small",
+             r"\caption{Out-of-distribution study: 264 queries outside the parameter box (200 Sobol points in the",
+             r"shells $C\in[1,2]$, $Y\in[0.9,1.1)\cup(1.8,1.95]$, $G\in[0.5,1)$, $M\in[9,15]$, and 64 vertices of the",
+             r"extended box) at the production configuration.  Top: queries on which the candidate's true error",
+             r"is below $\varepsilon_N$ (``works''), queries the exact certificate accepts (``certified''), and",
+             r"precision of two rules as detectors of ``true error $>\varepsilon_N$'': the certificate (recall 1 by",
+             r"theorem) and the naive rule that rejects every query outside the training box (recall 1, but it",
+             r"discards every working query).  Bottom: POD--Galerkin $r=80$ by shell (a query leaving the box in",
+             r"several coordinates counts in each), with the median true error and the median EIM error",
+             r"$\varepsilon_Q$ (inside the box: " + tex_e(e_in) + r").}",
+             r"\label{tab:ood}", r"\begin{tabular}{lrrrr}", r"\toprule",
+             r"candidate & works & certified & precision (certificate) & precision (naive rule)\\", r"\midrule"]
+    for key, lab in (("podg64", r"POD--Galerkin $r=64$"), ("podg80", r"POD--Galerkin $r=80$")):
+        a = bd[key]
+        lines.append(f"{lab} & {a['all']['n_true_err_le_eps_N']} & {a['all']['exact_accepts']} & "
+                     f"{a['exact_certificate']['precision']:.2f} & {a['naive_reject_outside_box']['precision']:.2f}\\\\")
+    a = bd[st[0]]["all"]
+    lines.append(f"space--time POD-NN & {a['n_true_err_le_eps_N']} & {a['exact_accepts']} & -- & --\\\\")
+    lines += [r"\bottomrule", r"\end{tabular}", r"\par\smallskip", r"\begin{tabular}{lrrrrr}", r"\toprule",
+              r"shell ($r=80$) & queries & works & certified & median error & median $\varepsilon_Q$\\", r"\midrule"]
+    lab = {"C>1": r"$C>1$", "Y<1.1": r"$Y<1.1$", "Y>1.8": r"$Y>1.8$", "G<1": r"$G<1$", "M>9": r"$M>9$", "vertices": "vertices"}
+    for sh in res["breakdown"]["shells"]:
+        v = bd["podg80"]["per_shell"][sh]
+        lines.append(f"{lab[sh]} & {v['n_queries']} & {v['n_true_err_le_eps_N']} & {v['exact_accepts']} & "
+                     f"{tex_e(v['median_true_err'])} & {tex_e(v['median_eps_Q'])}\\\\")
     lines += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
     (ROOT / "tables_v9" / "tab_ood_v9.tex").write_text("\n".join(lines) + "\n")
 

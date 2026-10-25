@@ -406,7 +406,9 @@ def do_figs(res):
                      f"{s['reduced']['median_effectivity']:.1f} & {s['banded']['median_effectivity']:.1f} & "
                      f"{s['exact']['median_effectivity']:.1f}\\\\")
     lines += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
-    (TAB / "tab_pod_ranks_v9.tex").write_text("\n".join(lines) + "\n")
+    # tab_pod_ranks_v9.tex is written by scripts/make_tables_phase2.py (the manuscript's layout); this E1 variant is kept
+    # under its own name
+    (TAB / "tab_pod_ranks_E1_v9.tex").write_text("\n".join(lines) + "\n")
     print("figures and table written", flush=True)
 
 

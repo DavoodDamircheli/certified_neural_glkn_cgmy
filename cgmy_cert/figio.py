@@ -11,4 +11,5 @@ def save_fig(fig, png_path, **kw) -> None:
     png_path = Path(png_path)
     fig.savefig(png_path, dpi=200, **kw)
     with matplotlib.rc_context({"pdf.fonttype": 42, "ps.fonttype": 42}):
-        fig.savefig(png_path.with_suffix(".pdf"), **kw)
+        # no CreationDate / ModDate: the PDF bytes are then reproducible (same input -> same file)
+        fig.savefig(png_path.with_suffix(".pdf"), metadata={"CreationDate": None, "ModDate": None}, **kw)

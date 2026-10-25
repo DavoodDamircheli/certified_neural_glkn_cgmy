@@ -36,6 +36,8 @@ def steps():
         ("figures_v9/F7_ood", lambda: run_E3.do_fig(js("E3.json"))),
         ("tables_v9/tab_ood_v9.tex", lambda: run_E3.do_table_ood(js("E3.json"))),
         ("figures_v9/F8_amortisation", lambda: run_E4.plot_f8()),
+        ("tables_v9/tab_pod_ranks_v9.tex, tab_podnn_v9.tex, tab_training_v9.tex (make_tables_phase2.py)",
+         lambda: __import__("runpy").run_path(str(ROOT / "scripts" / "make_tables_phase2.py"), run_name="__main__")),
     ]
 
 
