@@ -17,8 +17,17 @@ Claims file results/paper_claims.json: {"claims": [{"id", "section", "text", "js
     (the stated number is the result rounded);
   * "rel": "eq" (default), "le" (the text says the quantity is at most / below the stated number: PASS if
     result <= stated, up to the tolerance), "ge" (at least);
-  * "json": null marks a number that no result file holds (status FAIL, kind "no source"; "note" says where the
-    number comes from, if anywhere).
+  * instead of "json" (a file in results/), a claim can name another source:
+      "file": a path relative to the repository root (tests/fixtures/*.json, v8_frozen/..., a .md or .py file);
+              .json is loaded as J, .pt with torch.load (CPU, weights only), anything else as text;
+      "regex" (with "file"): a pattern whose capture group ("group", default 1) is the number; with "agg": "min" or
+              "max" it is applied to every match;
+      "module": a Python module (e.g. "cgmy_cert.params") whose namespace is J;
+  * "kind": "source-backed" marks a number that lives in tests, fixtures or v8 records rather than a result file;
+    such claims are listed in their own section of the report; "attention" (text) puts a claim in the section
+    "Points for the author" whatever its status;
+  * a claim with none of "json", "file", "module" marks a number that no source holds (status FAIL, kind "no source";
+    "note" says where the number comes from, if anywhere).
 A FAIL is classified as "rounding" (off by at most one unit of the last stated digit), "substantive", "no source" or
 "text" (the quoted text is not in the manuscript).  Prints PASS/FAIL per claim, writes results/NUMBER_CHECK.md and
 .json, exit code 1 on any FAIL.
@@ -53,9 +62,12 @@ def resolve(obj, path):
                 nxt.extend(c.values() if isinstance(c, dict) else c)
             cur, multi = nxt, True
             continue
-        if part in ("@min", "@max", "@median", "@len"):
-            vals = [float(v) for v in cur]
-            cur = [dict(min=min, max=max, median=lambda v: float(np.median(v)), len=len)[part[1:]](vals)]
+        if part == "@len":
+            cur, multi = [len(cur if multi else cur[0])], False
+            continue
+        if part in ("@min", "@max", "@median"):
+            vals = [float(v) for v in (cur if multi else cur[0])]
+            cur = [dict(min=min, max=max, median=lambda v: float(np.median(v)))[part[1:]](vals)]
             multi = False
             continue
         nxt = []
@@ -86,8 +98,53 @@ def _load(name, cache):
     return cache[name]
 
 
+def _load_file(rel, cache):
+    key = "file:" + rel
+    if key not in cache:
+        f = ROOT / rel
+        if f.suffix == ".json":
+            cache[key] = json.loads(f.read_text())
+        elif f.suffix == ".pt":
+            import torch
+            cache[key] = torch.load(f, map_location="cpu", weights_only=True)
+        else:
+            cache[key] = f.read_text()
+    return cache[key]
+
+
+def has_source(c):
+    return any(c.get(k) is not None for k in ("json", "file", "module"))
+
+
+def source_label(c):
+    if c.get("module"):
+        where = f"module {c['module']}"
+    elif c.get("file"):
+        where = c["file"]
+    elif c.get("json"):
+        where = c["json"]
+    else:
+        return "-"
+    how = c.get("regex") and f"regex {c['regex']}" + (f" [group {c['group']}]" if c.get("group", 1) != 1 else "") \
+        + (f" [{c['agg']}]" if c.get("agg") else "")
+    return f"{where}: {how or c.get('path') or c.get('expr')}"
+
+
 def evaluate(claim, cache):
-    J = _load(claim["json"], cache)
+    if claim.get("module"):
+        import importlib
+        J = vars(importlib.import_module(claim["module"]))
+    elif claim.get("file"):
+        J = _load_file(claim["file"], cache)
+        if "regex" in claim:
+            text = re.sub(r"\s+", " ", J)
+            ms = [m.group(claim.get("group", 1)) for m in re.finditer(claim["regex"], text)]
+            if not ms:
+                raise ValueError(f"regex {claim['regex']!r} not found in {claim['file']}")
+            vals = [parse_number(m) for m in ms]
+            return float({"min": min, "max": max}[claim["agg"]](vals) if claim.get("agg") else vals[0])
+    else:
+        J = _load(claim["json"], cache)
     if "expr" in claim:
         v = eval(claim["expr"], {"J": J, "R": lambda n: _load(n, cache), "np": np, "len": len, "sum": sum,
                                  "min": min, "max": max, "abs": abs, "sorted": sorted, "re": re})          # noqa: S307
@@ -153,6 +210,14 @@ def kind_of_fail(c, stated, raw, got):
         return "substantive"
 
 
+def manuscript_commit():
+    import subprocess
+    run = lambda *a: subprocess.run(["git", *a], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+    sha = run("log", "-1", "--format=%h", "--", "manuscript_v9")
+    dirty = run("status", "--porcelain", "--", "manuscript_v9")
+    return (sha or "unknown") + (" + uncommitted changes" if dirty else "")
+
+
 def fmt(x):
     return "-" if x is None else (f"{x:.4g}" if isinstance(x, float) else str(x))
 
@@ -174,7 +239,7 @@ def main():
         kind, err = None, None
         try:
             stated, raw = stated_value(c, text)
-            if c.get("json") is None:
+            if not has_source(c):
                 ok_num, kind = False, "no source"
             else:
                 got = evaluate(c, cache)
@@ -186,19 +251,24 @@ def main():
         if not where:
             kind = "text"
         status = "PASS" if (ok_num and where) else "FAIL"
-        src = "-" if c.get("json") is None else f"{c['json']}: {c.get('path') or c.get('expr')}"
+        src = source_label(c)
         rows.append(dict(id=c.get("id"), section=c.get("section", ""), status=status, kind=kind if status == "FAIL" else None,
+                         evidence=c.get("kind", "result file"), attention=c.get("attention", ""),
                          text=c["text"], stated=stated, json_value=got, rel=c.get("rel", "eq"), tol=c.get("tol", 0.01),
                          source=src, where=where, note=c.get("note", ""), error=err))
         print(f"{status}  {c.get('id', '')}: stated {fmt(stated)}  result {fmt(got)}  ({src})"
               + (f"  -- {kind}" if status == "FAIL" else "") + (f" [{err}]" if err else ""))
     fails = [r for r in rows if r["status"] == "FAIL"]
     kinds = {k: [r for r in fails if r["kind"] == k] for k in ("substantive", "no source", "rounding", "text")}
+    sb = [r for r in rows if r["evidence"] == "source-backed"]
+    ms_commit = manuscript_commit()
     lines = ["# Number check: manuscript vs result files", "",
              "Generated by `scripts/check_numbers.py` from `results/paper_claims.json`; do not edit by hand.", "",
-             f"Claims checked: {len(rows)}; passed: {len(rows) - len(fails)}; failed: {len(fails)} "
-             f"({len(kinds['substantive'])} substantive, {len(kinds['no source'])} without a result file, "
+             f"Claims checked: {len(rows)}; passed: {len(rows) - len(fails)} ({len(rows) - len(fails) - sum(r['status'] == 'PASS' for r in sb)} "
+             f"from result files, {sum(r['status'] == 'PASS' for r in sb)} source-backed); failed: {len(fails)} "
+             f"({len(kinds['substantive'])} substantive, {len(kinds['no source'])} without a source, "
              f"{len(kinds['rounding'])} rounding-level, {len(kinds['text'])} text not found).", "",
+             f"Manuscript state checked: commit `{ms_commit}` (last commit touching `manuscript_v9/`).", "",
              "Manuscript files: " + ", ".join(f"`{k}`" for k in corpus), "",
              "A claim passes when the stated number agrees with the result file within its tolerance (`round` = half a unit "
              "of the last stated digit; `le`/`ge` = the text states a bound). Rounding-level = off by at most one unit of "
@@ -215,12 +285,33 @@ def main():
             lines.append(f"| {r['id']} | {r['section']} | `{r['text']}` | {fmt(r['stated'])}{rel} | {fmt(r['json_value'])} | "
                          f"`{r['source']}` | {(r['note'] + (' ' + r['error'] if r['error'] else '')).strip()} |")
         lines.append("")
-    lines += [f"## Passed ({len(rows) - len(fails)})", "", "| id | section | stated | result file | source |", "|---|---|---|---|---|"]
+    att = [r for r in rows if r["attention"]]
+    if att:
+        lines += [f"## Points for the author ({len(att)})", "",
+                  "Claims that pass (or are listed above) but rest on evidence the author should know about.", "",
+                  "| id | section | status | stated | value | source | point |", "|---|---|---|---|---|---|---|"]
+        for r in att:
+            lines.append(f"| {r['id']} | {r['section']} | {r['status']} | {fmt(r['stated'])} | {fmt(r['json_value'])} | "
+                         f"`{r['source']}` | {r['attention']} |")
+        lines.append("")
+    if sb:
+        lines += [f"## Source-backed (tests, fixtures, v8 records) ({len(sb)})", "",
+                  "Numbers that live outside `results/`: in the test suite, the query fixture, the v8 checkpoint and "
+                  "frozen v8 records, the package constants, or the notes.", "",
+                  "| id | section | status | stated | value | source | note |", "|---|---|---|---|---|---|---|"]
+        for r in sb:
+            lines.append(f"| {r['id']} | {r['section']} | {r['status']} | {fmt(r['stated'])} | {fmt(r['json_value'])} | "
+                         f"`{r['source']}` | {r['note']} |")
+        lines.append("")
+    n_rf = sum(r["status"] == "PASS" and r["evidence"] != "source-backed" for r in rows)
+    lines += [f"## Passed against result files ({n_rf})", "", "| id | section | stated | result file | source |",
+              "|---|---|---|---|---|"]
     for r in rows:
-        if r["status"] == "PASS":
+        if r["status"] == "PASS" and r["evidence"] != "source-backed":
             lines.append(f"| {r['id']} | {r['section']} | {fmt(r['stated'])} | {fmt(r['json_value'])} | `{r['source']}` |")
     out_path.write_text("\n".join(lines) + "\n")
-    out_path.with_suffix(".json").write_text(json.dumps(dict(n=len(rows), n_fail=len(fails),
+    out_path.with_suffix(".json").write_text(json.dumps(dict(n=len(rows), n_fail=len(fails), manuscript_commit=ms_commit,
+                                                             n_source_backed=len(sb),
                                                              n_fail_by_kind={k: len(v) for k, v in kinds.items()},
                                                              rows=rows), indent=1))
     sys.exit(1 if fails else 0)

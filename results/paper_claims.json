@@ -49,52 +49,95 @@
    "tol": "round"
   },
   {
-   "id": "abs_no_fa_1e4",
+   "id": "abs_150",
    "section": "abstract",
-   "text": "no false accept occurs in $10^4$ in-distribution",
-   "json": null,
-   "value": "1e4",
-   "tol": "round",
-   "note": "E4 (10^4 queries) has no reference solutions (E4.json, Section 5.10 says so); false accepts were checked on 150 in-distribution queries (validation30 in E1.json, bench120 in E2.json) and the 264 OOD queries (E3.json)"
+   "text": "No false accept occurs on any query with a reference solution (150 in the parameter box, 264 outside it)",
+   "json": "E1.json",
+   "expr": "len(J['eval']['rows']['pod_galerkin_r64_n800']) + R('E2.json')['bench']['per_setup']['reusable']['summary']['direct']['ratio_to_direct']['n_queries']",
+   "value": 150,
+   "tol": "abs:0",
+   "note": "validation30 (E1.json) + bench120 (E2.json)"
   },
   {
    "id": "abs_264",
    "section": "abstract",
-   "text": "$264$ out-of-distribution queries",
+   "text": "No false accept occurs on any query with a reference solution (150 in the parameter box, 264 outside it)",
    "json": "E3.json",
    "path": "setup/n_queries",
    "value": 264,
    "tol": "abs:0"
   },
   {
-   "id": "abs_92pct",
+   "id": "abs_fa_E1",
    "section": "abstract",
-   "text": "on $92\\%$ of which the reduced model is still accepted",
-   "json": "E3.json",
-   "expr": "J['breakdown']['per_candidate']['podg80']['all']['exact_accepts'] / J['setup']['n_queries'] * 100",
-   "value": "92",
-   "tol": "round",
-   "note": "as written, 92% of the 264 OOD queries; the reduced model (r = 80) is accepted on 193/264 = 73%; 92% = 193/210 is the share of the queries on which it is within one cent (Section 5.9 states it that way)"
+   "text": "No false accept occurs on any query with a reference solution (150 in the parameter box, 264 outside it)",
+   "json": "E1.json",
+   "expr": "sum(sum(v[c]['false_accepts'].values()) for v in J['eval']['summary'].values() for c in ('reduced', 'banded', 'exact'))",
+   "value": 0,
+   "tol": "abs:0",
+   "note": "every candidate, certificate (reduced, banded, exact) and tolerance on validation30"
   },
   {
-   "id": "abs_factor47",
+   "id": "abs_fa_E2",
    "section": "abstract",
-   "text": "fail the one-cent tolerance by a factor of at least $47$",
+   "text": "No false accept occurs on any query with a reference solution (150 in the parameter box, 264 outside it)",
+   "json": "E2.json",
+   "expr": "sum(v.get('false_accepts', 0) for s in J['bench']['per_setup'].values() for v in s['summary'].values())",
+   "value": 0,
+   "tol": "abs:0",
+   "note": "every method, setup and tolerance on bench120"
+  },
+  {
+   "id": "abs_fa_E3",
+   "section": "abstract",
+   "text": "No false accept occurs on any query with a reference solution (150 in the parameter box, 264 outside it)",
+   "json": "E3.json",
+   "expr": "sum(sum(v[c]['false_accepts'].values()) for v in J['summary']['per_candidate'].values() for c in ('reduced', 'banded', 'exact')) + sum(sum(v['three_stage_false_accepts'].values()) for v in J['summary']['per_candidate'].values())",
+   "value": 0,
+   "tol": "abs:0",
+   "note": "every candidate, certificate and tolerance on the 264 OOD queries"
+  },
+  {
+   "id": "abs_193",
+   "section": "abstract",
+   "text": "outside the box the certificate accepts 193 of the 210\nqueries on which the reduced model is still within one cent",
+   "json": "E3.json",
+   "expr": "J['breakdown']['per_candidate']['podg80']['all']['exact_accepts']",
+   "value": 193,
+   "tol": "abs:0"
+  },
+  {
+   "id": "abs_210",
+   "section": "abstract",
+   "text": "outside the box the certificate accepts 193 of the 210\nqueries on which the reduced model is still within one cent",
+   "json": "E3.json",
+   "expr": "J['breakdown']['per_candidate']['podg80']['all']['n_true_err_le_eps_N']",
+   "value": 210,
+   "tol": "abs:0"
+  },
+  {
+   "id": "abs_factor46",
+   "section": "abstract",
+   "text": "fail the one-cent tolerance by a factor of at least $46$",
    "json": "E2_4_podnn_N1024.json",
    "expr": "min(J['results'][k]['summary']['exact_AI']['median'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)]) / R('PRODUCTION_CONFIG.json')['eps_N']",
-   "value": "47",
+   "value": "46",
    "tol": "round",
    "rel": "ge",
-   "note": "median exact bound / eps_N of the three space-time seeds: 49.1, 47.2, 46.0; the pooled median over the 90 (query, seed) pairs gives 47.5"
+   "note": "median exact bound / eps_N of the three space-time seeds: 49.1, 47.2, 46.0 (45.98 rounds to 46); the introduction repeats the sentence"
   },
   {
-   "id": "s25_alias_1e-18",
+   "id": "s25_alias_exp46",
    "section": "2.5",
-   "text": "with $L=4N_h$ this is below $10^{-18}$ on the box",
+   "text": "with $L=4N_h$ the exponent is at least $46$ on the box",
    "json": null,
-   "value": "1e-18",
+   "module": "cgmy_cert.params",
+   "kind": "source-backed",
+   "expr": "3 * J['BOX']['G'][0] * (J['X_MAX'] - J['X_MIN'])",
+   "value": "46",
    "tol": "round",
-   "note": "analytic estimate from the strip of analyticity; no result file evaluates the L-aliasing on the box (E3.json aliasing: max relative change 5.5e-16 when L is doubled, a different quantity)"
+   "rel": "ge",
+   "note": "min(G, M) h (L - N_h) with L = 4 N_h: 3 G_min x domain width = 48; the text says at least 46 because L - N_h is counted in free-section units (N_h = N - 1 interior nodes)"
   },
   {
    "id": "s25_epsK_5e-9",
@@ -110,17 +153,17 @@
   {
    "id": "s25_pp_lo",
    "section": "2.5",
-   "text": "operator-norm error is $0.33$--$0.41$ at every resolution",
+   "text": "operator-norm error is $0.31$--$0.41$ at every resolution",
    "json": "E0.json",
    "expr": "min(r['pp'] for N in J['E0.1'] for r in J['E0.1'][N])",
-   "value": "0.33",
+   "value": "0.31",
    "tol": "round",
-   "note": "per N: 64: 0.352-0.410, 128: 0.327-0.408, 256: 0.310-0.404, 512: 0.308-0.402 (PHASE1_REPORT: 0.31-0.41)"
+   "note": "per N: 64: 0.352-0.410, 128: 0.327-0.408, 256: 0.310-0.404, 512: 0.308-0.402"
   },
   {
    "id": "s25_pp_hi",
    "section": "2.5",
-   "text": "operator-norm error is $0.33$--$0.41$ at every resolution",
+   "text": "operator-norm error is $0.31$--$0.41$ at every resolution",
    "json": "E0.json",
    "expr": "max(r['pp'] for N in J['E0.1'] for r in J['E0.1'][N])",
    "value": "0.41",
@@ -135,6 +178,59 @@
    "value": "1e-8",
    "tol": "round",
    "rel": "le"
+  },
+  {
+   "id": "s3_pcg_lo",
+   "section": "3",
+   "text": "Table~\\ref{tab:pcg-v9} reports $8$--$12$ iterations",
+   "json": "E0.json",
+   "expr": "min(J['E0.4'][N]['pcg'][0] for N in J['E0.4'])",
+   "value": "8",
+   "tol": "abs:0",
+   "note": "median over the 20 queries"
+  },
+  {
+   "id": "s3_pcg_hi",
+   "section": "3",
+   "text": "Table~\\ref{tab:pcg-v9} reports $8$--$12$ iterations",
+   "json": "E0.json",
+   "expr": "max(J['E0.4'][N]['pcg'][1] for N in J['E0.4'])",
+   "value": "12",
+   "tol": "abs:0",
+   "note": "maximum over the 20 queries"
+  },
+  {
+   "id": "s3_cg_lo",
+   "section": "3",
+   "text": "against $42$--$1915$ for plain conjugate",
+   "json": "E0.json",
+   "expr": "min(J['E0.4'][N]['cg'][0] for N in J['E0.4'])",
+   "value": "42",
+   "tol": "round",
+   "note": "median at N = 64 is 42.5, printed as 42 in tab_pcg (round half to even); the single-query minimum is 38"
+  },
+  {
+   "id": "s3_cg_hi",
+   "section": "3",
+   "text": "against $42$--$1915$ for plain conjugate",
+   "json": "E0.json",
+   "expr": "max(J['E0.4'][N]['cg'][1] for N in J['E0.4'])",
+   "value": "1915",
+   "tol": "abs:0"
+  },
+  {
+   "id": "s3_bracket_1e-18",
+   "section": "3",
+   "text": "the bracket width at the final iterate is below $10^{-18}$ relative",
+   "json": null,
+   "file": "tests/test_spectral_riesz.py",
+   "regex": "\\((1e-20) if N <= 1024 else (1e-18)\\)",
+   "group": 2,
+   "kind": "source-backed",
+   "value": "1e-18",
+   "tol": "abs:0",
+   "rel": "le",
+   "note": "asserted by the test (width / u < 1e-20 for N <= 1024, < 1e-18 above); no result file stores the width"
   },
   {
    "id": "s41_grid16",
@@ -275,22 +371,26 @@
    "rel": "le"
   },
   {
-   "id": "s41_allow_Q25",
+   "id": "s41_tenth",
    "section": "4.1",
-   "text": "of the order\n$10^{-8}\\norm{\\cc}$ for $Q\\approx25$",
-   "json": null,
-   "value": "1e-8",
-   "tol": "round",
-   "note": "no result file; the production configuration uses Q = 36 (eps_N) and 37 (eps_N/10), N1024.json eimq"
+   "text": "which the choice of $Q$ below keeps under a tenth of the target tolerance",
+   "json": "N1024.json",
+   "expr": "float(re.search(r'<= eps/(\\d+)', J['eimq']['rule']).group(1))",
+   "value": 10,
+   "tol": "abs:0",
+   "note": "the operational-Q rule eps_Q ||cbar|| sqrt(T/alpha) <= eps/10, max over validation30 (N1024.json eimq/rule; E1.json Q_eps applies it per tolerance)"
   },
   {
    "id": "s43_deeponet_params",
    "section": "4.3",
    "text": "latent dimension 64 and 80,002 trainable parameters",
    "json": null,
-   "value": "80002",
-   "tol": "round",
-   "note": "the v8 DeepONet checkpoint; no result file records its parameter count (deeponet_old_vs_new.json does not)"
+   "file": "v8_frozen/models/deeponet_final.pt",
+   "kind": "source-backed",
+   "expr": "sum(v.numel() for v in J['model_state_dict'].values())",
+   "value": 80002,
+   "tol": "abs:0",
+   "note": "parameter count of the v8 checkpoint's state dict (torch.load, weights only)"
   },
   {
    "id": "s43_deeponet_n120",
@@ -367,12 +467,21 @@
   {
    "id": "s44_snapshots",
    "section": "4.4",
-   "text": "The 800 trajectories\nsupply 48,800 snapshots",
+   "text": "The 800 trajectories supply 192,800 snapshots",
    "json": "PRODUCTION_CONFIG.json",
    "expr": "800 * (J['N_T'] + 1)",
-   "value": "48800",
+   "value": "192800",
    "tol": "abs:0",
-   "note": "800 x (N_T + 1) = 192,800 at N_T = 240; 48,800 = 800 x 61 is the count at the earlier N_T = 60"
+   "note": "800 x (N_T + 1)"
+  },
+  {
+   "id": "s44_241",
+   "section": "4.4",
+   "text": "($241$ time levels each)",
+   "json": "PRODUCTION_CONFIG.json",
+   "expr": "J['N_T'] + 1",
+   "value": 241,
+   "tol": "abs:0"
   },
   {
    "id": "s44_betabar_0.99",
@@ -389,9 +498,12 @@
    "section": "4.4",
    "text": "the residual is $10^{-8}$ of\nthe terms it is assembled from",
    "json": null,
+   "file": "results/DEVIATIONS.md",
+   "regex": "the residual is ~(1e-8) of its individual terms",
+   "kind": "source-backed",
    "value": "1e-8",
    "tol": "round",
-   "note": "no result file records this ratio (DEVIATIONS.md, Phase 2, describes the Gram-form failure qualitatively)"
+   "note": "DEVIATIONS.md, Phase 2 item 2.3 (R-factor decision: kappa ~ 5e7 for POD-Galerkin at r = 48); neither E2_3_reduced_cert.json nor check_reduced_cert_longdouble.py records the cancellation ratio"
   },
   {
    "id": "s44_rho_lo",
@@ -462,62 +574,62 @@
   {
    "id": "s44_cert_ms_r8",
    "section": "4.4",
-   "text": "$2.9$, $3.8$, $4.6$, $5.5$, $6.7$, $8.2$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
-   "json": "N1024.json",
-   "path": "timing_ext/per_basis/800/per_rank/8/certificate",
+   "text": "$2.9$, $3.9$, $4.6$, $5.6$, $6.8$, $8.3$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
+   "json": "E1.json",
+   "path": "timing/per_rank/8/reduced_certificate",
    "value": "2.9",
    "tol": "round",
-   "note": "N1024.json timing_ext (Phase 2, idle); the Phase 3 idle rerun in E1.json (Section 5.7) gives 2.90, 3.87, 4.61, 5.63, 6.79, 8.28 ms"
+   "note": "E1.json timing (Phase 3 idle rerun), the same numbers as Section 5.7 and Figure 6"
   },
   {
    "id": "s44_cert_ms_r48",
    "section": "4.4",
-   "text": "$2.9$, $3.8$, $4.6$, $5.5$, $6.7$, $8.2$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
-   "json": "N1024.json",
-   "path": "timing_ext/per_basis/800/per_rank/48/certificate",
-   "value": "3.8",
+   "text": "$2.9$, $3.9$, $4.6$, $5.6$, $6.8$, $8.3$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
+   "json": "E1.json",
+   "path": "timing/per_rank/48/reduced_certificate",
+   "value": "3.9",
    "tol": "round",
-   "note": "N1024.json timing_ext (Phase 2, idle); the Phase 3 idle rerun in E1.json (Section 5.7) gives 2.90, 3.87, 4.61, 5.63, 6.79, 8.28 ms"
+   "note": "E1.json timing (Phase 3 idle rerun), the same numbers as Section 5.7 and Figure 6"
   },
   {
    "id": "s44_cert_ms_r64",
    "section": "4.4",
-   "text": "$2.9$, $3.8$, $4.6$, $5.5$, $6.7$, $8.2$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
-   "json": "N1024.json",
-   "path": "timing_ext/per_basis/800/per_rank/64/certificate",
+   "text": "$2.9$, $3.9$, $4.6$, $5.6$, $6.8$, $8.3$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
+   "json": "E1.json",
+   "path": "timing/per_rank/64/reduced_certificate",
    "value": "4.6",
    "tol": "round",
-   "note": "N1024.json timing_ext (Phase 2, idle); the Phase 3 idle rerun in E1.json (Section 5.7) gives 2.90, 3.87, 4.61, 5.63, 6.79, 8.28 ms"
+   "note": "E1.json timing (Phase 3 idle rerun), the same numbers as Section 5.7 and Figure 6"
   },
   {
    "id": "s44_cert_ms_r80",
    "section": "4.4",
-   "text": "$2.9$, $3.8$, $4.6$, $5.5$, $6.7$, $8.2$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
-   "json": "N1024.json",
-   "path": "timing_ext/per_basis/800/per_rank/80/certificate",
-   "value": "5.5",
+   "text": "$2.9$, $3.9$, $4.6$, $5.6$, $6.8$, $8.3$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
+   "json": "E1.json",
+   "path": "timing/per_rank/80/reduced_certificate",
+   "value": "5.6",
    "tol": "round",
-   "note": "N1024.json timing_ext (Phase 2, idle); the Phase 3 idle rerun in E1.json (Section 5.7) gives 2.90, 3.87, 4.61, 5.63, 6.79, 8.28 ms"
+   "note": "E1.json timing (Phase 3 idle rerun), the same numbers as Section 5.7 and Figure 6"
   },
   {
    "id": "s44_cert_ms_r96",
    "section": "4.4",
-   "text": "$2.9$, $3.8$, $4.6$, $5.5$, $6.7$, $8.2$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
-   "json": "N1024.json",
-   "path": "timing_ext/per_basis/800/per_rank/96/certificate",
-   "value": "6.7",
+   "text": "$2.9$, $3.9$, $4.6$, $5.6$, $6.8$, $8.3$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
+   "json": "E1.json",
+   "path": "timing/per_rank/96/reduced_certificate",
+   "value": "6.8",
    "tol": "round",
-   "note": "N1024.json timing_ext (Phase 2, idle); the Phase 3 idle rerun in E1.json (Section 5.7) gives 2.90, 3.87, 4.61, 5.63, 6.79, 8.28 ms"
+   "note": "E1.json timing (Phase 3 idle rerun), the same numbers as Section 5.7 and Figure 6"
   },
   {
    "id": "s44_cert_ms_r128",
    "section": "4.4",
-   "text": "$2.9$, $3.8$, $4.6$, $5.5$, $6.7$, $8.2$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
-   "json": "N1024.json",
-   "path": "timing_ext/per_basis/800/per_rank/128/certificate",
-   "value": "8.2",
+   "text": "$2.9$, $3.9$, $4.6$, $5.6$, $6.8$, $8.3$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
+   "json": "E1.json",
+   "path": "timing/per_rank/128/reduced_certificate",
+   "value": "8.3",
    "tol": "round",
-   "note": "N1024.json timing_ext (Phase 2, idle); the Phase 3 idle rerun in E1.json (Section 5.7) gives 2.90, 3.87, 4.61, 5.63, 6.79, 8.28 ms"
+   "note": "E1.json timing (Phase 3 idle rerun), the same numbers as Section 5.7 and Figure 6"
   },
   {
    "id": "s44_rank_indep_2.7",
@@ -532,19 +644,19 @@
   {
    "id": "s44_solve_lo",
    "section": "4.4",
-   "text": "the reduced solve takes $0.7$--$1.9$~ms",
-   "json": "N1024.json",
-   "path": "timing_ext/per_basis/800/per_rank/8/solve",
+   "text": "rank-independent; the reduced solve takes $0.7$--$2.0$~ms",
+   "json": "E1.json",
+   "path": "timing/per_rank/8/reduced_solve",
    "value": "0.7",
    "tol": "round"
   },
   {
    "id": "s44_solve_hi",
    "section": "4.4",
-   "text": "the reduced solve takes $0.7$--$1.9$~ms",
-   "json": "N1024.json",
-   "path": "timing_ext/per_basis/800/per_rank/128/solve",
-   "value": "1.9",
+   "text": "rank-independent; the reduced solve takes $0.7$--$2.0$~ms",
+   "json": "E1.json",
+   "path": "timing/per_rank/128/reduced_solve",
+   "value": "2.0",
    "tol": "round"
   },
   {
@@ -579,9 +691,12 @@
    "section": "4.4",
    "text": "certified bound is of the order $10^{-3}$ at\n$N=512$",
    "json": null,
+   "file": "results/NOTES_FOR_PAPER.md",
+   "regex": "comes out ~(1e-3) from float32 rounding alone",
+   "kind": "source-backed",
    "value": "1e-3",
    "tol": "round",
-   "note": "NOTES_FOR_PAPER.md item 8 and DEVIATIONS.md (Phase 2, float64) state it; no result file holds the float32 bound"
+   "note": "NOTES_FOR_PAPER.md item 8 (Phase 2 follow-up 2, N = 512); no result file holds the float32 bound"
   },
   {
    "id": "s44_coeffs_11520",
@@ -749,23 +864,38 @@
   {
    "id": "s52_factor_lo",
    "section": "5.2",
-   "text": "within a factor $1.1$--$4$ of the observed error",
+   "text": "within a factor $1.1$--$3.7$ of the observed error at $K=100$",
    "json": "E0.json",
-   "expr": "min(r['eps%d' % K] / r['K%d' % K] for N in J['E0.1'] for r in J['E0.1'][N] for K in (5, 20, 100))",
+   "expr": "min(r['eps%d' % K] / r['K%d' % K] for N in J['E0.1'] for r in J['E0.1'][N] for K in (100,))",
    "value": "1.1",
-   "tol": "round",
-   "rel": "ge"
+   "tol": "round"
   },
   {
    "id": "s52_factor_hi",
    "section": "5.2",
-   "text": "within a factor $1.1$--$4$ of the observed error",
+   "text": "within a factor $1.1$--$3.7$ of the observed error at $K=100$",
    "json": "E0.json",
-   "expr": "max(r['eps%d' % K] / r['K%d' % K] for N in J['E0.1'] for r in J['E0.1'][N] for K in (5, 20, 100))",
-   "value": "4",
-   "tol": "round",
-   "rel": "le",
-   "note": "per K: K = 5: 2.07-8.58, K = 20: 1.30-4.43, K = 100: 1.14-3.69 (the statement holds at K = 100 only)"
+   "expr": "max(r['eps%d' % K] / r['K%d' % K] for N in J['E0.1'] for r in J['E0.1'][N] for K in (100,))",
+   "value": "3.7",
+   "tol": "round"
+  },
+  {
+   "id": "s52_factor_K20",
+   "section": "5.2",
+   "text": "(at most $4.4$ at $K=20$ and $8.6$ at $K=5$)",
+   "json": "E0.json",
+   "expr": "max(r['eps%d' % K] / r['K%d' % K] for N in J['E0.1'] for r in J['E0.1'][N] for K in (20,))",
+   "value": "4.4",
+   "tol": "round"
+  },
+  {
+   "id": "s52_factor_K5",
+   "section": "5.2",
+   "text": "(at most $4.4$ at $K=20$ and $8.6$ at $K=5$)",
+   "json": "E0.json",
+   "expr": "max(r['eps%d' % K] / r['K%d' % K] for N in J['E0.1'] for r in J['E0.1'][N] for K in (5,))",
+   "value": "8.6",
+   "tol": "round"
   },
   {
    "id": "s53_289",
@@ -954,38 +1084,52 @@
    "id": "s53_XS_1024",
    "section": "5.3",
    "text": "the factor\n$\\eta^X/\\eta^S\\approx2$ at $N=1024$",
-   "json": "N1024.json",
-   "expr": "float(np.median([J['table_ext']['800']['summary'][r]['banded_AI']['median'] / J['table_ext']['800']['summary'][r]['exact_AI']['median'] for r in ['8','16','24','32','40','48','56','62','64','80','96','128']]))",
+   "json": "E1.json",
+   "expr": "float(np.median([J['eval']['summary']['pod_galerkin_r' + r + '_n800']['banded']['median'] / J['eval']['summary']['pod_galerkin_r' + r + '_n800']['exact']['median'] for r in ['8','16','24','32','40','48','56','62','64','80','96','128']]))",
    "value": "2",
    "tol": 0.15,
-   "note": "median over r = 8-128 of median(eta^X) / median(eta^S); range 1.15-2.13"
+   "note": "median over r = 8-128 of median(eta^X) / median(eta^S) on validation30 (E1.json, Table 6)"
   },
   {
    "id": "s54_lu_gmres",
    "section": "5.4",
    "text": "Dense-LU and circulant-GMRES references agree to $10^{-12}$",
    "json": null,
+   "file": "tests/test_direct_certificate.py",
+   "regex": "assert d <= (1e-12) \\* scale",
+   "kind": "source-backed",
    "value": "1e-12",
-   "tol": "round",
-   "note": "tested in tests/test_direct_certificate.py (PHASE1_REPORT item 1.5); no result file records it for N <= 1024 (E0.json E0.5 lu_vs_gmres = 1.5e-12 for the three Y < 1 queries at N = 64 only)"
+   "tol": "abs:0",
+   "rel": "le",
+   "note": "asserted in the M_I norm for N <= 1024 by the test; E0.json E0.5 lu_vs_gmres (1.5e-12) covers the three Y < 1 queries at N = 64 only"
   },
   {
    "id": "s54_bracket_1e-20",
    "section": "5.4",
    "text": "the bracket width at convergence is below $10^{-20}$ relative",
    "json": null,
+   "file": "tests/test_spectral_riesz.py",
+   "regex": "\\((1e-20) if N <= 1024 else (1e-18)\\)",
+   "group": 1,
+   "kind": "source-backed",
    "value": "1e-20",
-   "tol": "round",
-   "note": "no result file records the PCG bracket width (E0.4 stores iteration counts only)"
+   "tol": "abs:0",
+   "rel": "le",
+   "note": "asserted by the test for N <= 1024; E0.4 stores iteration counts only"
   },
   {
    "id": "s54_bracket_1e-18",
    "section": "5.4",
    "text": "below $10^{-18}$ at $N=4096$",
    "json": null,
+   "file": "tests/test_spectral_riesz.py",
+   "regex": "\\((1e-20) if N <= 1024 else (1e-18)\\)",
+   "group": 2,
+   "kind": "source-backed",
    "value": "1e-18",
-   "tol": "round",
-   "note": "as above"
+   "tol": "abs:0",
+   "rel": "le",
+   "note": "asserted by the test for N > 1024"
   },
   {
    "id": "s55_48",
@@ -1117,9 +1261,14 @@
    "section": "5.6",
    "text": "had price gaps above two dollars at $N=64$",
    "json": null,
+   "file": "v8_frozen/manuscript_v8/provenance/frozen_tables/tab_corner.tex",
+   "regex": "Q\\\\_audit\\\\_0(?:401|397) & 64 & \\$([0-9.]+)\\$",
+   "agg": "min",
+   "kind": "source-backed",
    "value": "2",
-   "tol": "round",
-   "note": "the calibration (E3_1_calibration.json) starts at N = 128, where the two corners are 0.70 and 0.78 dollars"
+   "tol": "abs:0",
+   "rel": "ge",
+   "note": "v8 frozen table tab_corner (generated from the raw CSVs by v8's v6_build_manuscript_assets.py): max_s |V_h(T) - COS| at N = 64 is 2.22 (Q_audit_0401) and 2.07 (Q_audit_0397) dollars; the smaller is checked. The run 20261007T175334Z_corner_refinement behind it is not in v8_frozen/runs (its cos/prices.csv is only hashed in provenance/evidence_v6.json)"
   },
   {
    "id": "s56_ref30_512",
@@ -1151,11 +1300,11 @@
   {
    "id": "s56_1024_below",
    "section": "5.6",
-   "text": "at $N=1024$ all are below $0.24$ cent with 240 steps",
+   "text": "at $N=1024$ all are at most $0.235$ cent with 240 steps",
    "json": "E3_1_calibration.json",
    "expr": "J['table']['1024|240']['max_err_all'] * 100",
-   "value": "0.24",
-   "tol": "abs:0",
+   "value": "0.235",
+   "tol": "round",
    "rel": "le"
   },
   {
@@ -1186,21 +1335,21 @@
    "tol": "round"
   },
   {
-   "id": "s56_disc_0.24",
+   "id": "s56_disc_0.235",
    "section": "5.6",
-   "text": "since the discretisation error at $N=1024$ is $0.24$ cent",
+   "text": "since the discretisation error at $N=1024$ is $0.235$ cent",
    "json": "E3_1_calibration.json",
    "expr": "J['table']['1024|240']['max_err_all'] * 100",
-   "value": "0.24",
+   "value": "0.235",
    "tol": "round",
-   "note": "0.2349 cent; correct as 'below 0.24 cent' (claim s56_1024_below), rounds to 0.23"
+   "note": "0.2349 cent"
   },
   {
    "id": "s57_err48",
    "section": "5.7",
    "text": "median error of $3.1\\times10^{-4}$ at $r=48$",
-   "json": "N1024.json",
-   "expr": "J['table_ext']['800']['summary']['48']['median_true_err']",
+   "json": "E1.json",
+   "expr": "J['eval']['summary']['pod_galerkin_r48_n800']['median_true_err']",
    "value": "3.1e-4",
    "tol": "round"
   },
@@ -1208,47 +1357,69 @@
    "id": "s57_err64",
    "section": "5.7",
    "text": "$1.7\\times10^{-5}$ at $r=64$",
-   "json": "N1024.json",
-   "expr": "J['table_ext']['800']['summary']['64']['median_true_err']",
+   "json": "E1.json",
+   "expr": "J['eval']['summary']['pod_galerkin_r64_n800']['median_true_err']",
    "value": "1.7e-5",
    "tol": "round"
   },
   {
-   "id": "s57_sv10",
+   "id": "s57_sv10_r48",
    "section": "5.7",
-   "text": "(singular values within $10\\%$)",
+   "text": "(singular values within $10\\%$ up to $r=48$, within a factor $1.5$ up to $r=128$)",
    "json": "N1024.json",
-   "expr": "max(abs(J['podext']['4000']['sv_ratio'][r] / J['podext']['800']['sv_ratio'][r] - 1) for r in J['podext']['800']['sv_ratio']) * 100",
+   "expr": "max(abs(J['podext']['4000']['sv_ratio'][r] / J['podext']['800']['sv_ratio'][r] - 1) for r in J['podext']['800']['sv_ratio'] if int(r) <= 48) * 100",
    "value": "10",
    "tol": "abs:0",
    "rel": "le",
-   "note": "ratio of the normalised singular values sigma_r/sigma_1 (4000 vs 800 trajectories): within 9% for r <= 48, 17-49% at r = 56-128"
+   "note": "normalised singular values sigma_r/sigma_1, 4000 vs 800 trajectories: at most 8.9% for r <= 48"
+  },
+  {
+   "id": "s57_sv_factor1.5",
+   "section": "5.7",
+   "text": "(singular values within $10\\%$ up to $r=48$, within a factor $1.5$ up to $r=128$)",
+   "json": "N1024.json",
+   "expr": "max(max(J['podext']['4000']['sv_ratio'][r] / J['podext']['800']['sv_ratio'][r], 1 / (J['podext']['4000']['sv_ratio'][r] / J['podext']['800']['sv_ratio'][r])) for r in J['podext']['800']['sv_ratio'])",
+   "value": "1.5",
+   "tol": "abs:0",
+   "rel": "le",
+   "note": "largest ratio 1.486 (r = 80)"
   },
   {
    "id": "s57_effS_lo",
    "section": "5.7",
-   "text": "effectivity $9$--$15$ for $r\\le80$",
-   "json": "N1024.json",
-   "expr": "min(J['table_ext']['800']['summary'][r]['exact_AI']['median_effectivity'] for r in ['8','16','24','32','40','48','56','62','64','80'])",
+   "text": "effectivity $9$--$15$ for $16\\le r\\le80$ ($6.8$ at $r=8$)",
+   "json": "E1.json",
+   "expr": "min(J['eval']['summary']['pod_galerkin_r' + r + '_n800']['exact']['median_effectivity'] for r in ['16','24','32','40','48','56','62','64','80'])",
    "value": "9",
    "tol": "round",
-   "note": "6.8 at r = 8 (tab_pod_ranks row 8); 9.5-14.9 for 16 <= r <= 80"
+   "rel": "ge",
+   "note": "the range encloses the medians 9.53 (r = 80) to 14.90 (r = 16); rounded endpoints would read 10-15"
   },
   {
    "id": "s57_effS_hi",
    "section": "5.7",
-   "text": "effectivity $9$--$15$ for $r\\le80$",
-   "json": "N1024.json",
-   "expr": "max(J['table_ext']['800']['summary'][r]['exact_AI']['median_effectivity'] for r in ['8','16','24','32','40','48','56','62','64','80'])",
+   "text": "effectivity $9$--$15$ for $16\\le r\\le80$ ($6.8$ at $r=8$)",
+   "json": "E1.json",
+   "expr": "max(J['eval']['summary']['pod_galerkin_r' + r + '_n800']['exact']['median_effectivity'] for r in ['16','24','32','40','48','56','62','64','80'])",
    "value": "15",
+   "tol": "round",
+   "rel": "le"
+  },
+  {
+   "id": "s57_effS_r8",
+   "section": "5.7",
+   "text": "effectivity $9$--$15$ for $16\\le r\\le80$ ($6.8$ at $r=8$)",
+   "json": "E1.json",
+   "expr": "J['eval']['summary']['pod_galerkin_r8_n800']['exact']['median_effectivity']",
+   "value": "6.8",
    "tol": "round"
   },
   {
    "id": "s57_XoverS_2",
    "section": "5.7",
    "text": "the banded certificate is a further factor\n$\\approx2$ above it",
-   "json": "N1024.json",
-   "expr": "float(np.median([J['table_ext']['800']['summary'][r]['banded_AI']['median_effectivity'] / J['table_ext']['800']['summary'][r]['exact_AI']['median_effectivity'] for r in ['8','16','24','32','40','48','56','62','64','80']]))",
+   "json": "E1.json",
+   "expr": "float(np.median([J['eval']['summary']['pod_galerkin_r' + r + '_n800']['banded']['median_effectivity'] / J['eval']['summary']['pod_galerkin_r' + r + '_n800']['exact']['median_effectivity'] for r in ['8','16','24','32','40','48','56','62','64','80']]))",
    "value": "2",
    "tol": 0.15
   },
@@ -1256,8 +1427,8 @@
    "id": "s57_redoverX_2",
    "section": "5.7",
    "text": "the reduced online certificate a further\nfactor $\\approx2$, the cell factor",
-   "json": "N1024.json",
-   "expr": "float(np.median([J['table_ext']['800']['summary'][r]['reduced']['median_effectivity'] / J['table_ext']['800']['summary'][r]['banded_AI']['median_effectivity'] for r in ['8','16','24','32','40','48','56','62','64','80']]))",
+   "json": "E1.json",
+   "expr": "float(np.median([J['eval']['summary']['pod_galerkin_r' + r + '_n800']['reduced']['median_effectivity'] / J['eval']['summary']['pod_galerkin_r' + r + '_n800']['banded']['median_effectivity'] for r in ['8','16','24','32','40','48','56','62','64','80']]))",
    "value": "2",
    "tol": 0.15
   },
@@ -1265,8 +1436,8 @@
    "id": "s57_exact56_28",
    "section": "5.7",
    "text": "starts at $r=56$ under the\nexact certificate (28 of 30)",
-   "json": "N1024.json",
-   "expr": "J['table_ext']['800']['summary']['56']['exact_AI']['accepted'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]]",
+   "json": "E1.json",
+   "expr": "J['eval']['summary']['pod_galerkin_r56_n800']['exact']['accepted']['0.001185']",
    "value": 28,
    "tol": "abs:0"
   },
@@ -1274,8 +1445,8 @@
    "id": "s57_exact_start56",
    "section": "5.7",
    "text": "starts at $r=56$ under the\nexact certificate (28 of 30)",
-   "json": "N1024.json",
-   "expr": "min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if J['table_ext']['800']['summary'][r]['exact_AI']['accepted'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]] > 0)",
+   "json": "E1.json",
+   "expr": "min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if J['eval']['summary']['pod_galerkin_r' + r + '_n800']['exact']['accepted']['0.001185'] > 0)",
    "value": 56,
    "tol": "abs:0"
   },
@@ -1283,8 +1454,8 @@
    "id": "s57_all_start62",
    "section": "5.7",
    "text": "at $r=62$--$64$ under all three",
-   "json": "N1024.json",
-   "expr": "min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if min(J['table_ext']['800']['summary'][r][c]['accepted'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]] for c in ('reduced', 'banded_AI', 'exact_AI')) > 0)",
+   "json": "E1.json",
+   "expr": "min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if min(J['eval']['summary']['pod_galerkin_r' + r + '_n800'][c]['accepted']['0.001185'] for c in ('reduced', 'banded', 'exact')) > 0)",
    "value": 62,
    "tol": "abs:0"
   },
@@ -1292,8 +1463,8 @@
    "id": "s57_complete80",
    "section": "5.7",
    "text": "is complete at $r\\ge80$",
-   "json": "N1024.json",
-   "expr": "min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if min(J['table_ext']['800']['summary'][r][c]['accepted'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]] for c in ('reduced', 'banded_AI', 'exact_AI')) == 30)",
+   "json": "E1.json",
+   "expr": "min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if min(J['eval']['summary']['pod_galerkin_r' + r + '_n800'][c]['accepted']['0.001185'] for c in ('reduced', 'banded', 'exact')) == 30)",
    "value": 80,
    "tol": "abs:0"
   },
@@ -1301,8 +1472,8 @@
    "id": "s57_cheap48",
    "section": "5.7",
    "text": "settles every query at $r\\le48$ by cheap rejection",
-   "json": "N1024.json",
-   "expr": "max(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if J['table_ext']['800']['summary'][r]['three_stage'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]].get('reject_cheap', 0) == 30)",
+   "json": "E1.json",
+   "expr": "max(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if J['eval']['summary']['pod_galerkin_r' + r + '_n800']['three_stage']['0.001185']['reject_cheap'] == 30)",
    "value": 48,
    "tol": "abs:0"
   },
@@ -1310,8 +1481,8 @@
    "id": "s57_reduced80",
    "section": "5.7",
    "text": "every query at $r\\ge80$ by\nreduced acceptance",
-   "json": "N1024.json",
-   "expr": "min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if J['table_ext']['800']['summary'][r]['three_stage'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]].get('reduced_accept', 0) == 30)",
+   "json": "E1.json",
+   "expr": "min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if J['eval']['summary']['pod_galerkin_r' + r + '_n800']['three_stage']['0.001185']['reduced_accept'] == 30)",
    "value": 80,
    "tol": "abs:0"
   },
@@ -1319,8 +1490,8 @@
    "id": "s57_band_lo",
    "section": "5.7",
    "text": "the full-order stages are reached only in the band $r=56$--$64$",
-   "json": "N1024.json",
-   "expr": "min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if sum(J['table_ext']['800']['summary'][r]['three_stage'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]].get(k, 0) for k in ('banded_accept', 'reject_banded', 'exact_accept', 'exact_reject')) > 0)",
+   "json": "E1.json",
+   "expr": "min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if sum(J['eval']['summary']['pod_galerkin_r' + r + '_n800']['three_stage']['0.001185'][k] for k in ('banded_accept', 'reject_banded', 'exact_accept', 'exact_reject')) > 0)",
    "value": 56,
    "tol": "abs:0"
   },
@@ -1328,8 +1499,8 @@
    "id": "s57_band_hi",
    "section": "5.7",
    "text": "the full-order stages are reached only in the band $r=56$--$64$",
-   "json": "N1024.json",
-   "expr": "max(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if sum(J['table_ext']['800']['summary'][r]['three_stage'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]].get(k, 0) for k in ('banded_accept', 'reject_banded', 'exact_accept', 'exact_reject')) > 0)",
+   "json": "E1.json",
+   "expr": "max(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if sum(J['eval']['summary']['pod_galerkin_r' + r + '_n800']['three_stage']['0.001185'][k] for k in ('banded_accept', 'reject_banded', 'exact_accept', 'exact_reject')) > 0)",
    "value": 64,
    "tol": "abs:0"
   },
@@ -1337,37 +1508,39 @@
    "id": "s57_no_fa",
    "section": "5.7",
    "text": "No false\naccept occurs under any certificate at any tolerance.",
-   "json": "N1024.json",
-   "expr": "sum(sum(J['table_ext'][b]['summary'][r][c]['false_accepts'].values()) for b in J['table_ext'] for r in J['table_ext'][b]['summary'] for c in ('reduced', 'banded_AI', 'exact_AI'))",
+   "json": "E1.json",
+   "expr": "sum(sum(v[c]['false_accepts'].values()) for k, v in J['eval']['summary'].items() if k.startswith('pod_galerkin') for c in ('reduced', 'banded', 'exact'))",
    "value": 0,
-   "tol": "abs:0"
+   "tol": "abs:0",
+   "note": "every POD-Galerkin rank and both bases on validation30"
   },
   {
    "id": "s57_floor_4e-8",
    "section": "5.7",
    "text": "At $r\\ge96$ the true error ($4\\times10^{-8}$)",
-   "json": "N1024.json",
-   "expr": "J['table_ext']['800']['summary']['96']['median_true_err']",
+   "json": "E1.json",
+   "expr": "J['eval']['summary']['pod_galerkin_r96_n800']['median_true_err']",
    "value": "4e-8",
    "tol": "round",
-   "note": "r = 96: 4.3e-8, r = 128: 2.3e-8 (N1024.json); E1.json, the Phase 3 evaluation, gives 3.6e-8 and 9.9e-9"
+   "note": "r = 96: 3.6e-8, r = 128: 9.9e-9 (E1.json, Table 6); the Phase 2 evaluation N1024.json gives 4.3e-8 and 2.3e-8"
   },
   {
    "id": "s57_effred_lo",
    "section": "5.7",
    "text": "raises the reduced effectivity to\n$120$--$140$",
-   "json": "N1024.json",
-   "expr": "J['table_ext']['800']['summary']['128']['reduced']['median_effectivity']",
+   "json": "E1.json",
+   "attention": "the text still quotes the Phase 2 evaluation (N1024.json table_ext: 143 at r = 96, 119 at r = 128); Table 6 is now built from E1.json, eval/summary/pod_galerkin_r96_n800/reduced/median_effectivity = 230.6 and pod_galerkin_r128_n800/... = 416.8; suggested: 'to $230$--$420$'",
+   "expr": "min(J['eval']['summary']['pod_galerkin_r' + r + '_n800']['reduced']['median_effectivity'] for r in ['96', '128'])",
    "value": "120",
    "tol": "abs:5",
-   "note": "N1024.json: 143 (r = 96), 119 (r = 128); E1.json gives 231 and 417 (its true errors at r >= 96 are smaller)"
+   "note": "E1.json (Table 6) gives 231 (r = 96) and 417 (r = 128) at eps_N (Q = 36); 120-140 are the Phase 2 values of N1024.json (143 and 119), which Table 6 no longer shows"
   },
   {
    "id": "s57_effred_hi",
    "section": "5.7",
    "text": "raises the reduced effectivity to\n$120$--$140$",
-   "json": "N1024.json",
-   "expr": "J['table_ext']['800']['summary']['96']['reduced']['median_effectivity']",
+   "json": "E1.json",
+   "expr": "max(J['eval']['summary']['pod_galerkin_r' + r + '_n800']['reduced']['median_effectivity'] for r in ['96', '128'])",
    "value": "140",
    "tol": "abs:5"
   },
@@ -1390,14 +1563,14 @@
    "tol": "round"
   },
   {
-   "id": "s57_best_bound_1.25",
+   "id": "s57_best_bound_1.26",
    "section": "5.7",
-   "text": "a median exact bound of $1.25$",
+   "text": "a median exact bound of $1.26$",
    "json": "E1.json",
    "path": "selection/per_setting/podnn|n4000/bound_selected/median_exact",
-   "value": "1.25",
+   "value": "1.26",
    "tol": "round",
-   "note": "median over the three seeds of the per-seed median: 1.264 (seeds 1.236, 1.264, 1.265; pooled over the 90 (query, seed) pairs 1.241); the same paragraph later says 1.26"
+   "note": "median over the three seeds of the per-seed median: 1.264 (seeds 1.236, 1.264, 1.265)"
   },
   {
    "id": "s57_best_1e3",
@@ -1409,32 +1582,65 @@
    "tol": 0.1
   },
   {
-   "id": "s57_st_err",
+   "id": "s57_st_err_min",
    "section": "5.7",
-   "text": "($0.015$ and $0.056$, $47\\,\\varepsilon_N$)",
+   "text": "(errors $0.014$--$0.016$ and bounds $0.055$--$0.058$ over three seeds,\n$46$--$49\\,\\varepsilon_N$)",
    "json": "E2_4_podnn_N1024.json",
-   "expr": "float(np.median([J['results'][k]['summary']['median_true_err'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)]]))",
-   "value": "0.015",
+   "expr": "min(J['results'][k]['summary']['median_true_err'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)])",
+   "value": "0.014",
    "tol": "round",
-   "note": "median over the three seeds 0.0159 (seeds 0.0142, 0.0159, 0.0161; pooled 0.0155)"
+   "note": "per-seed medians over validation30: 0.0142, 0.0159, 0.0161"
   },
   {
-   "id": "s57_st_bound",
+   "id": "s57_st_bound_min",
    "section": "5.7",
-   "text": "($0.015$ and $0.056$, $47\\,\\varepsilon_N$)",
+   "text": "(errors $0.014$--$0.016$ and bounds $0.055$--$0.058$ over three seeds,\n$46$--$49\\,\\varepsilon_N$)",
    "json": "E2_4_podnn_N1024.json",
-   "expr": "float(np.median([J['results'][k]['summary']['exact_AI']['median'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)]]))",
-   "value": "0.056",
-   "tol": "round"
+   "attention": "the smallest per-seed median bound is 0.0545 (E2_4_podnn_N1024.json results/podnn_N1024_r48_n4000_lamR1_seed2_spacetime/summary/exact_AI/median = 0.05447), which rounds to 0.054: suggested '$0.054$--$0.058$'",
+   "expr": "min(J['results'][k]['summary']['exact_AI']['median'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)])",
+   "value": "0.055",
+   "tol": "round",
+   "note": "per-seed median exact bounds: 0.0582, 0.0559, 0.0545"
   },
   {
-   "id": "s57_st_47",
+   "id": "s57_st_factor_min",
    "section": "5.7",
-   "text": "($0.015$ and $0.056$, $47\\,\\varepsilon_N$)",
+   "text": "(errors $0.014$--$0.016$ and bounds $0.055$--$0.058$ over three seeds,\n$46$--$49\\,\\varepsilon_N$)",
    "json": "E2_4_podnn_N1024.json",
-   "expr": "float(np.median([J['results'][k]['summary']['exact_AI']['median'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)]])) / R('PRODUCTION_CONFIG.json')['eps_N']",
-   "value": "47",
-   "tol": "round"
+   "expr": "min(J['results'][k]['summary']['exact_AI']['median'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)]) / R('PRODUCTION_CONFIG.json')['eps_N']",
+   "value": "46",
+   "tol": "round",
+   "note": "median exact bound / eps_N per seed: 49.1, 47.2, 46.0"
+  },
+  {
+   "id": "s57_st_err_max",
+   "section": "5.7",
+   "text": "(errors $0.014$--$0.016$ and bounds $0.055$--$0.058$ over three seeds,\n$46$--$49\\,\\varepsilon_N$)",
+   "json": "E2_4_podnn_N1024.json",
+   "expr": "max(J['results'][k]['summary']['median_true_err'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)])",
+   "value": "0.016",
+   "tol": "round",
+   "note": "per-seed medians over validation30: 0.0142, 0.0159, 0.0161"
+  },
+  {
+   "id": "s57_st_bound_max",
+   "section": "5.7",
+   "text": "(errors $0.014$--$0.016$ and bounds $0.055$--$0.058$ over three seeds,\n$46$--$49\\,\\varepsilon_N$)",
+   "json": "E2_4_podnn_N1024.json",
+   "expr": "max(J['results'][k]['summary']['exact_AI']['median'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)])",
+   "value": "0.058",
+   "tol": "round",
+   "note": "per-seed median exact bounds: 0.0582, 0.0559, 0.0545"
+  },
+  {
+   "id": "s57_st_factor_max",
+   "section": "5.7",
+   "text": "(errors $0.014$--$0.016$ and bounds $0.055$--$0.058$ over three seeds,\n$46$--$49\\,\\varepsilon_N$)",
+   "json": "E2_4_podnn_N1024.json",
+   "expr": "max(J['results'][k]['summary']['exact_AI']['median'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)]) / R('PRODUCTION_CONFIG.json')['eps_N']",
+   "value": "49",
+   "tol": "round",
+   "note": "median exact bound / eps_N per seed: 49.1, 47.2, 46.0"
   },
   {
    "id": "s57_lam0_err",
@@ -1530,17 +1736,17 @@
   {
    "id": "s57_solve_lo",
    "section": "5.7",
-   "text": "the reduced solve takes $0.75$--$2.0$~ms",
+   "text": "validation queries: the reduced solve takes $0.7$--$2.0$~ms",
    "json": "E1.json",
    "path": "timing/per_rank/8/reduced_solve",
-   "value": "0.75",
+   "value": "0.7",
    "tol": "round",
-   "note": "E1.json (Phase 3 idle rerun): 0.733-1.971 ms; Section 4.4 quotes N1024.json: 0.72-1.92 ms ('0.7-1.9')"
+   "note": "E1.json (Phase 3 idle rerun): 0.733-1.971 ms"
   },
   {
    "id": "s57_solve_hi",
    "section": "5.7",
-   "text": "the reduced solve takes $0.75$--$2.0$~ms",
+   "text": "validation queries: the reduced solve takes $0.7$--$2.0$~ms",
    "json": "E1.json",
    "path": "timing/per_rank/128/reduced_solve",
    "value": "2.0",
@@ -1549,7 +1755,7 @@
   {
    "id": "s57_cert_lo",
    "section": "5.7",
-   "text": "the reduced certificate $2.9$--$8.2$~ms for\n$r=8$--$128$",
+   "text": "the reduced certificate $2.9$--$8.3$~ms for\n$r=8$--$128$",
    "json": "E1.json",
    "path": "timing/per_rank/8/reduced_certificate",
    "value": "2.9",
@@ -1558,12 +1764,12 @@
   {
    "id": "s57_cert_hi",
    "section": "5.7",
-   "text": "the reduced certificate $2.9$--$8.2$~ms for\n$r=8$--$128$",
+   "text": "the reduced certificate $2.9$--$8.3$~ms for\n$r=8$--$128$",
    "json": "E1.json",
    "path": "timing/per_rank/128/reduced_certificate",
-   "value": "8.2",
+   "value": "8.3",
    "tol": "round",
-   "note": "8.28 ms in E1.json; 8.23 ms in N1024.json (Section 4.4)"
+   "note": "8.28 ms"
   },
   {
    "id": "s57_154",
@@ -1620,14 +1826,14 @@
    "tol": "round"
   },
   {
-   "id": "s58_direct_cold_370",
+   "id": "s58_direct_cold_337",
    "section": "5.8",
-   "text": "$370$~ms cold)",
+   "text": "$337$~ms cold)",
    "json": "E2.json",
    "expr": "J['bench']['per_setup']['cold']['summary']['direct']['median_time_ms']",
-   "value": "370",
+   "value": "337",
    "tol": "round",
-   "note": "E2 cold setup on bench120: 337 ms; 370 ms is the E1 timing value on validation30[1:11] (E1.json timing/direct_ms/direct_cold = 369.9)"
+   "note": "E2 cold setup on bench120 (Figure 6 quotes the E1 timing value on validation30[1:11], 370 ms)"
   },
   {
    "id": "s58_cert_6.0",
@@ -1684,14 +1890,14 @@
    "tol": "round"
   },
   {
-   "id": "s58_fine_2.87",
+   "id": "s58_fine_2.92",
    "section": "5.8",
-   "text": "make the certified solve $2.87$\ntimes the uncertified one",
+   "text": "make the certified solve $2.92$\ntimes the uncertified one",
    "json": "E2_dryrun_fine_spectral.json",
    "path": "bench/per_setup/reusable/summary/direct_banded/ratio_to_direct/geo_mean_ratio",
-   "value": "2.87",
+   "value": "2.92",
    "tol": "round",
-   "note": "the dry run with the fine spectral data: geometric-mean ratio 2.92 (CI 2.88-2.96), ratio of medians 2.91; 2.87 appears in PHASE3_REPORT.md / NOTES_FOR_PAPER.md item 29 but in no result file"
+   "note": "the dry run with the fine spectral data: geometric-mean ratio (CI 2.88-2.96)"
   },
   {
    "id": "s58_1012",
@@ -1953,14 +2159,14 @@
    "tol": "abs:0"
   },
   {
-   "id": "s59_eff_ten",
+   "id": "s59_eff_6.3",
    "section": "5.9",
-   "text": "from the effectivity of about ten",
+   "text": "from the effectivity of the exact certificate (median $6.3$)",
    "json": "E3.json",
    "expr": "float(np.median([r['cands']['podg80']['bounds']['exact'] / r['cands']['podg80']['true_err'] for r in J['rows']]))",
-   "value": "10",
-   "tol": 0.3,
-   "note": "median effectivity of the exact certificate for r = 80 over the 264 OOD queries: 6.3"
+   "value": "6.3",
+   "tol": "round",
+   "note": "median effectivity of the exact certificate for r = 80 over the 264 OOD queries"
   },
   {
    "id": "s59_discards_210",
@@ -2251,51 +2457,96 @@
    "tol": "abs:0"
   },
   {
-   "id": "srep_tests66",
+   "id": "srep_tests67",
    "section": "5.10 reproducibility",
-   "text": "its test suite (66 tests,",
+   "text": "its test suite (67 tests,",
    "json": "ARCHIVE_CHECK.json",
    "expr": "sum(int(n) for n in re.findall(r'(\\d+) (?:passed|skipped|failed|xfailed|xpassed)', J['steps']['pytest_quick']['tail'].splitlines()[-1]))",
-   "value": 66,
+   "value": 67,
    "tol": "abs:0",
-   "note": "the clean-clone run collects 67 tests (51 passed, 16 skipped without data/)"
+   "note": "tests collected by the clean-clone run (51 passed, 16 skipped without data/)"
   },
   {
    "id": "srep_459",
    "section": "5.10 reproducibility",
    "text": "the 459-coordinate\nregression against the earlier implementation",
    "json": null,
+   "file": "tests/fixtures/queries.json",
+   "kind": "source-backed",
+   "path": "populations/audit459/@len",
    "value": 459,
+   "tol": "abs:0",
+   "note": "the audit459 population of the query fixture (tests/test_symbols.py::test_legacy_regression_audit459 runs it against v8's positivity.csv)"
+  },
+  {
+   "id": "srep_27GB",
+   "section": "5.10 reproducibility",
+   "text": "network checkpoints; 27~GB)",
+   "json": "MANIFEST.json",
+   "expr": "J['excluded']['total_bytes'] / 2 ** 30",
+   "value": "27",
    "tol": "round",
-   "note": "tests/test_v8_regression*.py against v8_frozen; no result file"
+   "note": "29.0e9 bytes = 27.05 GiB (the text's GB is binary; 29 GB decimal)"
+  },
+  {
+   "id": "srep_tables_identical",
+   "section": "5.10 reproducibility",
+   "text": "A clean clone rebuilds every table byte-identically",
+   "json": "ARCHIVE_CHECK.json",
+   "expr": "float(J['all_tables_identical'] and J['recheck']['all_tables_identical'] and J['build_only_check']['all_tables_identical'])",
+   "value": 1,
+   "tol": "abs:0",
+   "note": "first clean-clone check, the recheck and the build-only check of follow-up 1"
+  },
+  {
+   "id": "srep_figures_identical",
+   "section": "5.10 reproducibility",
+   "text": "and every figure\npixel-identically from the result files",
+   "json": "ARCHIVE_CHECK.json",
+   "expr": "float(J['all_figures_pixel_identical'] and J['recheck']['all_figures_pixel_identical'] and J['build_only_check']['all_figures_pixel_identical'])",
+   "value": 1,
+   "tol": "abs:0"
+  },
+  {
+   "id": "srep_32min",
+   "section": "5.10 reproducibility",
+   "text": "in 32 minutes on one core",
+   "json": "ARCHIVE_CHECK.json",
+   "expr": "J['steps']['run_E0']['wall_s'] / 60",
+   "value": "32",
+   "tol": "round",
+   "note": "run_E0.py --nproc 1 in the clean clone: 1930 s"
   },
   {
    "id": "s6_audit459",
    "section": "6",
    "text": "an audit of 459 parameter points",
    "json": null,
+   "file": "tests/fixtures/queries.json",
+   "kind": "source-backed",
+   "path": "populations/audit459/@len",
    "value": 459,
-   "tol": "round",
-   "note": "the v8 audit (v8_frozen); no v9 result file"
+   "tol": "abs:0",
+   "note": "the v8 audit population (query fixture)"
   },
   {
    "id": "s6_frac_lo",
    "section": "6",
-   "text": "$5$--$6\\%$ of the direct solve at every resolution\ntested",
+   "text": "about $5\\%$ of the direct solve at every resolution tested",
    "json": "E2.json",
    "expr": "min(v['ratio_cert_over_solve'] for v in J['refine']['per_N'].values()) * 100",
    "value": "5",
-   "tol": "round",
+   "tol": "abs:1",
    "note": "4.45-5.60% (Section 5.8 says 4.5-5.6%)"
   },
   {
    "id": "s6_frac_hi",
    "section": "6",
-   "text": "$5$--$6\\%$ of the direct solve at every resolution\ntested",
+   "text": "about $5\\%$ of the direct solve at every resolution tested",
    "json": "E2.json",
    "expr": "max(v['ratio_cert_over_solve'] for v in J['refine']['per_N'].values()) * 100",
-   "value": "6",
-   "tol": "round"
+   "value": "5",
+   "tol": "abs:1"
   },
   {
    "id": "s6_0.03",
@@ -2316,15 +2567,15 @@
    "tol": "round"
   },
   {
-   "id": "s6_factor47",
+   "id": "s6_factor46",
    "section": "6",
-   "text": "comes within a factor\n$47$ of the tolerance",
+   "text": "comes within a factor $46$ of the tolerance",
    "json": "E2_4_podnn_N1024.json",
    "expr": "min(J['results'][k]['summary']['exact_AI']['median'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)]) / R('PRODUCTION_CONFIG.json')['eps_N']",
-   "value": "47",
+   "value": "46",
    "tol": "round",
    "rel": "ge",
-   "note": "as in the abstract: 'no network comes within a factor 47' requires every network >= 47; seed 2 of the space-time POD-NN is at 46.0 eps_N"
+   "note": "as in the abstract: the smallest network bound is 45.98 eps_N (space-time seed 2)"
   },
   {
    "id": "s6_basis_3e-3",
@@ -2339,8 +2590,8 @@
    "id": "s6_rank56",
    "section": "6",
    "text": "passes at rank $56$--$64$",
-   "json": "N1024.json",
-   "expr": "min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if J['table_ext']['800']['summary'][r]['exact_AI']['accepted'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]] > 0)",
+   "json": "E1.json",
+   "expr": "min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if J['eval']['summary']['pod_galerkin_r' + r + '_n800']['exact']['accepted']['0.001185'] > 0)",
    "value": 56,
    "tol": "abs:0"
   },
@@ -2348,39 +2599,67 @@
    "id": "s6_rank64",
    "section": "6",
    "text": "passes at rank $56$--$64$",
-   "json": "N1024.json",
-   "expr": "max(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if min(J['table_ext']['800']['summary'][r][c]['accepted'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]] for c in ('reduced', 'banded_AI', 'exact_AI')) < 30)",
+   "json": "E1.json",
+   "expr": "max(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if min(J['eval']['summary']['pod_galerkin_r' + r + '_n800'][c]['accepted']['0.001185'] for c in ('reduced', 'banded', 'exact')) < 30)",
    "value": 64,
    "tol": "abs:0",
    "note": "read as the band from the first acceptance (r = 56, exact) to the last rank with a rejection (r = 64, reduced 26/30)"
   },
   {
-   "id": "s6_no_fa_1e4",
+   "id": "s6_150",
    "section": "6",
-   "text": "no false accept in $10^4$ in-box",
-   "json": null,
-   "value": "1e4",
-   "tol": "round",
-   "note": "see abs_no_fa_1e4"
+   "text": "no false accept on any of the $150$\nin-box and $264$ out-of-box queries with a reference solution",
+   "json": "E1.json",
+   "expr": "len(J['eval']['rows']['pod_galerkin_r64_n800']) + R('E2.json')['bench']['per_setup']['reusable']['summary']['direct']['ratio_to_direct']['n_queries']",
+   "value": 150,
+   "tol": "abs:0",
+   "note": "validation30 (E1.json) + bench120 (E2.json)"
   },
   {
-   "id": "s6_no_fa_264",
+   "id": "s6_264",
    "section": "6",
-   "text": "and\n$264$ out-of-box queries",
+   "text": "no false accept on any of the $150$\nin-box and $264$ out-of-box queries with a reference solution",
    "json": "E3.json",
-   "expr": "sum(sum(v[c]['false_accepts'].values()) for v in J['summary']['per_candidate'].values() for c in ('reduced', 'banded', 'exact')) + sum(sum(v['three_stage_false_accepts'].values()) for v in J['summary']['per_candidate'].values()) + 264",
+   "path": "setup/n_queries",
    "value": 264,
+   "tol": "abs:0"
+  },
+  {
+   "id": "s6_no_fa",
+   "section": "6",
+   "text": "no false accept on any of the $150$\nin-box and $264$ out-of-box queries with a reference solution",
+   "json": "E1.json",
+   "expr": "sum(sum(v[c]['false_accepts'].values()) for v in J['eval']['summary'].values() for c in ('reduced', 'banded', 'exact')) + sum(v.get('false_accepts', 0) for s in R('E2.json')['bench']['per_setup'].values() for v in s['summary'].values()) + sum(sum(v[c]['false_accepts'].values()) for v in R('E3.json')['summary']['per_candidate'].values() for c in ('reduced', 'banded', 'exact')) + sum(sum(v['three_stage_false_accepts'].values()) for v in R('E3.json')['summary']['per_candidate'].values())",
+   "value": 0,
    "tol": "abs:0",
-   "note": "264 queries with zero false accepts"
+   "note": "false accepts in E1 + E2 + E3 (each zero: claims abs_fa_E1/E2/E3)"
   },
   {
    "id": "s6_92",
    "section": "6",
-   "text": "the same certificate accepts $92\\%$ of the queries on which the reduced\nmodel still delivers one cent",
+   "text": "the same certificate accepts $92\\%$ ($193$ of $210$) of the queries on which the reduced\nmodel still delivers one cent",
    "json": "E3.json",
    "expr": "J['breakdown']['per_candidate']['podg80']['all']['exact_accepts'] / J['breakdown']['per_candidate']['podg80']['all']['n_true_err_le_eps_N'] * 100",
    "value": "92",
    "tol": "round"
+  },
+  {
+   "id": "s6_193",
+   "section": "6",
+   "text": "the same certificate accepts $92\\%$ ($193$ of $210$) of the queries on which the reduced\nmodel still delivers one cent",
+   "json": "E3.json",
+   "expr": "J['breakdown']['per_candidate']['podg80']['all']['exact_accepts']",
+   "value": 193,
+   "tol": "abs:0"
+  },
+  {
+   "id": "s6_210",
+   "section": "6",
+   "text": "the same certificate accepts $92\\%$ ($193$ of $210$) of the queries on which the reduced\nmodel still delivers one cent",
+   "json": "E3.json",
+   "expr": "J['breakdown']['per_candidate']['podg80']['all']['n_true_err_le_eps_N']",
+   "value": 210,
+   "tol": "abs:0"
   },
   {
    "id": "s6_N1024",
@@ -2409,7 +2688,7 @@
    "path": "c1_provable",
    "value": "5.1e-5",
    "tol": "round",
-   "note": "coercivity_c1_provable.json (Phase 1, the provable constant of the explicit argument) gives 3.06e-5 at (C, G, M, Y, r) = (0.05, 5, 9, 1.8, 0.01)"
+   "note": "the bound of Appendix A.1, eq. (c1-explicit), low-frequency branch at Y = 1.8 (scripts/coercivity_constant_provable.py, paper-side bundle)"
   },
   {
    "id": "th_c1_v8",
@@ -2430,13 +2709,54 @@
    "tol": "round"
   },
   {
-   "id": "th_eim_1e-4",
+   "id": "th_eim_med",
    "section": "theory",
-   "text": "it reaches $10^{-4}$ in the\n$M_I$ norm at $N=512$",
+   "text": "its time-accumulated size at\n$N=512$ with $Q=29$ is $7\\times10^{-5}$ (median) to $4\\times10^{-4}$ (maximum)",
    "json": null,
-   "value": "1e-4",
+   "file": "results/NOTES_FOR_PAPER.md",
+   "regex": "Q = 29: median ([0-9.e-]+), max",
+   "kind": "source-backed",
+   "attention": "no result file holds the allowance sizes of this remark (not E2_3_reduced_cert.json, not eim.json, nor any other results/*.json); their only record is NOTES_FOR_PAPER.md item 10. Reword, or regenerate them into a result file",
+   "value": "7e-5",
    "tol": "round",
-   "note": "order-of-magnitude estimate in the remark; no result file evaluates the allowance at N = 512 for this purpose"
+   "note": "NOTES_FOR_PAPER.md item 10 (Phase 2 follow-up 3): validation30, eps_Q on the N-independent nodes, Q = 29: median 6.8e-5, max 4.3e-4; Q = 37: median 4.0e-7, max 3.9e-6"
+  },
+  {
+   "id": "th_eim_max",
+   "section": "theory",
+   "text": "its time-accumulated size at\n$N=512$ with $Q=29$ is $7\\times10^{-5}$ (median) to $4\\times10^{-4}$ (maximum)",
+   "json": null,
+   "file": "results/NOTES_FOR_PAPER.md",
+   "regex": "Q = 29: median [0-9.e-]+, max ([0-9.e-]+);",
+   "kind": "source-backed",
+   "attention": "no result file holds the allowance sizes of this remark (not E2_3_reduced_cert.json, not eim.json, nor any other results/*.json); their only record is NOTES_FOR_PAPER.md item 10. Reword, or regenerate them into a result file",
+   "value": "4e-4",
+   "tol": "round",
+   "note": "NOTES_FOR_PAPER.md item 10 (Phase 2 follow-up 3): validation30, eps_Q on the N-independent nodes, Q = 29: median 6.8e-5, max 4.3e-4; Q = 37: median 4.0e-7, max 3.9e-6"
+  },
+  {
+   "id": "th_eim_Q29",
+   "section": "theory",
+   "text": "its time-accumulated size at\n$N=512$ with $Q=29$ is $7\\times10^{-5}$ (median) to $4\\times10^{-4}$ (maximum)",
+   "json": "E2_3_reduced_cert.json",
+   "path": "build/800/Q",
+   "value": 29,
+   "tol": "abs:0",
+   "note": "the N = 512 reduced certificate of Phase 2 item 2.3"
+  },
+  {
+   "id": "th_eim_Q37",
+   "section": "theory",
+   "text": "and drops below\n$4\\times10^{-6}$ with $Q=37$",
+   "json": null,
+   "file": "results/NOTES_FOR_PAPER.md",
+   "regex": "Q = 37: median [0-9.e-]+, max ([0-9.e-]+)\\.",
+   "kind": "source-backed",
+   "attention": "no result file holds the allowance sizes of this remark (not E2_3_reduced_cert.json, not eim.json, nor any other results/*.json); their only record is NOTES_FOR_PAPER.md item 10. Reword, or regenerate them into a result file",
+   "value": "4e-6",
+   "tol": "abs:0",
+   "rel": "le",
+   "note": "NOTES_FOR_PAPER.md item 10 (Phase 2 follow-up 3): validation30, eps_Q on the N-independent nodes, Q = 29: median 6.8e-5, max 4.3e-4; Q = 37: median 4.0e-7, max 3.9e-6"
   },
   {
    "id": "th_eim_0.99",

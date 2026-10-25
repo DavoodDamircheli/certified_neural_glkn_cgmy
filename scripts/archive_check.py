@@ -5,7 +5,9 @@
   2. bash build.sh; compare every regenerated table with the committed one (byte-identical) and every PNG with the
      committed PNG (identical pixel arrays via numpy)
   3. python3 scripts/run_E0.py --nproc 1 end to end, then CGMY_FULL_TESTS=0 python3 -m pytest tests -q; wall times
-Usage: python3 scripts/archive_check.py [--workdir DIR] [--skip-e0]
+With --build-only, steps 1-2 only; the result is merged into the existing ARCHIVE_CHECK.json under "build_only_check"
+(the earlier wall times of run_E0.py and the tests are kept).
+Usage: python3 scripts/archive_check.py [--workdir DIR] [--skip-e0 | --build-only]
 """
 from __future__ import annotations
 
@@ -37,6 +39,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--workdir", default=None)
     ap.add_argument("--skip-e0", action="store_true", help="skip run_E0.py (the quick tests still run)")
+    ap.add_argument("--build-only", action="store_true",
+                    help="clean clone + build.sh + diff only; merged into the result file as build_only_check")
     ap.add_argument("--out", default=None, help="result file (default results/ARCHIVE_CHECK.json)")
     a = ap.parse_args()
     out = Path(a.out) if a.out else OUT
@@ -76,6 +80,19 @@ def main():
     res["all_figures_pixel_identical"] = all(v["pixel_identical"] for v in cmp_.values() if v["kind"] == "figure")
     res["n_tables"] = sum(v["kind"] == "table" for v in cmp_.values())
     res["n_figures"] = sum(v["kind"] == "figure" for v in cmp_.values())
+    if a.build_only:
+        prev = json.loads(out.read_text())
+        prev["build_only_check"] = dict(
+            note="clean clone + venv + build.sh + diff (no run_E0.py, no tests; their wall times above are kept)",
+            clone_commit=res["clone_commit"], started=res["started"], finished=time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+            all_tables_identical=res["all_tables_identical"], all_figures_pixel_identical=res["all_figures_pixel_identical"],
+            n_tables=res["n_tables"], n_figures=res["n_figures"],
+            wall_s={k: v["wall_s"] for k, v in res["steps"].items()}, returncodes={k: v["returncode"] for k, v in res["steps"].items()},
+            comparison=cmp_)
+        out.write_text(json.dumps(prev, indent=1))
+        print("build:", res["steps"]["build"]["returncode"], "tables identical:", res["all_tables_identical"],
+              "figures pixel-identical:", res["all_figures_pixel_identical"], f"({res['n_tables']} tables, {res['n_figures']} figures)")
+        return
     out.write_text(json.dumps(res, indent=1))
     print("build:", res["steps"]["build"]["returncode"], "tables identical:", res["all_tables_identical"],
           "figures pixel-identical:", res["all_figures_pixel_identical"], flush=True)
