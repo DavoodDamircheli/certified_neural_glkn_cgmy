@@ -821,7 +821,7 @@
   {
    "id": "s51_calib_spots",
    "section": "5.1",
-   "text": "five spots $0.8K,\\dots,1.2K$",
+   "text": "five spots $0.8\\mathcal K,\\dots,1.2\\mathcal K$",
    "json": "E3_1_calibration.json",
    "expr": "len(J['meta']['spots'])",
    "value": 5,
@@ -1650,6 +1650,27 @@
    "value": "49",
    "tol": "round",
    "note": "median exact bound / eps_N per seed: 49.1, 47.2, 46.0"
+  },
+  {
+   "id": "s57_gap_46",
+   "section": "5.7",
+   "text": "longer training cannot close a gap of\n$46$--$1000$",
+   "json": "E2_4_podnn_N1024.json",
+   "expr": "min(J['results'][k]['summary']['exact_AI']['median'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)]) / R('PRODUCTION_CONFIG.json')['eps_N']",
+   "value": "46",
+   "tol": "round",
+   "rel": "ge",
+   "note": "lower end: smallest median exact bound / eps_N of the three space-time seeds (45.98); the text said 47 before the editorial pass"
+  },
+  {
+   "id": "s57_gap_1000",
+   "section": "5.7",
+   "text": "longer training cannot close a gap of\n$46$--$1000$",
+   "json": "E1.json",
+   "expr": "J['selection']['per_setting']['podnn|n4000']['bound_selected']['median_exact'] / R('PRODUCTION_CONFIG.json')['eps_N']",
+   "value": "1e3",
+   "tol": 0.1,
+   "note": "upper end: the bound-selected plain POD-NN, as s57_best_1e3"
   },
   {
    "id": "s57_lam0_err",
@@ -2776,7 +2797,7 @@
   {
    "id": "th_eim_Q37",
    "section": "theory",
-   "text": "and drops to\n$3.9\\times10^{-6}$ with $Q=37$",
+   "text": "its maximum drops to\n$3.9\\times10^{-6}$ with $Q=37$",
    "json": null,
    "file": "results/NOTES_FOR_PAPER.md",
    "regex": "Q = 37: median [0-9.e-]+, max ([0-9.e-]+)\\.",

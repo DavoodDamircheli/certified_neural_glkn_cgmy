@@ -518,3 +518,14 @@ projection of the references. Not evaluated further.
 * **Remark 4.3 allowance sizes:** no result-file record exists (`E2_3_reduced_cert.json` has no allowance field and
   holds only Q = 29; `run_reduced_cert_v2.log` does not print them). The claims keep `NOTES_FOR_PAPER.md` item 10 as
   their source. The text's Q = 37 value (3.9e-6) is the maximum in that note, not the median (4.0e-7).
+
+# Phase 4 follow-up 3
+
+* **Bundle 3** committed unchanged as 374f65e, including the paper-side edits of `run_E0.plot_e01` and
+  `run_E3_1.do_table` and the two tables they write; `bash build.sh` reproduces both tables byte-identically and leaves
+  every other table and figure unchanged. The bundle's copy of the brief (`CLAUDE_PHASE4_followup_3.md`, identical to
+  the one supplied) stays untracked like the earlier briefs; `MANUSCRIPT_STATUS.md` is committed.
+* **Claims:** `s51_calib_spots` and `th_eim_Q37` re-pointed to the new wording (values unchanged). No claim quoted the
+  renamed status names in `prop_twostage.tex` / `prop_threestage.tex` or the online-rule figure, so none needed
+  re-pointing. The Section 5.7 sentence "a gap of $46$--$1000$" (was 47) had no claim; two are added (`s57_gap_46`,
+  `s57_gap_1000`, from the same paths as `abs_factor46` and `s57_best_1e3`). 296 claims, 296 pass.

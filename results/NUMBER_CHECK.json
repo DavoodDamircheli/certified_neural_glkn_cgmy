@@ -1,7 +1,7 @@
 {
- "n": 294,
+ "n": 296,
  "n_fail": 0,
- "manuscript_commit": "e8cc432",
+ "manuscript_commit": "374f65e",
  "n_source_backed": 14,
  "n_fail_by_kind": {
   "substantive": 0,
@@ -1632,7 +1632,7 @@
    "kind": null,
    "evidence": "result file",
    "attention": "",
-   "text": "five spots $0.8K,\\dots,1.2K$",
+   "text": "five spots $0.8\\mathcal K,\\dots,1.2\\mathcal K$",
    "stated": 5.0,
    "json_value": 5.0,
    "rel": "eq",
@@ -3276,6 +3276,44 @@
     "manuscript_v9/main_v9.tex"
    ],
    "note": "median exact bound / eps_N per seed: 49.1, 47.2, 46.0",
+   "error": null
+  },
+  {
+   "id": "s57_gap_46",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "evidence": "result file",
+   "attention": "",
+   "text": "longer training cannot close a gap of\n$46$--$1000$",
+   "stated": 46.0,
+   "json_value": 45.97773494849992,
+   "rel": "ge",
+   "tol": "round",
+   "source": "E2_4_podnn_N1024.json: min(J['results'][k]['summary']['exact_AI']['median'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)]) / R('PRODUCTION_CONFIG.json')['eps_N']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "lower end: smallest median exact bound / eps_N of the three space-time seeds (45.98); the text said 47 before the editorial pass",
+   "error": null
+  },
+  {
+   "id": "s57_gap_1000",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "evidence": "result file",
+   "attention": "",
+   "text": "longer training cannot close a gap of\n$46$--$1000$",
+   "stated": 1000.0,
+   "json_value": 1066.9438170394699,
+   "rel": "eq",
+   "tol": 0.1,
+   "source": "E1.json: J['selection']['per_setting']['podnn|n4000']['bound_selected']['median_exact'] / R('PRODUCTION_CONFIG.json')['eps_N']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "upper end: the bound-selected plain POD-NN, as s57_best_1e3",
    "error": null
   },
   {
@@ -5565,7 +5603,7 @@
    "kind": null,
    "evidence": "source-backed",
    "attention": "",
-   "text": "and drops to\n$3.9\\times10^{-6}$ with $Q=37$",
+   "text": "its maximum drops to\n$3.9\\times10^{-6}$ with $Q=37$",
    "stated": 3.9e-06,
    "json_value": 3.9e-06,
    "rel": "eq",
