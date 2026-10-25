@@ -222,3 +222,6 @@ Each claim names its result file and path. Regenerate with
   * `phase4_archive_20261025_final.zip`: about 5.6 MB, 197 files, built by `scripts/make_phase4_zip.py --suffix _final`.
     No data files and no checkpoints.
   * Tag `v9-archive`, moved with `git tag -f` to the commit that adds this addendum. Nothing was pushed.
+
+**Addendum, follow-up 2.** The manuscript was checked at `e8cc432`; claims, code and the build-only clean clone at `7a32779` (9 tables byte-identical, 10 figures pixel-identical). 294 claims: 294 pass (280 from result files, 14 source-backed), 0 fail, and `check_numbers.py` exits with code 0.
+The Figure 6 (F5c, not F6a) legend now reads E2.json (337 ms cold, 259 ms reusable), checked by two claims. The Remark 4.3 allowance sizes have no result-file record and stay note-backed (NOTES_FOR_PAPER item 10); details are in DEVIATIONS.md.

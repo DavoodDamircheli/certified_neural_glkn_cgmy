@@ -247,18 +247,18 @@
  },
  "build_only_check": {
   "note": "clean clone + venv + build.sh + diff (no run_E0.py, no tests; their wall times above are kept)",
-  "clone_commit": "830aede38967e99c65e89ee66e7fa9e29413c52c",
-  "started": "2026-10-25T14:14:43-0500",
-  "finished": "2026-10-25T14:15:07-0500",
+  "clone_commit": "7a32779201affc08ef478f7e239a074ff5113a8d",
+  "started": "2026-10-25T14:31:00-0500",
+  "finished": "2026-10-25T14:31:24-0500",
   "all_tables_identical": true,
   "all_figures_pixel_identical": true,
   "n_tables": 9,
   "n_figures": 10,
   "wall_s": {
-   "clone": 0.24615740776062012,
-   "venv": 1.139922857284546,
-   "pip_install": 17.51918888092041,
-   "build": 4.4369423389434814
+   "clone": 0.1872849464416504,
+   "venv": 1.1278076171875,
+   "pip_install": 17.100611209869385,
+   "build": 4.39877986907959
   },
   "returncodes": {
    "clone": 0,
