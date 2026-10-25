@@ -31,7 +31,7 @@ def steps():
         ("tables_v9/tab_budget_v9.tex", lambda: run_E3_1.do_table(js("E3_1_calibration.json"))),
         ("tables_v9/tab_cost_v9.tex", lambda: run_cost_model.write_table(js("cost_model.json"))),
         ("figures_v9/F5a_acceptance", lambda: _f5a(fig_F5a)),
-        ("figures_v9/F5b, F5c, tables_v9/tab_pod_ranks_v9.tex", lambda: run_E1.do_figs(js("E1.json"))),
+        ("figures_v9/F5b, F5c", lambda: run_E1.do_figs(js("E1.json"))),
         ("figures_v9/F6a, F6b, tables_v9/tab_benchmark_v9.tex", lambda: run_E2.do_figs(js("E2.json"))),
         ("figures_v9/F7_ood", lambda: run_E3.do_fig(js("E3.json"))),
         ("tables_v9/tab_ood_v9.tex", lambda: run_E3.do_table_ood(js("E3.json"))),

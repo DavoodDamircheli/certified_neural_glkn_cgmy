@@ -12,7 +12,7 @@ Steps
   select   POD-NN bound-selected and error-selected checkpoint per setting (size, representation)
   timing   F5c data: online solve, reduced certificate and three-stage total at eps_N per rank, and the uncertified
            direct solve at N = 1024 (timing protocol, one performance core, idle machine)
-  figs     F5a (update), F5b, F5c; tables_v9/tab_pod_ranks_v9.tex
+  figs     F5a (update), F5b, F5c (tables_v9/tab_pod_ranks_v9.tex: scripts/make_tables_phase2.py)
 Writes results/E1.json.
 """
 from __future__ import annotations
@@ -390,26 +390,8 @@ def do_figs(res):
         for sp in ("top", "right"):
             a.spines[sp].set_visible(False)
         fig.tight_layout(); save_fig(fig, FIG / "F5c_online_time.png"); plt.close(fig)
-    # ---- table of ranks
-    lines = [r"\begin{table}[!htbp]", r"\centering\small",
-             r"\caption{POD-Galerkin on validation30 at $N=1024$ (basis 800): median true error, accepted queries (of 30) at "
-             r"$\varepsilon_N$ under the reduced / banded / exact certificates, three-stage outcome (reduced accept / reject at "
-             r"the reduced stage / banded / exact), and median effectivities.}", r"\label{tab:pod_ranks}",
-             r"\begin{tabular}{rrcccrrr}", r"\toprule",
-             r"$r$ & true error & accepted (red/band/ex) & three-stage & & $\mathrm{eff}_{\mathrm{red}}$ & "
-             r"$\mathrm{eff}_{\mathrm{band}}$ & $\mathrm{eff}_{\mathrm{ex}}$\\", r"\midrule"]
-    for r in RANKS:
-        s = summ[f"pod_galerkin_r{r}_n800"]; ts = s["three_stage"][kN]
-        lines.append(f"{r} & ${s['median_true_err']:.1e}$ & {s['reduced']['accepted'][kN]}/{s['banded']['accepted'][kN]}/"
-                     f"{s['exact']['accepted'][kN]} & {ts['reduced_accept']}/{ts['reject_cheap']}/"
-                     f"{ts['banded_accept'] + ts['reject_banded']}/{ts['exact_accept'] + ts['exact_reject']} & & "
-                     f"{s['reduced']['median_effectivity']:.1f} & {s['banded']['median_effectivity']:.1f} & "
-                     f"{s['exact']['median_effectivity']:.1f}\\\\")
-    lines += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
-    # tab_pod_ranks_v9.tex is written by scripts/make_tables_phase2.py (the manuscript's layout); this E1 variant is kept
-    # under its own name
-    (TAB / "tab_pod_ranks_E1_v9.tex").write_text("\n".join(lines) + "\n")
-    print("figures and table written", flush=True)
+    # tables_v9/tab_pod_ranks_v9.tex is written by scripts/make_tables_phase2.py alone (from E1.json)
+    print("figures written", flush=True)
 
 
 def main():

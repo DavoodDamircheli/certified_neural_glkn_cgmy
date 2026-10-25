@@ -62,7 +62,7 @@ query populations; neither has a result file).
 | Fig. 4 (fig:theta) | `figures_v9/F3_theta_and_effectivity` | `E0.json` (E0.3) | `run_E0.py E0.3` | `run_E0.plot_e03` |
 | Table 4 (tab:pcg-v9) | `tables_v9/tab_pcg_v9.tex` | `E0.json` (E0.4) | `run_E0.py E0.4` | `run_E0.plot_e04` |
 | Table 5 (tab:budget) | `tables_v9/tab_budget_v9.tex` | `E3_1_calibration.json` | `run_E3_1.py` | `run_E3_1.do_table` |
-| Table 6 (tab:pod-ranks) | `tables_v9/tab_pod_ranks_v9.tex` | `N1024.json` (table_ext) | `run_N1024.py table_ext` | `make_tables_phase2.py` |
+| Table 6 (tab:pod-ranks) | `tables_v9/tab_pod_ranks_v9.tex` | `E1.json` (eval summary) | `run_E1.py eval` | `make_tables_phase2.py` (only writer) |
 | Fig. 5 (fig:acceptance) | `figures_v9/F5a_acceptance` | `E1.json` | `run_E1.py eval select` | `fig_F5a.main` |
 | Table 7 (tab:podnn) | `tables_v9/tab_podnn_v9.tex` | `E2_4_podnn_N1024.json` | `eval_podnn.py` (via `sweep_N1024.py`) | `make_tables_phase2.py` |
 | Table 8 (tab:training) | `tables_v9/tab_training_v9.tex` | `training_log.json` | `train_podnn.py` (via `sweep_N1024.py`) | `make_tables_phase2.py` |
@@ -73,7 +73,7 @@ query populations; neither has a result file).
 | Table 11 (tab:ood) | `tables_v9/tab_ood_v9.tex` | `E3.json` (summary, breakdown) | `run_E3.py run summary breakdown` | `run_E3.do_table_ood` |
 | Fig. 8 (fig:ood) | `figures_v9/F7_ood` | `E3.json`, `E1.json` | `run_E3.py run summary` | `run_E3.do_fig` |
 | Fig. 9 (fig:amortisation) | `figures_v9/F8_amortisation` | `E4.json`, `E4_progress.json` | `run_E4.py run summary` | `run_E4.plot_f8` |
-| not in the paper | `figures_v9/F5b_effectivity`, `tables_v9/tab_pod_ranks_E1_v9.tex` | `E1.json` | `run_E1.py eval` | `run_E1.do_figs` |
+| not in the paper | `figures_v9/F5b_effectivity` | `E1.json` | `run_E1.py eval` | `run_E1.do_figs` |
 
 Numbers in the text: `results/paper_claims.json` lists each one with its result file and path (written by
 `scripts/make_paper_claims.py`); `python3 scripts/check_numbers.py` checks them and writes `results/NUMBER_CHECK.md`.

@@ -490,3 +490,16 @@ projection of the references. Not evaluated further.
 * **The `manuscript_v9/` in the repository is the Phase 1 skeleton**, not the paper-editing copy the brief assumes, and
   `scripts/make_tables_phase2.py` does not exist. Item 2 (claims) and item 3 (tag, zip) wait for the current
   manuscript.
+
+# Phase 4 follow-up 1
+
+* **Paper-side bundle** committed as fd561a3 ("paper-side corrections after NUMBER_CHECK"); the number check runs
+  against that manuscript state.
+* **One writer per table.** `run_E1.do_figs` no longer writes a table (it keeps F5b/F5c); `tab_pod_ranks_v9.tex` is
+  written only by `scripts/make_tables_phase2.py` (E1-based). `tab_pod_ranks_E1_v9.tex` is deleted. Contrary to the
+  brief, it was not byte-identical to the new `tab_pod_ranks_v9.tex`: same E1 numbers, different caption, label
+  (`tab:pod_ranks`), column order and number format. The manuscript never input it.
+* **`coercivity_constant_provable.py` reproduces the committed JSON to 1 ulp, not byte for byte.** Rerun here (numpy
+  1.26.4): c1_provable = 5.107198991695751e-05 against the committed 5.1071989916957514e-05 (relative 2e-16), and
+  high_branch_min differs in the last digit. The difference is float `pow` rounding. The committed (bundle) JSON is
+  kept unchanged.
