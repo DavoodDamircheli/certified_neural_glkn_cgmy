@@ -503,3 +503,18 @@ projection of the references. Not evaluated further.
   1.26.4): c1_provable = 5.107198991695751e-05 against the committed 5.1071989916957514e-05 (relative 2e-16), and
   high_branch_min differs in the last digit. The difference is float `pow` rounding. The committed (bundle) JSON is
   kept unchanged.
+
+# Phase 4 follow-up 2
+
+* **Bundle 2** committed unchanged as e8cc432. It also carried `tables_v9/tab_pod_ranks_E1_v9.tex` (identical to the
+  file deleted in 770b154). Nothing writes it and the manuscript does not input it, so it is deleted again in the next
+  commit.
+* **The 370 ms legend is in F5c, not F6a.** Manuscript Figure 6 (`fig:online-time`) is `F5c_online_time`, drawn by
+  `run_E1.do_figs`. F6a (Figure 7) prints no direct-solve time. The requested change is therefore made in
+  `run_E1.do_figs`: the dashed direct-solve line and its legend now read the E2 bench120 medians from `E2.json` (337 ms
+  cold, 259 ms reusable setup) through `run_E1.direct_legend_ms`, instead of the E1 timing value (370 ms,
+  validation30[1:11], still stored in `E1.json timing/direct_ms`). F6a is unchanged; F5c is regenerated through
+  `build.sh`. The claims `fig6_legend_cold` / `fig6_legend_reusable` check that the legend values equal the E2 paths.
+* **Remark 4.3 allowance sizes:** no result-file record exists (`E2_3_reduced_cert.json` has no allowance field and
+  holds only Q = 29; `run_reduced_cert_v2.log` does not print them). The claims keep `NOTES_FOR_PAPER.md` item 10 as
+  their source. The text's Q = 37 value (3.9e-6) is the maximum in that note, not the median (4.0e-7).

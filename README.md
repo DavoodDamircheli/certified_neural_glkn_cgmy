@@ -66,7 +66,7 @@ query populations; neither has a result file).
 | Fig. 5 (fig:acceptance) | `figures_v9/F5a_acceptance` | `E1.json` | `run_E1.py eval select` | `fig_F5a.main` |
 | Table 7 (tab:podnn) | `tables_v9/tab_podnn_v9.tex` | `E2_4_podnn_N1024.json` | `eval_podnn.py` (via `sweep_N1024.py`) | `make_tables_phase2.py` |
 | Table 8 (tab:training) | `tables_v9/tab_training_v9.tex` | `training_log.json` | `train_podnn.py` (via `sweep_N1024.py`) | `make_tables_phase2.py` |
-| Fig. 6 (fig:online-time) | `figures_v9/F5c_online_time` | `E1.json` (timing) | `run_E1.py timing` | `run_E1.do_figs` |
+| Fig. 6 (fig:online-time) | `figures_v9/F5c_online_time` | `E1.json` (timing); direct-solve line from `E2.json` (bench, cold + reusable medians) | `run_E1.py timing`, `run_E2.py` | `run_E1.do_figs` |
 | Table 9 (tab:benchmark) | `tables_v9/tab_benchmark_v9.tex` | `E2.json` | `run_E2.py bench` | `run_E2.do_figs` |
 | Table 10 (tab:cost) | `tables_v9/tab_cost_v9.tex` | `cost_model.json` | `run_cost_model.py` | `run_cost_model.write_table` |
 | Fig. 7 (fig:benchmark) | `figures_v9/F6a_benchmark`, `F6b_refinement` | `E2.json` | `run_E2.py bench refine` | `run_E2.do_figs` |

@@ -350,7 +350,15 @@ def do_timing(res, n_q=10, n=800):
 PAL = ["#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7", "#56B4E9"]
 
 
-def do_figs(res):
+def direct_legend_ms(e2=None):
+    """F5c's direct-solve reference: the cold and reusable-setup medians of the E2 benchmark (bench120), the values
+    Section 5.8 and Table 9 quote (the E1 timing's own direct solve, validation30[1:11], stays in E1.json)."""
+    e2 = e2 if e2 is not None else json.loads((RES / "E2.json").read_text())
+    b = e2["bench"]["per_setup"]
+    return b["cold"]["summary"]["direct"]["median_time_ms"], b["reusable"]["summary"]["direct"]["median_time_ms"]
+
+
+def do_figs(res, e2=None):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -382,8 +390,9 @@ def do_figs(res):
         for c, mk, (k, lab) in zip(PAL, "osD", (("reduced_solve", "reduced solve"), ("reduced_certificate", "reduced certificate"),
                                                  ("three_stage_total", f"three-stage total at $\\varepsilon_N$"))):
             a.loglog(rs, [t["per_rank"][str(r)][k] for r in rs], color=c, marker=mk, lw=2, label=lab)
-        a.axhline(t["direct_ms"]["direct_cold"], color="0.3", ls="--", lw=1.2,
-                  label=f"direct solve, uncertified ({t['direct_ms']['direct_cold']:.0f} ms)")
+        cold, reus = direct_legend_ms(e2)
+        a.axhline(cold, color="0.3", ls="--", lw=1.2,
+                  label=f"direct solve, uncertified ({cold:.0f} ms cold, {reus:.0f} ms reusable setup)")
         a.set_xlabel("POD rank r"); a.set_ylabel("online time per query (ms)")
         a.set_title(f"Online cost at N = {N} (one thread, idle machine)", fontsize=9)
         a.legend(fontsize=7, frameon=False); a.grid(alpha=0.25, lw=0.5, which="both")
