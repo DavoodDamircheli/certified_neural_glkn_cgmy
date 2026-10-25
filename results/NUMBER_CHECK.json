@@ -1,0 +1,4500 @@
+{
+ "n": 264,
+ "n_fail": 34,
+ "n_fail_by_kind": {
+  "substantive": 15,
+  "no source": 14,
+  "rounding": 5,
+  "text": 0
+ },
+ "rows": [
+  {
+   "id": "abs_exact_1e-8",
+   "section": "abstract",
+   "status": "PASS",
+   "kind": null,
+   "text": "the assembled system the exact Galerkin system to $10^{-8}$",
+   "stated": 1e-08,
+   "json_value": 4.175346535525877e-09,
+   "rel": "le",
+   "tol": "round",
+   "source": "E0.json: max(r['K100'] for N in J['E0.1'] for r in J['E0.1'][N])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "observed relative operator-norm error at K = 100 over the E0.1 queries (N = 64-512; K100 is stored relative)",
+   "error": null
+  },
+  {
+   "id": "abs_Q36",
+   "section": "abstract",
+   "status": "PASS",
+   "kind": null,
+   "text": "affine in about 36 terms",
+   "stated": 36.0,
+   "json_value": 36.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "N1024.json: eimq/per_target/eps_N/Q_op",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "abs_cert_6pct",
+   "section": "abstract",
+   "status": "PASS",
+   "kind": null,
+   "text": "the full-order certificate costs $6\\%$ of a direct solve",
+   "stated": 6.0,
+   "json_value": 6.000037435756182,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: J['bench']['per_setup']['reusable']['summary']['direct_banded']['certificate_proper_over_solve_median'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "abs_r80_3pct",
+   "section": "abstract",
+   "status": "PASS",
+   "kind": null,
+   "text": "POD--Galerkin model of rank $80$ costs $3\\%$ of it",
+   "stated": 3.0,
+   "json_value": 3.171128001753683,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: J['bench']['per_setup']['reusable']['summary']['podg80@0.001185']['ratio_to_direct']['geo_mean_ratio'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "abs_99.8",
+   "section": "abstract",
+   "status": "PASS",
+   "kind": null,
+   "text": "settles $99.8\\%$ of $10^4$ queries without",
+   "stated": 99.8,
+   "json_value": 99.77000000000001,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: J['methods']['podg80']['status_fractions']['reduced_accept'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "abs_no_fa_1e4",
+   "section": "abstract",
+   "status": "FAIL",
+   "kind": "no source",
+   "text": "no false accept occurs in $10^4$ in-distribution",
+   "stated": 10000.0,
+   "json_value": null,
+   "rel": "eq",
+   "tol": "round",
+   "source": "-",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "E4 (10^4 queries) has no reference solutions (E4.json, Section 5.10 says so); false accepts were checked on 150 in-distribution queries (validation30 in E1.json, bench120 in E2.json) and the 264 OOD queries (E3.json)",
+   "error": null
+  },
+  {
+   "id": "abs_264",
+   "section": "abstract",
+   "status": "PASS",
+   "kind": null,
+   "text": "$264$ out-of-distribution queries",
+   "stated": 264.0,
+   "json_value": 264.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E3.json: setup/n_queries",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "abs_92pct",
+   "section": "abstract",
+   "status": "FAIL",
+   "kind": "substantive",
+   "text": "on $92\\%$ of which the reduced model is still accepted",
+   "stated": 92.0,
+   "json_value": 73.10606060606061,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E3.json: J['breakdown']['per_candidate']['podg80']['all']['exact_accepts'] / J['setup']['n_queries'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "as written, 92% of the 264 OOD queries; the reduced model (r = 80) is accepted on 193/264 = 73%; 92% = 193/210 is the share of the queries on which it is within one cent (Section 5.9 states it that way)",
+   "error": null
+  },
+  {
+   "id": "abs_factor47",
+   "section": "abstract",
+   "status": "FAIL",
+   "kind": "substantive",
+   "text": "fail the one-cent tolerance by a factor of at least $47$",
+   "stated": 47.0,
+   "json_value": 45.97773494849992,
+   "rel": "ge",
+   "tol": "round",
+   "source": "E2_4_podnn_N1024.json: min(J['results'][k]['summary']['exact_AI']['median'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)]) / R('PRODUCTION_CONFIG.json')['eps_N']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "median exact bound / eps_N of the three space-time seeds: 49.1, 47.2, 46.0; the pooled median over the 90 (query, seed) pairs gives 47.5",
+   "error": null
+  },
+  {
+   "id": "s25_alias_1e-18",
+   "section": "2.5",
+   "status": "FAIL",
+   "kind": "no source",
+   "text": "with $L=4N_h$ this is below $10^{-18}$ on the box",
+   "stated": 1e-18,
+   "json_value": null,
+   "rel": "eq",
+   "tol": "round",
+   "source": "-",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "analytic estimate from the strip of analyticity; no result file evaluates the L-aliasing on the box (E3.json aliasing: max relative change 5.5e-16 when L is doubled, a different quantity)",
+   "error": null
+  },
+  {
+   "id": "s25_epsK_5e-9",
+   "section": "2.5",
+   "status": "PASS",
+   "kind": null,
+   "text": "$\\varepsilon_K(\\mu)\\le5\\times10^{-9}\\,\\norm{\\Ah}_2$",
+   "stated": 5e-09,
+   "json_value": 4.787238224037567e-09,
+   "rel": "le",
+   "tol": "round",
+   "source": "E0.json: max(r['eps100'] for N in J['E0.1'] for r in J['E0.1'][N])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "max over the E0.1 queries (N = 64-512); Phase 1 reported 4.8e-9 on the box",
+   "error": null
+  },
+  {
+   "id": "s25_pp_lo",
+   "section": "2.5",
+   "status": "FAIL",
+   "kind": "substantive",
+   "text": "operator-norm error is $0.33$--$0.41$ at every resolution",
+   "stated": 0.33,
+   "json_value": 0.30828550662502013,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: min(r['pp'] for N in J['E0.1'] for r in J['E0.1'][N])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "per N: 64: 0.352-0.410, 128: 0.327-0.408, 256: 0.310-0.404, 512: 0.308-0.402 (PHASE1_REPORT: 0.31-0.41)",
+   "error": null
+  },
+  {
+   "id": "s25_pp_hi",
+   "section": "2.5",
+   "status": "PASS",
+   "kind": null,
+   "text": "operator-norm error is $0.33$--$0.41$ at every resolution",
+   "stated": 0.41,
+   "json_value": 0.4103221719321252,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: max(r['pp'] for N in J['E0.1'] for r in J['E0.1'][N])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s25_K100_1e-8",
+   "section": "2.5",
+   "status": "PASS",
+   "kind": null,
+   "text": "With $K\\ge100$ the assembled matrices are the exact Galerkin matrices to $10^{-8}$",
+   "stated": 1e-08,
+   "json_value": 4.175346535525877e-09,
+   "rel": "le",
+   "tol": "round",
+   "source": "E0.json: max(r['K100'] for N in J['E0.1'] for r in J['E0.1'][N])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s41_grid16",
+   "section": "4.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "$16\\times16\\times16$ training grid",
+   "stated": 16.0,
+   "json_value": 16.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "eim.json: int(J['meta']['training_grid'].split('(')[1].split(',')[0])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s41_test1000",
+   "section": "4.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "test error on $1000$ Sobol parameters",
+   "stated": 1000.0,
+   "json_value": 1000.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "eim.json: validate/64/summary/n_queries",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s41_Q_N64",
+   "section": "4.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "$Q=23$, $26$, $27$, $29$, $29$ terms reach a relative sup-norm error",
+   "stated": 23.0,
+   "json_value": 23.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "eim.json: build/64/Q",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s41_Q_N128",
+   "section": "4.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "$Q=23$, $26$, $27$, $29$, $29$ terms reach a relative sup-norm error",
+   "stated": 26.0,
+   "json_value": 26.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "eim.json: build/128/Q",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s41_Q_N256",
+   "section": "4.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "$Q=23$, $26$, $27$, $29$, $29$ terms reach a relative sup-norm error",
+   "stated": 27.0,
+   "json_value": 27.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "eim.json: build/256/Q",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s41_Q_N512",
+   "section": "4.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "$Q=23$, $26$, $27$, $29$, $29$ terms reach a relative sup-norm error",
+   "stated": 29.0,
+   "json_value": 29.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "eim.json: build/512/Q",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s41_Q_N1024",
+   "section": "4.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "$Q=23$, $26$, $27$, $29$, $29$ terms reach a relative sup-norm error",
+   "stated": 29.0,
+   "json_value": 29.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "eim.json: build/1024/Q",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s41_epsQ_64",
+   "section": "4.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "at most $1.7\\times10^{-9}$ ($N=64$)",
+   "stated": 1.7e-09,
+   "json_value": 1.6540623749037235e-09,
+   "rel": "eq",
+   "tol": "round",
+   "source": "eim.json: validate/64/summary/max_eps_over_normA",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s41_epsQ_512",
+   "section": "4.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "$5.7\\times10^{-10}$ ($N=512$) with these $Q$",
+   "stated": 5.7e-10,
+   "json_value": 5.696695675559087e-10,
+   "rel": "eq",
+   "tol": "round",
+   "source": "eim.json: validate/512/summary/max_eps_over_normA",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s41_dense_0.93",
+   "section": "4.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "never exceeding $0.93\\,\\varepsilon_Q$",
+   "stated": 0.93,
+   "json_value": 0.932407242704208,
+   "rel": "le",
+   "tol": "round",
+   "source": "eim.json: max(v['summary']['max_dense_over_eps'] for v in J['validate'].values())",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s41_Q36",
+   "section": "4.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "$Q=36$ at $\\varepsilon_N$",
+   "stated": 36.0,
+   "json_value": 36.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "N1024.json: eimq/per_target/eps_N/Q_op",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s41_Q37",
+   "section": "4.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "$Q=37$ at\n$\\varepsilon_N/10$",
+   "stated": 37.0,
+   "json_value": 37.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "N1024.json: J['eimq']['per_target']['eps_N/10']['Q_op']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s41_161",
+   "section": "4.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "fixed set of $161$ nodes",
+   "stated": 161.0,
+   "json_value": 161.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E2_3_reduced_cert.json: graded_eps_Q/per_N/1024/n_nodes",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s41_1.6ms",
+   "section": "4.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "at a cost of about $1.6$~ms independent of $N$",
+   "stated": 1.6,
+   "json_value": 1.617462863214314,
+   "rel": "eq",
+   "tol": 0.1,
+   "source": "E2_3_reduced_cert.json: float(np.median([v['median_s']['eps_Q_graded'] for v in J['timing_v2'].values() if isinstance(v, dict) and 'median_s' in v])) * 1000",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "timing_v2 was measured under load (training sweep); on the idle machine at N = 1024, Q = 36 the graded eps_Q takes 1.33 ms (N1024.json checks/timing_ms/per_Q/36/eps_Q)",
+   "error": null
+  },
+  {
+   "id": "s41_2.1x",
+   "section": "4.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "at most $2.1$ times the value on the full grid",
+   "stated": 2.1,
+   "json_value": 2.078172180894189,
+   "rel": "le",
+   "tol": "round",
+   "source": "E2_3_reduced_cert.json: max(v['max_graded_over_old_epsQ'] for v in J['graded_eps_Q']['per_N'].values())",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s41_allow_Q25",
+   "section": "4.1",
+   "status": "FAIL",
+   "kind": "no source",
+   "text": "of the order\n$10^{-8}\\norm{\\cc}$ for $Q\\approx25$",
+   "stated": 1e-08,
+   "json_value": null,
+   "rel": "eq",
+   "tol": "round",
+   "source": "-",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "no result file; the production configuration uses Q = 36 (eps_N) and 37 (eps_N/10), N1024.json eimq",
+   "error": null
+  },
+  {
+   "id": "s43_deeponet_params",
+   "section": "4.3",
+   "status": "FAIL",
+   "kind": "no source",
+   "text": "latent dimension 64 and 80,002 trainable parameters",
+   "stated": 80002.0,
+   "json_value": null,
+   "rel": "eq",
+   "tol": "round",
+   "source": "-",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "the v8 DeepONet checkpoint; no result file records its parameter count (deeponet_old_vs_new.json does not)",
+   "error": null
+  },
+  {
+   "id": "s43_deeponet_n120",
+   "section": "4.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "($N=64$, $N_T=60$, 120 benchmark queries)",
+   "stated": 120.0,
+   "json_value": 120.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "deeponet_old_vs_new.json: summary/n",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s43_deeponet_err",
+   "section": "4.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "the\nmedian true error is $0.78$",
+   "stated": 0.78,
+   "json_value": 0.7820236183866263,
+   "rel": "eq",
+   "tol": "round",
+   "source": "deeponet_old_vs_new.json: summary/median_true_err",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s43_deeponet_rel",
+   "section": "4.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "(relative $3.1\\times10^{-3}$)",
+   "stated": 0.0031,
+   "json_value": 0.003142591183815967,
+   "rel": "eq",
+   "tol": "round",
+   "source": "deeponet_old_vs_new.json: summary/median_rel_true_err",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s43_deeponet_bound",
+   "section": "4.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "median exact bound $3.4$, with no false accept",
+   "stated": 3.4,
+   "json_value": 3.4496016752350283,
+   "rel": "eq",
+   "tol": "round",
+   "source": "deeponet_old_vs_new.json: summary/median_bound_etaS",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s43_deeponet_fa",
+   "section": "4.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "median exact bound $3.4$, with no false accept",
+   "stated": 0.0,
+   "json_value": 0.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "deeponet_old_vs_new.json: summary/false_accepts",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s43_deeponet_rejected",
+   "section": "4.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "it is rejected at every tolerance of the sweep",
+   "stated": 120.0,
+   "json_value": 120.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "deeponet_old_vs_new.json: min(v.get('reject_cheap', 0) for v in J['summary']['status_counts_two_stage'].values())",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s43_train800",
+   "section": "4.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "The training set consists of 800 Sobol-sampled trajectories (seed 0)",
+   "stated": 800.0,
+   "json_value": 800.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "training_log.json: min(r['n_train'] for r in J['runs'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s43_train4000",
+   "section": "4.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "a 4000-trajectory set for the data-size study",
+   "stated": 4000.0,
+   "json_value": 4000.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "training_log.json: max(r['n_train'] for r in J['runs'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s44_snapshots",
+   "section": "4.4",
+   "status": "FAIL",
+   "kind": "substantive",
+   "text": "The 800 trajectories\nsupply 48,800 snapshots",
+   "stated": 48800.0,
+   "json_value": 192800.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "PRODUCTION_CONFIG.json: 800 * (J['N_T'] + 1)",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "800 x (N_T + 1) = 192,800 at N_T = 240; 48,800 = 800 x 61 is the count at the earlier N_T = 60",
+   "error": null
+  },
+  {
+   "id": "s44_betabar_0.99",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "$\\bar\\beta=0.99\\min_{\\rm cell}\\beta_\\mu$",
+   "stated": 0.99,
+   "json_value": 0.9900000000000001,
+   "rel": "eq",
+   "tol": "round",
+   "source": "N1024.json: J['cells']['betabar']['C0Y0m0']['betabar'] / (0.05 * J['cells']['betabar']['C0Y0m0']['beta_tilde_min'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "cell C0Y0m0: betabar / (C_min beta~_min), C_min = 0.05",
+   "error": null
+  },
+  {
+   "id": "s44_resid_1e-8",
+   "section": "4.4",
+   "status": "FAIL",
+   "kind": "no source",
+   "text": "the residual is $10^{-8}$ of\nthe terms it is assembled from",
+   "stated": 1e-08,
+   "json_value": null,
+   "rel": "eq",
+   "tol": "round",
+   "source": "-",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "no result file records this ratio (DEVIATIONS.md, Phase 2, describes the Gram-form failure qualitatively)",
+   "error": null
+  },
+  {
+   "id": "s44_rho_lo",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "($185$--$1022$ for $r=8$--$128$ at $N=1024$",
+   "stated": 185.0,
+   "json_value": 185.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E1.json: timing/per_rank/8/rho/0",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s44_rho_hi",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "($185$--$1022$ for $r=8$--$128$ at $N=1024$",
+   "stated": 1022.0,
+   "json_value": 1022.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E1.json: timing/per_rank/128/rho/1",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s44_online_3e-15",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "to $3\\times10^{-15}$ for $O(1)$ residuals",
+   "stated": 3e-15,
+   "json_value": 2.7009181496580825e-15,
+   "rel": "le",
+   "tol": "round",
+   "source": "N1024.json: checks/online_vs_full_perturbed/max_uncompressed_eta_rel_diff",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s44_online_2e-10",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "to $2\\times10^{-10}$ for POD--Galerkin candidates",
+   "stated": 2e-10,
+   "json_value": 1.9820410963026046e-10,
+   "rel": "le",
+   "tol": "round",
+   "source": "N1024.json: checks/online_vs_full_pod_galerkin/max_uncompressed_eta_rel_diff",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s44_compress_5e-4",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "by at most\n$5\\times10^{-4}$ relative",
+   "stated": 0.0005,
+   "json_value": 0.0005226893758245588,
+   "rel": "le",
+   "tol": "round",
+   "source": "N1024.json: J['checks']['online_vs_full_pod_galerkin']['max_compressed_bound_over_full'] - 1",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s44_cell_1.87",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "the cell norm costs a factor $1.87$ (median)",
+   "stated": 1.87,
+   "json_value": 1.870918462984943,
+   "rel": "eq",
+   "tol": "round",
+   "source": "N1024.json: cells/effectivity/median_over_etaX",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s44_cell_4",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "about $4$ against $\\eta^S$",
+   "stated": 4.0,
+   "json_value": 4.011597462121489,
+   "rel": "eq",
+   "tol": "round",
+   "source": "N1024.json: cells/effectivity/median_over_etaS",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s44_cert_ms_r8",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "$2.9$, $3.8$, $4.6$, $5.5$, $6.7$, $8.2$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
+   "stated": 2.9,
+   "json_value": 2.8794886078685518,
+   "rel": "eq",
+   "tol": "round",
+   "source": "N1024.json: timing_ext/per_basis/800/per_rank/8/certificate",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "N1024.json timing_ext (Phase 2, idle); the Phase 3 idle rerun in E1.json (Section 5.7) gives 2.90, 3.87, 4.61, 5.63, 6.79, 8.28 ms",
+   "error": null
+  },
+  {
+   "id": "s44_cert_ms_r48",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "$2.9$, $3.8$, $4.6$, $5.5$, $6.7$, $8.2$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
+   "stated": 3.8,
+   "json_value": 3.8072146708145738,
+   "rel": "eq",
+   "tol": "round",
+   "source": "N1024.json: timing_ext/per_basis/800/per_rank/48/certificate",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "N1024.json timing_ext (Phase 2, idle); the Phase 3 idle rerun in E1.json (Section 5.7) gives 2.90, 3.87, 4.61, 5.63, 6.79, 8.28 ms",
+   "error": null
+  },
+  {
+   "id": "s44_cert_ms_r64",
+   "section": "4.4",
+   "status": "FAIL",
+   "kind": "rounding",
+   "text": "$2.9$, $3.8$, $4.6$, $5.5$, $6.7$, $8.2$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
+   "stated": 4.6,
+   "json_value": 4.545500315725803,
+   "rel": "eq",
+   "tol": "round",
+   "source": "N1024.json: timing_ext/per_basis/800/per_rank/64/certificate",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "N1024.json timing_ext (Phase 2, idle); the Phase 3 idle rerun in E1.json (Section 5.7) gives 2.90, 3.87, 4.61, 5.63, 6.79, 8.28 ms",
+   "error": null
+  },
+  {
+   "id": "s44_cert_ms_r80",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "$2.9$, $3.8$, $4.6$, $5.5$, $6.7$, $8.2$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
+   "stated": 5.5,
+   "json_value": 5.451452871784568,
+   "rel": "eq",
+   "tol": "round",
+   "source": "N1024.json: timing_ext/per_basis/800/per_rank/80/certificate",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "N1024.json timing_ext (Phase 2, idle); the Phase 3 idle rerun in E1.json (Section 5.7) gives 2.90, 3.87, 4.61, 5.63, 6.79, 8.28 ms",
+   "error": null
+  },
+  {
+   "id": "s44_cert_ms_r96",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "$2.9$, $3.8$, $4.6$, $5.5$, $6.7$, $8.2$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
+   "stated": 6.7,
+   "json_value": 6.732765748165548,
+   "rel": "eq",
+   "tol": "round",
+   "source": "N1024.json: timing_ext/per_basis/800/per_rank/96/certificate",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "N1024.json timing_ext (Phase 2, idle); the Phase 3 idle rerun in E1.json (Section 5.7) gives 2.90, 3.87, 4.61, 5.63, 6.79, 8.28 ms",
+   "error": null
+  },
+  {
+   "id": "s44_cert_ms_r128",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "$2.9$, $3.8$, $4.6$, $5.5$, $6.7$, $8.2$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
+   "stated": 8.2,
+   "json_value": 8.226591278798878,
+   "rel": "eq",
+   "tol": "round",
+   "source": "N1024.json: timing_ext/per_basis/800/per_rank/128/certificate",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "N1024.json timing_ext (Phase 2, idle); the Phase 3 idle rerun in E1.json (Section 5.7) gives 2.90, 3.87, 4.61, 5.63, 6.79, 8.28 ms",
+   "error": null
+  },
+  {
+   "id": "s44_rank_indep_2.7",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "of which\n$2.7$~ms are rank-independent",
+   "stated": 0.0027,
+   "json_value": 0.002725365571677685,
+   "rel": "eq",
+   "tol": "round",
+   "source": "cost_model.json: median_times_reduced/64/ell_epsQ",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "ell(nu) + eps_Q, in seconds (cost_model.json, N = 1024, Q = 36)",
+   "error": null
+  },
+  {
+   "id": "s44_solve_lo",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "the reduced solve takes $0.7$--$1.9$~ms",
+   "stated": 0.7,
+   "json_value": 0.7234206655994058,
+   "rel": "eq",
+   "tol": "round",
+   "source": "N1024.json: timing_ext/per_basis/800/per_rank/8/solve",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s44_solve_hi",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "the reduced solve takes $0.7$--$1.9$~ms",
+   "stated": 1.9,
+   "json_value": 1.9207837060093877,
+   "rel": "eq",
+   "tol": "round",
+   "source": "N1024.json: timing_ext/per_basis/800/per_rank/128/solve",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s44_MB_r8",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "occupy $9$~MB ($r=8$) to $688$~MB ($r=128$)",
+   "stated": 9.0,
+   "json_value": 9.160560607910156,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E1.json: tensors/files_MB/redcert_N1024_r8_n800_CYm_3x3x2_Q36c_b128.npz",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s44_MB_r128",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "occupy $9$~MB ($r=8$) to $688$~MB ($r=128$)",
+   "stated": 688.0,
+   "json_value": 688.1353225708008,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E1.json: tensors/files_MB/redcert_N1024_r128_n800_CYm_3x3x2_Q36c_b128.npz",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s44_18cells",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "for the 18 cells",
+   "stated": 18.0,
+   "json_value": 18.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "N1024.json: len(J['cells']['betabar'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s44_float32_1e-3",
+   "section": "4.4",
+   "status": "FAIL",
+   "kind": "no source",
+   "text": "certified bound is of the order $10^{-3}$ at\n$N=512$",
+   "stated": 0.001,
+   "json_value": null,
+   "rel": "eq",
+   "tol": "round",
+   "source": "-",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "NOTES_FOR_PAPER.md item 8 and DEVIATIONS.md (Phase 2, float64) state it; no result file holds the float32 bound",
+   "error": null
+  },
+  {
+   "id": "s44_coeffs_11520",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "$r\\times N_T=11\\,520$ coefficients",
+   "stated": 11520.0,
+   "json_value": 11520.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "PRODUCTION_CONFIG.json: 48 * J['N_T']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s44_params_3.09M",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "($3.09$~M parameters, of which $2.96$~M in",
+   "stated": 3.09,
+   "json_value": 3.094016,
+   "rel": "eq",
+   "tol": "round",
+   "source": "training_log.json: [r['n_params'] for r in J['runs'] if 'spacetime' not in r['name']][0] / 1e6",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s44_params_out_2.96M",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "of which $2.96$~M in\nthe output layer",
+   "stated": 2.96,
+   "json_value": 2.96064,
+   "rel": "eq",
+   "tol": "round",
+   "source": "training_log.json: (256 + 1) * 48 * R('PRODUCTION_CONFIG.json')['N_T'] / 1e6",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "(256 + 1) x 11,520 from the architecture of tab_training (last hidden width 256); not stored as such",
+   "error": null
+  },
+  {
+   "id": "s44_rt23",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "$r\\times r_t$ with $r_t=23$ modes",
+   "stated": 23.0,
+   "json_value": 23.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "training_log.json: int([r for r in J['runs'] if 'spacetime' in r['name']][0]['representation'].split('=')[-1])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s44_params_0.42M",
+   "section": "4.4",
+   "status": "PASS",
+   "kind": null,
+   "text": "($0.42$~M parameters)",
+   "stated": 0.42,
+   "json_value": 0.417104,
+   "rel": "eq",
+   "tol": "round",
+   "source": "training_log.json: [r['n_params'] for r in J['runs'] if 'spacetime' in r['name']][0] / 1e6",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s45_itB_lo",
+   "section": "4.5",
+   "status": "PASS",
+   "kind": null,
+   "text": "(Table~\\ref{tab:pcg-v9}: $5$--$9$)",
+   "stated": 5.0,
+   "json_value": 5.0,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: min(J['E0.4'][N]['gmres'][0] for N in J['E0.4'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s45_itB_hi",
+   "section": "4.5",
+   "status": "PASS",
+   "kind": null,
+   "text": "(Table~\\ref{tab:pcg-v9}: $5$--$9$)",
+   "stated": 9.0,
+   "json_value": 9.033333333333333,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: max(J['E0.4'][N]['gmres'][0] for N in J['E0.4'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s51_vertices32",
+   "section": "5.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "32 box vertices and 256 Sobol points (288 queries)",
+   "stated": 32.0,
+   "json_value": 32.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E0.json: sum(1 for r in J['E0.2']['64']['rows'] if r['query_id'].startswith('vertex'))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s51_sobol256",
+   "section": "5.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "32 box vertices and 256 Sobol points (288 queries)",
+   "stated": 256.0,
+   "json_value": 256.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E0.json: sum(1 for r in J['E0.2']['64']['rows'] if r['query_id'].startswith('sobol'))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s51_audit48",
+   "section": "5.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "48 audit queries (first 16 per stratum of the earlier audit)",
+   "stated": 48.0,
+   "json_value": 48.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E0.json: len(J['E0.3']['effectivity']['64'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s51_calib30",
+   "section": "5.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "30 price-diagnostic queries and two box corners",
+   "stated": 30.0,
+   "json_value": 30.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E3_1_calibration.json: sum(1 for k in J['galerkin'] if k.startswith('Q_ref30'))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s51_calib_corners",
+   "section": "5.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "30 price-diagnostic queries and two box corners",
+   "stated": 2.0,
+   "json_value": 2.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E3_1_calibration.json: sum(1 for k in J['galerkin'] if k.startswith('Q_audit'))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s51_calib_spots",
+   "section": "5.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "five spots $0.8K,\\dots,1.2K$",
+   "stated": 5.0,
+   "json_value": 5.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E3_1_calibration.json: len(J['meta']['spots'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s51_val30",
+   "section": "5.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "30-query validation set (seed 999999)",
+   "stated": 30.0,
+   "json_value": 30.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E1.json: len(J['eval']['rows']['pod_galerkin_r64_n800'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s51_bench120",
+   "section": "5.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "120 Sobol queries; $10^4$ Sobol queries",
+   "stated": 120.0,
+   "json_value": 120.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E2.json: bench/per_setup/reusable/summary/direct/ratio_to_direct/n_queries",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s51_e4_1e4",
+   "section": "5.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "120 Sobol queries; $10^4$ Sobol queries",
+   "stated": 10000.0,
+   "json_value": 10000.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E4.json: meta/n_queries",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s51_ood200",
+   "section": "5.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "200 Sobol queries outside the box and 64 extended vertices",
+   "stated": 200.0,
+   "json_value": 200.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E3.json: setup/n_sobol",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s51_ood64",
+   "section": "5.1",
+   "status": "PASS",
+   "kind": null,
+   "text": "200 Sobol queries outside the box and 64 extended vertices",
+   "stated": 64.0,
+   "json_value": 64.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E3.json: setup/n_vertices",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s52_factor_lo",
+   "section": "5.2",
+   "status": "PASS",
+   "kind": null,
+   "text": "within a factor $1.1$--$4$ of the observed error",
+   "stated": 1.1,
+   "json_value": 1.1411367323805075,
+   "rel": "ge",
+   "tol": "round",
+   "source": "E0.json: min(r['eps%d' % K] / r['K%d' % K] for N in J['E0.1'] for r in J['E0.1'][N] for K in (5, 20, 100))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s52_factor_hi",
+   "section": "5.2",
+   "status": "FAIL",
+   "kind": "substantive",
+   "text": "within a factor $1.1$--$4$ of the observed error",
+   "stated": 4.0,
+   "json_value": 8.577548471658123,
+   "rel": "le",
+   "tol": "round",
+   "source": "E0.json: max(r['eps%d' % K] / r['K%d' % K] for N in J['E0.1'] for r in J['E0.1'][N] for K in (5, 20, 100))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "per K: K = 5: 2.07-8.58, K = 20: 1.30-4.43, K = 100: 1.14-3.69 (the statement holds at K = 100 only)",
+   "error": null
+  },
+  {
+   "id": "s53_289",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "all $289\\times3$ tested (query, $N$) pairs",
+   "stated": 289.0,
+   "json_value": 289.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E0.json: len(J['E0.2']['64']['rows'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "288 verification queries + the worst audit vertex (Table populations and the F2 caption say 288)",
+   "error": null
+  },
+  {
+   "id": "s53_3N",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "all $289\\times3$ tested (query, $N$) pairs",
+   "stated": 3.0,
+   "json_value": 3.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E0.json: len(J['E0.2'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_violations",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "The bound of Theorem~\\ref{thm:spectral} and the two-sided comparison \\eqref{eq:comparison} hold at",
+   "stated": 0.0,
+   "json_value": 0.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E0.json: sum(len(J['E0.2'][N]['violations']) + len(J['E0.2'][N]['gen_violations']) for N in J['E0.2'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_gen_ge1",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "the generalised eigenvalues of $(S_I,X_I)$ lie in\n$[1,\\Thmu]$ in every case",
+   "stated": 1.0,
+   "json_value": 1.0010753940718011,
+   "rel": "ge",
+   "tol": "abs:0",
+   "source": "E0.json: min(r['gen_min'] for N in J['E0.2'] for r in J['E0.2'][N]['rows'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_gen_leTheta",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "the generalised eigenvalues of $(S_I,X_I)$ lie in\n$[1,\\Thmu]$ in every case",
+   "stated": 1.0,
+   "json_value": 0.9999501874037193,
+   "rel": "le",
+   "tol": "abs:0",
+   "source": "E0.json: max(r['gen_max'] / r['Theta'] for N in J['E0.2'] for r in J['E0.2'][N]['rows'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_sqrtTheta_med_64",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "(median $1.15$, $1.74$, $2.05$, $2.91$, $4.11$ at $N=64$, $512$, $1024$,\n$4096$, $16384$",
+   "stated": 1.15,
+   "json_value": 1.151394189958364,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: E0.3/sqrtTheta/64/median",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_sqrtTheta_max_64",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "maxima $1.75$, $3.78$, $4.93$, $8.30$, $13.6$",
+   "stated": 1.75,
+   "json_value": 1.7527623298472959,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: E0.3/sqrtTheta/64/max",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_sqrtTheta_med_512",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "(median $1.15$, $1.74$, $2.05$, $2.91$, $4.11$ at $N=64$, $512$, $1024$,\n$4096$, $16384$",
+   "stated": 1.74,
+   "json_value": 1.7404204105763406,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: E0.3/sqrtTheta/512/median",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_sqrtTheta_max_512",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "maxima $1.75$, $3.78$, $4.93$, $8.30$, $13.6$",
+   "stated": 3.78,
+   "json_value": 3.7793878714124496,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: E0.3/sqrtTheta/512/max",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_sqrtTheta_med_1024",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "(median $1.15$, $1.74$, $2.05$, $2.91$, $4.11$ at $N=64$, $512$, $1024$,\n$4096$, $16384$",
+   "stated": 2.05,
+   "json_value": 2.0549106573011318,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: E0.3/sqrtTheta/1024/median",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_sqrtTheta_max_1024",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "maxima $1.75$, $3.78$, $4.93$, $8.30$, $13.6$",
+   "stated": 4.93,
+   "json_value": 4.93444881553083,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: E0.3/sqrtTheta/1024/max",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_sqrtTheta_med_4096",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "(median $1.15$, $1.74$, $2.05$, $2.91$, $4.11$ at $N=64$, $512$, $1024$,\n$4096$, $16384$",
+   "stated": 2.91,
+   "json_value": 2.90544837116387,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: E0.3/sqrtTheta/4096/median",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_sqrtTheta_max_4096",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "maxima $1.75$, $3.78$, $4.93$, $8.30$, $13.6$",
+   "stated": 8.3,
+   "json_value": 8.301188345976941,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: E0.3/sqrtTheta/4096/max",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_sqrtTheta_med_16384",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "(median $1.15$, $1.74$, $2.05$, $2.91$, $4.11$ at $N=64$, $512$, $1024$,\n$4096$, $16384$",
+   "stated": 4.11,
+   "json_value": 4.109167954211468,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: E0.3/sqrtTheta/16384/median",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_sqrtTheta_max_16384",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "maxima $1.75$, $3.78$, $4.93$, $8.30$, $13.6$",
+   "stated": 13.6,
+   "json_value": 13.552744885457141,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: E0.3/sqrtTheta/16384/max",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_ratio64_lo",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "median $1.08$--$1.13$ at $N=64$",
+   "stated": 1.08,
+   "json_value": 1.0752690068958912,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: min(float(np.median([q['cands'][c]['ratio'] for q in J['E0.3']['effectivity']['64']])) for c in ['podgal16','podgal32','podgal48','coarse_N/4','perturbed_z0'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_ratio64_hi",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "median $1.08$--$1.13$ at $N=64$",
+   "stated": 1.13,
+   "json_value": 1.133230799702502,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: max(float(np.median([q['cands'][c]['ratio'] for q in J['E0.3']['effectivity']['64']])) for c in ['podgal16','podgal32','podgal48','coarse_N/4','perturbed_z0'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_ratio512_lo",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "$1.4$--$1.7$ at\n$N=512$ (maximum $3.1$)",
+   "stated": 1.4,
+   "json_value": 1.4144606733245098,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: min(float(np.median([q['cands'][c]['ratio'] for q in J['E0.3']['effectivity']['512']])) for c in ['podgal16','podgal32','podgal48','coarse_N/4','perturbed_z0'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_ratio512_hi",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "$1.4$--$1.7$ at\n$N=512$ (maximum $3.1$)",
+   "stated": 1.7,
+   "json_value": 1.7278735832763394,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: max(float(np.median([q['cands'][c]['ratio'] for q in J['E0.3']['effectivity']['512']])) for c in ['podgal16','podgal32','podgal48','coarse_N/4','perturbed_z0'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_ratio512_max",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "$1.4$--$1.7$ at\n$N=512$ (maximum $3.1$)",
+   "stated": 3.1,
+   "json_value": 3.140337639433798,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: max(q['cands'][c]['ratio'] for q in J['E0.3']['effectivity']['512'] for c in ['podgal16','podgal32','podgal48','coarse_N/4','perturbed_z0'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s53_XS_1024",
+   "section": "5.3",
+   "status": "PASS",
+   "kind": null,
+   "text": "the factor\n$\\eta^X/\\eta^S\\approx2$ at $N=1024$",
+   "stated": 2.0,
+   "json_value": 1.8716701894520391,
+   "rel": "eq",
+   "tol": 0.15,
+   "source": "N1024.json: float(np.median([J['table_ext']['800']['summary'][r]['banded_AI']['median'] / J['table_ext']['800']['summary'][r]['exact_AI']['median'] for r in ['8','16','24','32','40','48','56','62','64','80','96','128']]))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "median over r = 8-128 of median(eta^X) / median(eta^S); range 1.15-2.13",
+   "error": null
+  },
+  {
+   "id": "s54_lu_gmres",
+   "section": "5.4",
+   "status": "FAIL",
+   "kind": "no source",
+   "text": "Dense-LU and circulant-GMRES references agree to $10^{-12}$",
+   "stated": 1e-12,
+   "json_value": null,
+   "rel": "eq",
+   "tol": "round",
+   "source": "-",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "tested in tests/test_direct_certificate.py (PHASE1_REPORT item 1.5); no result file records it for N <= 1024 (E0.json E0.5 lu_vs_gmres = 1.5e-12 for the three Y < 1 queries at N = 64 only)",
+   "error": null
+  },
+  {
+   "id": "s54_bracket_1e-20",
+   "section": "5.4",
+   "status": "FAIL",
+   "kind": "no source",
+   "text": "the bracket width at convergence is below $10^{-20}$ relative",
+   "stated": 1e-20,
+   "json_value": null,
+   "rel": "eq",
+   "tol": "round",
+   "source": "-",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "no result file records the PCG bracket width (E0.4 stores iteration counts only)",
+   "error": null
+  },
+  {
+   "id": "s54_bracket_1e-18",
+   "section": "5.4",
+   "status": "FAIL",
+   "kind": "no source",
+   "text": "below $10^{-18}$ at $N=4096$",
+   "stated": 1e-18,
+   "json_value": null,
+   "rel": "eq",
+   "tol": "round",
+   "source": "-",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "as above",
+   "error": null
+  },
+  {
+   "id": "s55_48",
+   "section": "5.5",
+   "status": "PASS",
+   "kind": null,
+   "text": "On the 48 exact-dynamics cases with perturbed initial vectors",
+   "stated": 48.0,
+   "json_value": 48.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E0.json: len(J['E0.3']['effectivity']['64'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s55_delta",
+   "section": "5.5",
+   "status": "PASS",
+   "kind": null,
+   "text": "($\\|\\delta\\|_{M_I}=10^{-4}$)",
+   "stated": 0.0001,
+   "json_value": 0.00010000000000000227,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: float(np.median([q['cands']['perturbed_z0']['err'] for N in J['E0.3']['effectivity'] for q in J['E0.3']['effectivity'][N]]))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s55_eff1",
+   "section": "5.5",
+   "status": "PASS",
+   "kind": null,
+   "text": "hold with effectivity $1.00\\pm10^{-6}$",
+   "stated": 1e-06,
+   "json_value": 1.2274781191479178e-10,
+   "rel": "le",
+   "tol": "round",
+   "source": "E0.json: max(abs(q['cands']['perturbed_z0'][k] - 1) for N in J['E0.3']['effectivity'] for q in J['E0.3']['effectivity'][N] for k in ('eff_X', 'eff_S'))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s55_under",
+   "section": "5.5",
+   "status": "PASS",
+   "kind": null,
+   "text": "residual-only estimators underestimate the error in every case",
+   "stated": 1.0,
+   "json_value": 1.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E0.json: float(np.mean([q['cands']['perturbed_z0']['etaX'] < q['cands']['perturbed_z0']['err'] and q['cands']['perturbed_z0']['etaS'] < q['cands']['perturbed_z0']['err'] for N in J['E0.3']['effectivity'] for q in J['E0.3']['effectivity'][N]]))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "fraction of the 96 (query, N) cases",
+   "error": null
+  },
+  {
+   "id": "s55_alpha_lo",
+   "section": "5.5",
+   "status": "PASS",
+   "kind": null,
+   "text": "the bound $\\alpha_{\\rm lb}=0.0500=\\rf$ is positive",
+   "stated": 0.05,
+   "json_value": 0.049999987289048385,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: min(e['alpha_lb'] for e in J['E0.5'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s55_lmin_lo",
+   "section": "5.5",
+   "status": "PASS",
+   "kind": null,
+   "text": "$\\lambda_{\\min}(S_I)\\in[0.052,0.055]$",
+   "stated": 0.052,
+   "json_value": 0.052369018877330434,
+   "rel": "ge",
+   "tol": "round",
+   "source": "E0.json: min(e['lmin'] for e in J['E0.5'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s55_lmin_hi",
+   "section": "5.5",
+   "status": "PASS",
+   "kind": null,
+   "text": "$\\lambda_{\\min}(S_I)\\in[0.052,0.055]$",
+   "stated": 0.055,
+   "json_value": 0.054686220285574814,
+   "rel": "le",
+   "tol": "round",
+   "source": "E0.json: max(e['lmin'] for e in J['E0.5'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s55_sqrtTheta",
+   "section": "5.5",
+   "status": "PASS",
+   "kind": null,
+   "text": "$\\sqrt{\\Thmu}\\le1.5$",
+   "stated": 1.5,
+   "json_value": 1.471949388486021,
+   "rel": "le",
+   "tol": "abs:0",
+   "source": "E0.json: max(e['sqrtTheta'] for e in J['E0.5'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s55_gmres5",
+   "section": "5.5",
+   "status": "PASS",
+   "kind": null,
+   "text": "needs at most five iterations per step",
+   "stated": 5.0,
+   "json_value": 5.0,
+   "rel": "le",
+   "tol": "abs:0",
+   "source": "E0.json: max(e['gmres_max'] for e in J['E0.5'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s55_eff_one",
+   "section": "5.5",
+   "status": "PASS",
+   "kind": null,
+   "text": "the certificate holds with effectivity one on\nperturbed exact dynamics",
+   "stated": 0.0,
+   "json_value": 8.881784197001252e-15,
+   "rel": "eq",
+   "tol": "abs:1e-9",
+   "source": "E0.json: max(abs(e['perturbed'][k] - 1) for e in J['E0.5'] for k in ('eff_X', 'eff_S'))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "deviation from one",
+   "error": null
+  },
+  {
+   "id": "s56_cos_modes",
+   "section": "5.6",
+   "status": "PASS",
+   "kind": null,
+   "text": "(8192 modes, range parameter 30",
+   "stated": 8192.0,
+   "json_value": 8192.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E3_1_calibration.json: cos_meta/modes",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s56_cos_L",
+   "section": "5.6",
+   "status": "PASS",
+   "kind": null,
+   "text": "(8192 modes, range parameter 30",
+   "stated": 30.0,
+   "json_value": 30.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E3_1_calibration.json: cos_meta/range_parameter_L",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s56_carr_madan",
+   "section": "5.6",
+   "status": "PASS",
+   "kind": null,
+   "text": "Carr--Madan to $2.6\\times10^{-12}$ on the checked rows",
+   "stated": 2.6e-12,
+   "json_value": 2.6471810854467037e-12,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E3_1_calibration.json: cos_vs_carr_madan/max_abs_diff_after_extended_cutoff",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "after the extended Carr-Madan cutoff on the one cutoff-limited row; at the default cutoff 3.4e-8",
+   "error": null
+  },
+  {
+   "id": "s56_corners_2dollar",
+   "section": "5.6",
+   "status": "FAIL",
+   "kind": "no source",
+   "text": "had price gaps above two dollars at $N=64$",
+   "stated": 2.0,
+   "json_value": null,
+   "rel": "eq",
+   "tol": "round",
+   "source": "-",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "the calibration (E3_1_calibration.json) starts at N = 128, where the two corners are 0.70 and 0.78 dollars",
+   "error": null
+  },
+  {
+   "id": "s56_ref30_512",
+   "section": "5.6",
+   "status": "PASS",
+   "kind": null,
+   "text": "The 30 queries alone would pass at $N=512$ ($0.11$ cent)",
+   "stated": 0.11,
+   "json_value": 0.1121781416522083,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E3_1_calibration.json: J['table']['512|240']['max_err_ref30'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s56_cornerA_512",
+   "section": "5.6",
+   "status": "PASS",
+   "kind": null,
+   "text": "the corners do not ($2.4$ and $3.2$ cent)",
+   "stated": 2.4,
+   "json_value": 2.3562971320937764,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E3_1_calibration.json: J['table']['512|240']['err_cornerA'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s56_cornerB_512",
+   "section": "5.6",
+   "status": "PASS",
+   "kind": null,
+   "text": "the corners do not ($2.4$ and $3.2$ cent)",
+   "stated": 3.2,
+   "json_value": 3.161467408923624,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E3_1_calibration.json: J['table']['512|240']['err_cornerB'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s56_1024_below",
+   "section": "5.6",
+   "status": "PASS",
+   "kind": null,
+   "text": "at $N=1024$ all are below $0.24$ cent with 240 steps",
+   "stated": 0.24,
+   "json_value": 0.23493553846682946,
+   "rel": "le",
+   "tol": "abs:0",
+   "source": "E3_1_calibration.json: J['table']['1024|240']['max_err_all'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s56_60steps",
+   "section": "5.6",
+   "status": "PASS",
+   "kind": null,
+   "text": "60 steps give $4.6$ cent on the 30 queries",
+   "stated": 4.6,
+   "json_value": 4.637780600108954,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E3_1_calibration.json: J['table']['1024|60']['max_err_ref30'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s56_beta",
+   "section": "5.6",
+   "status": "PASS",
+   "kind": null,
+   "text": "$\\max_s\\beta_I(x_s)=8.44$",
+   "stated": 8.44,
+   "json_value": 8.441428948688088,
+   "rel": "eq",
+   "tol": "round",
+   "source": "PRODUCTION_CONFIG.json: max_beta_I",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s56_epsN",
+   "section": "5.6",
+   "status": "PASS",
+   "kind": null,
+   "text": "trajectory\ntolerance $\\varepsilon_N=1.18\\times10^{-3}$",
+   "stated": 0.00118,
+   "json_value": 0.0011846335568048742,
+   "rel": "eq",
+   "tol": "round",
+   "source": "PRODUCTION_CONFIG.json: eps_N",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s56_disc_0.24",
+   "section": "5.6",
+   "status": "FAIL",
+   "kind": "rounding",
+   "text": "since the discretisation error at $N=1024$ is $0.24$ cent",
+   "stated": 0.24,
+   "json_value": 0.23493553846682946,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E3_1_calibration.json: J['table']['1024|240']['max_err_all'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "0.2349 cent; correct as 'below 0.24 cent' (claim s56_1024_below), rounds to 0.23",
+   "error": null
+  },
+  {
+   "id": "s57_err48",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "median error of $3.1\\times10^{-4}$ at $r=48$",
+   "stated": 0.00031,
+   "json_value": 0.00031218730552341636,
+   "rel": "eq",
+   "tol": "round",
+   "source": "N1024.json: J['table_ext']['800']['summary']['48']['median_true_err']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_err64",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "$1.7\\times10^{-5}$ at $r=64$",
+   "stated": 1.7e-05,
+   "json_value": 1.6767085681068337e-05,
+   "rel": "eq",
+   "tol": "round",
+   "source": "N1024.json: J['table_ext']['800']['summary']['64']['median_true_err']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_sv10",
+   "section": "5.7",
+   "status": "FAIL",
+   "kind": "substantive",
+   "text": "(singular values within $10\\%$)",
+   "stated": 10.0,
+   "json_value": 48.561557065558425,
+   "rel": "le",
+   "tol": "abs:0",
+   "source": "N1024.json: max(abs(J['podext']['4000']['sv_ratio'][r] / J['podext']['800']['sv_ratio'][r] - 1) for r in J['podext']['800']['sv_ratio']) * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "ratio of the normalised singular values sigma_r/sigma_1 (4000 vs 800 trajectories): within 9% for r <= 48, 17-49% at r = 56-128",
+   "error": null
+  },
+  {
+   "id": "s57_effS_lo",
+   "section": "5.7",
+   "status": "FAIL",
+   "kind": "substantive",
+   "text": "effectivity $9$--$15$ for $r\\le80$",
+   "stated": 9.0,
+   "json_value": 6.79954257394529,
+   "rel": "eq",
+   "tol": "round",
+   "source": "N1024.json: min(J['table_ext']['800']['summary'][r]['exact_AI']['median_effectivity'] for r in ['8','16','24','32','40','48','56','62','64','80'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "6.8 at r = 8 (tab_pod_ranks row 8); 9.5-14.9 for 16 <= r <= 80",
+   "error": null
+  },
+  {
+   "id": "s57_effS_hi",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "effectivity $9$--$15$ for $r\\le80$",
+   "stated": 15.0,
+   "json_value": 14.89953772820129,
+   "rel": "eq",
+   "tol": "round",
+   "source": "N1024.json: max(J['table_ext']['800']['summary'][r]['exact_AI']['median_effectivity'] for r in ['8','16','24','32','40','48','56','62','64','80'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_XoverS_2",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "the banded certificate is a further factor\n$\\approx2$ above it",
+   "stated": 2.0,
+   "json_value": 1.8380861998340028,
+   "rel": "eq",
+   "tol": 0.15,
+   "source": "N1024.json: float(np.median([J['table_ext']['800']['summary'][r]['banded_AI']['median_effectivity'] / J['table_ext']['800']['summary'][r]['exact_AI']['median_effectivity'] for r in ['8','16','24','32','40','48','56','62','64','80']]))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_redoverX_2",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "the reduced online certificate a further\nfactor $\\approx2$, the cell factor",
+   "stated": 2.0,
+   "json_value": 2.1273399993386555,
+   "rel": "eq",
+   "tol": 0.15,
+   "source": "N1024.json: float(np.median([J['table_ext']['800']['summary'][r]['reduced']['median_effectivity'] / J['table_ext']['800']['summary'][r]['banded_AI']['median_effectivity'] for r in ['8','16','24','32','40','48','56','62','64','80']]))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_exact56_28",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "starts at $r=56$ under the\nexact certificate (28 of 30)",
+   "stated": 28.0,
+   "json_value": 28.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "N1024.json: J['table_ext']['800']['summary']['56']['exact_AI']['accepted'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]]",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_exact_start56",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "starts at $r=56$ under the\nexact certificate (28 of 30)",
+   "stated": 56.0,
+   "json_value": 56.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "N1024.json: min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if J['table_ext']['800']['summary'][r]['exact_AI']['accepted'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]] > 0)",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_all_start62",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "at $r=62$--$64$ under all three",
+   "stated": 62.0,
+   "json_value": 62.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "N1024.json: min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if min(J['table_ext']['800']['summary'][r][c]['accepted'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]] for c in ('reduced', 'banded_AI', 'exact_AI')) > 0)",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_complete80",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "is complete at $r\\ge80$",
+   "stated": 80.0,
+   "json_value": 80.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "N1024.json: min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if min(J['table_ext']['800']['summary'][r][c]['accepted'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]] for c in ('reduced', 'banded_AI', 'exact_AI')) == 30)",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_cheap48",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "settles every query at $r\\le48$ by cheap rejection",
+   "stated": 48.0,
+   "json_value": 48.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "N1024.json: max(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if J['table_ext']['800']['summary'][r]['three_stage'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]].get('reject_cheap', 0) == 30)",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_reduced80",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "every query at $r\\ge80$ by\nreduced acceptance",
+   "stated": 80.0,
+   "json_value": 80.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "N1024.json: min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if J['table_ext']['800']['summary'][r]['three_stage'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]].get('reduced_accept', 0) == 30)",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_band_lo",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "the full-order stages are reached only in the band $r=56$--$64$",
+   "stated": 56.0,
+   "json_value": 56.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "N1024.json: min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if sum(J['table_ext']['800']['summary'][r]['three_stage'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]].get(k, 0) for k in ('banded_accept', 'reject_banded', 'exact_accept', 'exact_reject')) > 0)",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_band_hi",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "the full-order stages are reached only in the band $r=56$--$64$",
+   "stated": 64.0,
+   "json_value": 64.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "N1024.json: max(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if sum(J['table_ext']['800']['summary'][r]['three_stage'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]].get(k, 0) for k in ('banded_accept', 'reject_banded', 'exact_accept', 'exact_reject')) > 0)",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_no_fa",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "No false\naccept occurs under any certificate at any tolerance.",
+   "stated": 0.0,
+   "json_value": 0.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "N1024.json: sum(sum(J['table_ext'][b]['summary'][r][c]['false_accepts'].values()) for b in J['table_ext'] for r in J['table_ext'][b]['summary'] for c in ('reduced', 'banded_AI', 'exact_AI'))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_floor_4e-8",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "At $r\\ge96$ the true error ($4\\times10^{-8}$)",
+   "stated": 4e-08,
+   "json_value": 4.2737452778434375e-08,
+   "rel": "eq",
+   "tol": "round",
+   "source": "N1024.json: J['table_ext']['800']['summary']['96']['median_true_err']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "r = 96: 4.3e-8, r = 128: 2.3e-8 (N1024.json); E1.json, the Phase 3 evaluation, gives 3.6e-8 and 9.9e-9",
+   "error": null
+  },
+  {
+   "id": "s57_effred_lo",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "raises the reduced effectivity to\n$120$--$140$",
+   "stated": 120.0,
+   "json_value": 118.62201746922773,
+   "rel": "eq",
+   "tol": "abs:5",
+   "source": "N1024.json: J['table_ext']['800']['summary']['128']['reduced']['median_effectivity']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "N1024.json: 143 (r = 96), 119 (r = 128); E1.json gives 231 and 417 (its true errors at r >= 96 are smaller)",
+   "error": null
+  },
+  {
+   "id": "s57_effred_hi",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "raises the reduced effectivity to\n$120$--$140$",
+   "stated": 140.0,
+   "json_value": 142.6673851925027,
+   "rel": "eq",
+   "tol": "abs:5",
+   "source": "N1024.json: J['table_ext']['800']['summary']['96']['reduced']['median_effectivity']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_none_pass",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "None passes at $\\varepsilon_N$, nor\nat $10^{-3}$",
+   "stated": 0.0,
+   "json_value": 0.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E2_4_podnn_N1024.json: sum(any(v.values()) for v in J['done_when']['per_checkpoint'].values())",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_best_err",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "has a median true\nerror of $0.46$",
+   "stated": 0.46,
+   "json_value": 0.4638950781347123,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E1.json: selection/per_setting/podnn|n4000/bound_selected/median_true_err",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_best_bound_1.25",
+   "section": "5.7",
+   "status": "FAIL",
+   "kind": "substantive",
+   "text": "a median exact bound of $1.25$",
+   "stated": 1.25,
+   "json_value": 1.263937448890436,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E1.json: selection/per_setting/podnn|n4000/bound_selected/median_exact",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "median over the three seeds of the per-seed median: 1.264 (seeds 1.236, 1.264, 1.265; pooled over the 90 (query, seed) pairs 1.241); the same paragraph later says 1.26",
+   "error": null
+  },
+  {
+   "id": "s57_best_1e3",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "about $10^3\\varepsilon_N$",
+   "stated": 1000.0,
+   "json_value": 1066.9438170394699,
+   "rel": "eq",
+   "tol": 0.1,
+   "source": "E1.json: J['selection']['per_setting']['podnn|n4000']['bound_selected']['median_exact'] / R('PRODUCTION_CONFIG.json')['eps_N']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_st_err",
+   "section": "5.7",
+   "status": "FAIL",
+   "kind": "rounding",
+   "text": "($0.015$ and $0.056$, $47\\,\\varepsilon_N$)",
+   "stated": 0.015,
+   "json_value": 0.015906651741675146,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2_4_podnn_N1024.json: float(np.median([J['results'][k]['summary']['median_true_err'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)]]))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "median over the three seeds 0.0159 (seeds 0.0142, 0.0159, 0.0161; pooled 0.0155)",
+   "error": null
+  },
+  {
+   "id": "s57_st_bound",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "($0.015$ and $0.056$, $47\\,\\varepsilon_N$)",
+   "stated": 0.056,
+   "json_value": 0.05591646363880997,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2_4_podnn_N1024.json: float(np.median([J['results'][k]['summary']['exact_AI']['median'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)]]))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_st_47",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "($0.015$ and $0.056$, $47\\,\\varepsilon_N$)",
+   "stated": 47.0,
+   "json_value": 47.201485486891535,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2_4_podnn_N1024.json: float(np.median([J['results'][k]['summary']['exact_AI']['median'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)]])) / R('PRODUCTION_CONFIG.json')['eps_N']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_lam0_err",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "fits the coefficients best (error\n$0.08$)",
+   "stated": 0.08,
+   "json_value": 0.08156203874454332,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2_4_podnn_N1024.json: J['results']['podnn_N1024_r48_n4000_lamR0_seed0']['summary']['median_true_err']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_lam0_bound",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "gives a bound of $12$ (effectivity $150$)",
+   "stated": 12.0,
+   "json_value": 12.24090528605424,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2_4_podnn_N1024.json: J['results']['podnn_N1024_r48_n4000_lamR0_seed0']['summary']['exact_AI']['median']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_lam0_eff",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "gives a bound of $12$ (effectivity $150$)",
+   "stated": 150.0,
+   "json_value": 148.02687967703037,
+   "rel": "eq",
+   "tol": "abs:5",
+   "source": "E2_4_podnn_N1024.json: J['results']['podnn_N1024_r48_n4000_lamR0_seed0']['summary']['exact_AI']['median_effectivity']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_factor_ten",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "the bound drops by a\nfactor ten",
+   "stated": 10.0,
+   "json_value": 9.684739776323644,
+   "rel": "eq",
+   "tol": 0.1,
+   "source": "E1.json: J['selection']['per_setting']['podnn|n4000']['error_selected']['median_exact'] / J['selection']['per_setting']['podnn|n4000']['bound_selected']['median_exact']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_factor_five",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "while the error rises by a factor five",
+   "stated": 5.0,
+   "json_value": 5.687634655475651,
+   "rel": "eq",
+   "tol": 0.15,
+   "source": "E1.json: J['selection']['per_setting']['podnn|n4000']['bound_selected']['median_true_err'] / J['selection']['per_setting']['podnn|n4000']['error_selected']['median_true_err']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_proj_3.2e-3",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "certified at\n$3.2\\times10^{-3}$, shows that the basis is not the obstacle",
+   "stated": 0.0032,
+   "json_value": 0.003235310636773737,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2_4_podnn_N1024.json: J['results']['projection|n4000']['summary']['exact_AI']['median']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_epoch_lo",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "the selected epochs ($1890$--$2000$ of\n$2000$)",
+   "stated": 1890.0,
+   "json_value": 1890.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "training_log.json: min(r['selected_epoch'] for r in J['runs'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_epoch_hi",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "the selected epochs ($1890$--$2000$ of\n$2000$)",
+   "stated": 2000.0,
+   "json_value": 2000.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "training_log.json: max(r['selected_epoch'] for r in J['runs'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_epochs",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "the selected epochs ($1890$--$2000$ of\n$2000$)",
+   "stated": 2000.0,
+   "json_value": 2000.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "training_log.json: max(r['epochs'] for r in J['runs'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_cheap_all_nn",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "Every neural query is settled by the cheap rejection of the first stage",
+   "stated": 30.0,
+   "json_value": 30.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E1.json: min(v['three_stage'][e].get('reject_cheap', 0) for k, v in J['eval']['summary'].items() if k.startswith('podnn') for e in v['three_stage'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "every POD-NN checkpoint, every tolerance of the sweep",
+   "error": null
+  },
+  {
+   "id": "s57_solve_lo",
+   "section": "5.7",
+   "status": "FAIL",
+   "kind": "substantive",
+   "text": "the reduced solve takes $0.75$--$2.0$~ms",
+   "stated": 0.75,
+   "json_value": 0.7328069768846035,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E1.json: timing/per_rank/8/reduced_solve",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "E1.json (Phase 3 idle rerun): 0.733-1.971 ms; Section 4.4 quotes N1024.json: 0.72-1.92 ms ('0.7-1.9')",
+   "error": null
+  },
+  {
+   "id": "s57_solve_hi",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "the reduced solve takes $0.75$--$2.0$~ms",
+   "stated": 2.0,
+   "json_value": 1.9707498140633106,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E1.json: timing/per_rank/128/reduced_solve",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_cert_lo",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "the reduced certificate $2.9$--$8.2$~ms for\n$r=8$--$128$",
+   "stated": 2.9,
+   "json_value": 2.9022740200161934,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E1.json: timing/per_rank/8/reduced_certificate",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_cert_hi",
+   "section": "5.7",
+   "status": "FAIL",
+   "kind": "rounding",
+   "text": "the reduced certificate $2.9$--$8.2$~ms for\n$r=8$--$128$",
+   "stated": 8.2,
+   "json_value": 8.277977351099253,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E1.json: timing/per_rank/128/reduced_certificate",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "8.28 ms in E1.json; 8.23 ms in N1024.json (Section 4.4)",
+   "error": null
+  },
+  {
+   "id": "s57_154",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "rises to $154$~ms only\nat $r=56$",
+   "stated": 154.0,
+   "json_value": 153.6640077829361,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E1.json: timing/per_rank/56/three_stage_total",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_sel_bound",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "picks $\\lambda_R=1$ (bound $1.26$, error $0.46$)",
+   "stated": 1.26,
+   "json_value": 1.263937448890436,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E1.json: selection/per_setting/podnn|n4000/bound_selected/median_exact",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_sel_err",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "picks $\\lambda_R=1$ (bound $1.26$, error $0.46$)",
+   "stated": 0.46,
+   "json_value": 0.4638950781347123,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E1.json: selection/per_setting/podnn|n4000/bound_selected/median_true_err",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_sel0_bound",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "picks $\\lambda_R=0$ (bound $12.2$, error $0.082$)",
+   "stated": 12.2,
+   "json_value": 12.24090528605424,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E1.json: selection/per_setting/podnn|n4000/error_selected/median_exact",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s57_sel0_err",
+   "section": "5.7",
+   "status": "PASS",
+   "kind": null,
+   "text": "picks $\\lambda_R=0$ (bound $12.2$, error $0.082$)",
+   "stated": 0.082,
+   "json_value": 0.08156203874454332,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E1.json: selection/per_setting/podnn|n4000/error_selected/median_true_err",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_direct_259",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "($259$~ms with reusable setup",
+   "stated": 259.0,
+   "json_value": 259.40286042168736,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: J['bench']['per_setup']['reusable']['summary']['direct']['median_time_ms']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_direct_cold_370",
+   "section": "5.8",
+   "status": "FAIL",
+   "kind": "substantive",
+   "text": "$370$~ms cold)",
+   "stated": 370.0,
+   "json_value": 337.0863515883684,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: J['bench']['per_setup']['cold']['summary']['direct']['median_time_ms']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "E2 cold setup on bench120: 337 ms; 370 ms is the E1 timing value on validation30[1:11] (E1.json timing/direct_ms/direct_cold = 369.9)",
+   "error": null
+  },
+  {
+   "id": "s58_cert_6.0",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "costs $6.0\\%$ of the solve",
+   "stated": 6.0,
+   "json_value": 6.000037435756182,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: J['bench']['per_setup']['reusable']['summary']['direct_banded']['certificate_proper_over_solve_median'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_cert_7.2",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "($7.2\\%$ including the per-query spectral data",
+   "stated": 7.2,
+   "json_value": 7.1608330802857525,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: J['bench']['per_setup']['reusable']['summary']['direct_banded']['certificate_over_solve_median'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_1.06",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "a certified direct solve takes $1.06$ times an\nuncertified one",
+   "stated": 1.06,
+   "json_value": 1.059338359438168,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: J['bench']['per_setup']['reusable']['summary']['direct_banded']['ratio_to_direct']['geo_mean_ratio']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_frac_lo",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "this fraction stays at $4.5$--$5.6\\%$ from $N=64$ to $N=4096$",
+   "stated": 4.5,
+   "json_value": 4.452669541050596,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: min(v['ratio_cert_over_solve'] for v in J['refine']['per_N'].values()) * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_frac_hi",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "this fraction stays at $4.5$--$5.6\\%$ from $N=64$ to $N=4096$",
+   "stated": 5.6,
+   "json_value": 5.596640017992098,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: max(v['ratio_cert_over_solve'] for v in J['refine']['per_N'].values()) * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_fine_478",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "would instead cost $478$~ms",
+   "stated": 478.0,
+   "json_value": 477.51909168437123,
+   "rel": "eq",
+   "tol": "round",
+   "source": "cost_model.json: remarks/spectral_data_ms/fine",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_fine_2.87",
+   "section": "5.8",
+   "status": "FAIL",
+   "kind": "substantive",
+   "text": "make the certified solve $2.87$\ntimes the uncertified one",
+   "stated": 2.87,
+   "json_value": 2.9177530447564926,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2_dryrun_fine_spectral.json: bench/per_setup/reusable/summary/direct_banded/ratio_to_direct/geo_mean_ratio",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "the dry run with the fine spectral data: geometric-mean ratio 2.92 (CI 2.88-2.96), ratio of medians 2.91; 2.87 appears in PHASE3_REPORT.md / NOTES_FOR_PAPER.md item 29 but in no result file",
+   "error": null
+  },
+  {
+   "id": "s58_1012",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "a coarse graded grid of $1012$ nodes",
+   "stated": 1012.0,
+   "json_value": 1012.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "spectral_fast.json: __import__('cgmy_cert.spectral', fromlist=['x']).FAST_L0 + 2 * __import__('cgmy_cert.spectral', fromlist=['x']).FAST_NFINE",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "grid constants of cgmy_cert/spectral.py (512 uniform + 2 x 250 graded); the result file does not store the node count",
+   "error": null
+  },
+  {
+   "id": "s58_ten_aliases",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "with ten aliases",
+   "stated": 10.0,
+   "json_value": 10.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "spectral_fast.json: min(int(k) for k in J['ratios']['summary']['K_fast_counts'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_fast_0.2pct",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "reproduces $\\beta_\\mu$ and $\\Thmu$ to $0.2\\%$",
+   "stated": 0.2,
+   "json_value": 0.22022134218975253,
+   "rel": "le",
+   "tol": "round",
+   "source": "spectral_fast.json: max(abs(J['ratios']['summary'][k][m] - 1) for k in ('beta', 'Theta') for m in ('min', 'max')) * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_etaX_0.002pct",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "changes\n$\\eta^X$ by $0.002\\%$",
+   "stated": 0.002,
+   "json_value": 0.002168262004831334,
+   "rel": "eq",
+   "tol": "round",
+   "source": "spectral_fast.json: float(np.median([v['median_ratio'] for v in J['etaX_change']['summary'].values()]) - 1) * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "median; the maximum is 0.0034%",
+   "error": null
+  },
+  {
+   "id": "s58_r80_0.032",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "takes\n$0.032$ of the direct time ($8.3$~ms)",
+   "stated": 0.032,
+   "json_value": 0.03171128001753683,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: J['bench']['per_setup']['reusable']['summary']['podg80@0.001185']['ratio_to_direct']['geo_mean_ratio']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_r80_8.3",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "takes\n$0.032$ of the direct time ($8.3$~ms)",
+   "stated": 8.3,
+   "json_value": 8.280230686068535,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: J['bench']['per_setup']['reusable']['summary']['podg80@0.001185']['median_time_ms']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_r80_all120",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "with all 120 queries accepted\nat the $N$-independent stage",
+   "stated": 120.0,
+   "json_value": 120.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E2.json: min(v['status_counts'].get('reduced_accept', 0) for k, v in J['bench']['per_setup']['reusable']['summary'].items() if k.startswith('podg80@'))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_r64_0.041",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "with $r=64$ it takes $0.041$ at $\\varepsilon_N$",
+   "stated": 0.041,
+   "json_value": 0.040601471758286135,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: J['bench']['per_setup']['reusable']['summary']['podg64@0.001185']['ratio_to_direct']['geo_mean_ratio']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_r64_102",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "(102 reduced and 18\nbanded accepts)",
+   "stated": 102.0,
+   "json_value": 102.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E2.json: J['bench']['per_setup']['reusable']['summary']['podg64@0.001185']['status_counts']['reduced_accept']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_r64_18",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "(102 reduced and 18\nbanded accepts)",
+   "stated": 18.0,
+   "json_value": 18.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E2.json: J['bench']['per_setup']['reusable']['summary']['podg64@0.001185']['status_counts']['banded_accept']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_r64_0.026",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "$0.026$ at $3\\varepsilon_N$",
+   "stated": 0.026,
+   "json_value": 0.025964879699788848,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: J['bench']['per_setup']['reusable']['summary']['podg64@0.003554']['ratio_to_direct']['geo_mean_ratio']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_r64_0.55",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "and $0.55$ at $0.3\\varepsilon_N$",
+   "stated": 0.55,
+   "json_value": 0.5539136495991797,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: J['bench']['per_setup']['reusable']['summary']['podg64@0.0003554']['ratio_to_direct']['geo_mean_ratio']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_r64_four",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "and four need correction",
+   "stated": 4.0,
+   "json_value": 4.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E2.json: J['bench']['per_setup']['reusable']['summary']['podg64@0.0003554']['corrected']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_cold_0.30",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "the ratio of the reduced methods rises to $0.30$",
+   "stated": 0.3,
+   "json_value": 0.29861704120630095,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: J['bench']['per_setup']['cold']['summary']['podg80@0.001185']['ratio_to_direct']['geo_mean_ratio']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "r = 80; r = 64 gives 0.29-0.33 (0.71 at 0.3 eps_N)",
+   "error": null
+  },
+  {
+   "id": "s58_init_proj_90",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "($90$~ms, Table~\\ref{tab:cost})",
+   "stated": 90.0,
+   "json_value": 90.26215504854918,
+   "rel": "eq",
+   "tol": "round",
+   "source": "cost_model.json: remarks/cold_direct_split_ms/initial_projection",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "the number is in cost_model.json remarks, not in Table tab:cost",
+   "error": null
+  },
+  {
+   "id": "s58_nn_1.07",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "the neural candidate costs $1.07$ times the direct solve",
+   "stated": 1.07,
+   "json_value": 1.0676993583078458,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: max(v['ratio_to_direct']['geo_mean_ratio'] for k, v in J['bench']['per_setup']['reusable']['summary'].items() if k.startswith('podnn_st@'))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s58_no_fa",
+   "section": "5.8",
+   "status": "PASS",
+   "kind": null,
+   "text": "No false accept occurs for any method or tolerance.",
+   "stated": 0.0,
+   "json_value": 0.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E2.json: sum(v.get('false_accepts', 0) for s in J['bench']['per_setup'].values() for v in s['summary'].values())",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s59_alpha_pos",
+   "section": "5.9",
+   "status": "PASS",
+   "kind": null,
+   "text": "$\\alpha_{\\rm lb}=\\rf-\\varepsilon_K>0$",
+   "stated": 0.0,
+   "json_value": 0.0072188865158197765,
+   "rel": "ge",
+   "tol": "abs:0",
+   "source": "E3.json: summary/distributions/alpha_lb_out/min",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s59_certifiable",
+   "section": "5.9",
+   "status": "PASS",
+   "kind": null,
+   "text": "Every query is certifiable",
+   "stated": 264.0,
+   "json_value": 264.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E3.json: summary/n_certifiable",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s59_alias_1e-15",
+   "section": "5.9",
+   "status": "PASS",
+   "kind": null,
+   "text": "aliasing stays below $10^{-15}$ even for $G<1$",
+   "stated": 1e-15,
+   "json_value": 5.533679189589974e-16,
+   "rel": "le",
+   "tol": "abs:0",
+   "source": "E3.json: summary/aliasing/max_alias_change_default",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s59_epsQ_out",
+   "section": "5.9",
+   "status": "PASS",
+   "kind": null,
+   "text": "(median $2\\times10^{-7}$\nagainst $1.7\\times10^{-9}$ inside the box)",
+   "stated": 2e-07,
+   "json_value": 2.0304432091393452e-07,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E3.json: summary/distributions/eps_Q_out/median",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s59_epsQ_in",
+   "section": "5.9",
+   "status": "PASS",
+   "kind": null,
+   "text": "(median $2\\times10^{-7}$\nagainst $1.7\\times10^{-9}$ inside the box)",
+   "stated": 1.7e-09,
+   "json_value": 1.6739190096430003e-09,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E3.json: summary/distributions/eps_Q_in_validation30/median",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s59_two_orders",
+   "section": "5.9",
+   "status": "PASS",
+   "kind": null,
+   "text": "grows by two orders of magnitude",
+   "stated": 2.0,
+   "json_value": 2.0838564055137376,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E3.json: np.log10(J['summary']['distributions']['eps_Q_out']['median'] / J['summary']['distributions']['eps_Q_in_validation30']['median'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s59_no_fa",
+   "section": "5.9",
+   "status": "PASS",
+   "kind": null,
+   "text": "There is no false accept for any candidate under any certificate at any\ntolerance of the sweep",
+   "stated": 0.0,
+   "json_value": 0.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E3.json: sum(sum(v[c]['false_accepts'].values()) for v in J['summary']['per_candidate'].values() for c in ('reduced', 'banded', 'exact')) + sum(sum(v['three_stage_false_accepts'].values()) for v in J['summary']['per_candidate'].values())",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s59_210",
+   "section": "5.9",
+   "status": "PASS",
+   "kind": null,
+   "text": "is within one cent\non 210 of the 264 queries",
+   "stated": 210.0,
+   "json_value": 210.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E3.json: J['breakdown']['per_candidate']['podg80']['all']['n_true_err_le_eps_N']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s59_193",
+   "section": "5.9",
+   "status": "PASS",
+   "kind": null,
+   "text": "the certificate accepts 193 of them (92\\%)",
+   "stated": 193.0,
+   "json_value": 193.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E3.json: J['breakdown']['per_candidate']['podg80']['all']['exact_accepts']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s59_92",
+   "section": "5.9",
+   "status": "PASS",
+   "kind": null,
+   "text": "the certificate accepts 193 of them (92\\%)",
+   "stated": 92.0,
+   "json_value": 91.9047619047619,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E3.json: J['breakdown']['per_candidate']['podg80']['all']['exact_accepts'] / J['breakdown']['per_candidate']['podg80']['all']['n_true_err_le_eps_N'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s59_17",
+   "section": "5.9",
+   "status": "PASS",
+   "kind": null,
+   "text": "with 17 false rejects",
+   "stated": 17.0,
+   "json_value": 17.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E3.json: J['breakdown']['per_candidate']['podg80']['exact_certificate']['fp']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s59_eff_ten",
+   "section": "5.9",
+   "status": "FAIL",
+   "kind": "substantive",
+   "text": "from the effectivity of about ten",
+   "stated": 10.0,
+   "json_value": 6.305178417943143,
+   "rel": "eq",
+   "tol": 0.3,
+   "source": "E3.json: float(np.median([r['cands']['podg80']['bounds']['exact'] / r['cands']['podg80']['true_err'] for r in J['rows']]))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "median effectivity of the exact certificate for r = 80 over the 264 OOD queries: 6.3",
+   "error": null
+  },
+  {
+   "id": "s59_discards_210",
+   "section": "5.9",
+   "status": "PASS",
+   "kind": null,
+   "text": "discards all 210 working queries",
+   "stated": 210.0,
+   "json_value": 210.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E3.json: J['breakdown']['per_candidate']['podg80']['naive_reject_outside_box']['fp']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s59_prec_naive",
+   "section": "5.9",
+   "status": "PASS",
+   "kind": null,
+   "text": "(precision $0.20$ against $0.76$)",
+   "stated": 0.2,
+   "json_value": 0.20454545454545456,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E3.json: J['breakdown']['per_candidate']['podg80']['naive_reject_outside_box']['precision']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s59_prec_cert",
+   "section": "5.9",
+   "status": "PASS",
+   "kind": null,
+   "text": "(precision $0.20$ against $0.76$)",
+   "stated": 0.76,
+   "json_value": 0.7605633802816901,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E3.json: J['breakdown']['per_candidate']['podg80']['exact_certificate']['precision']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s59_nn_all_fail",
+   "section": "5.9",
+   "status": "PASS",
+   "kind": null,
+   "text": "every space--time POD-NN error exceeds\n$\\varepsilon_N$ in and out of the box",
+   "stated": 0.0,
+   "json_value": 0.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E3.json: sum(J['breakdown']['per_candidate'][k]['all']['n_true_err_le_eps_N'] for k in J['breakdown']['per_candidate'] if 'spacetime' in k or k.startswith('podnn'))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_direct_260",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "The direct solve averages $260$~ms per query",
+   "stated": 260.0,
+   "json_value": 260.0676540392451,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: J['methods']['direct']['C1_mean_s'] * 1000",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_r80_9.0",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "Certified POD--Galerkin with $r=80$ averages $9.0$~ms",
+   "stated": 9.0,
+   "json_value": 9.029159944318234,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: J['methods']['podg80']['C1_mean_s'] * 1000",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_r80_reduced_accept",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "$99.77\\%$ of the queries are settled at the\nreduced stage, $0.14\\%$ at the banded stage, $0.02\\%$ at the exact stage",
+   "stated": 99.77,
+   "json_value": 99.77000000000001,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: J['methods']['podg80']['status_fractions']['reduced_accept'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_r80_banded_accept",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "$99.77\\%$ of the queries are settled at the\nreduced stage, $0.14\\%$ at the banded stage, $0.02\\%$ at the exact stage",
+   "stated": 0.14,
+   "json_value": 0.13999999999999999,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: J['methods']['podg80']['status_fractions']['banded_accept'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_r80_exact_accept",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "$99.77\\%$ of the queries are settled at the\nreduced stage, $0.14\\%$ at the banded stage, $0.02\\%$ at the exact stage",
+   "stated": 0.02,
+   "json_value": 0.02,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: J['methods']['podg80']['status_fractions']['exact_accept'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_r80_corr",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "and $0.07\\%$ are rejected\nand corrected",
+   "stated": 0.07,
+   "json_value": 0.06999999999999999,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: J['methods']['podg80']['fraction_corrected'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_r64_mean",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "with $r=64$ the mean is $21.2$~ms",
+   "stated": 21.2,
+   "json_value": 21.1922018436715,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: J['methods']['podg64']['C1_mean_s'] * 1000",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_r64_median",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "(median $7.2$~ms;",
+   "stated": 7.2,
+   "json_value": 7.183403708040714,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: J['methods']['podg64']['median_s'] * 1000",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_r64_red",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "$89.7\\%$ reduced, $9.8\\%$ banded",
+   "stated": 89.7,
+   "json_value": 89.73,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: J['methods']['podg64']['status_fractions']['reduced_accept'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_r64_band",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "$89.7\\%$ reduced, $9.8\\%$ banded",
+   "stated": 9.8,
+   "json_value": 9.790000000000001,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: J['methods']['podg64']['status_fractions']['banded_accept'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_r64_corr",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "$0.35\\%$ corrected)",
+   "stated": 0.35,
+   "json_value": 0.35000000000000003,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: J['methods']['podg64']['fraction_corrected'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_offline_1530",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "The offline cost of the reduced model is about $1530$~s",
+   "stated": 1530.0,
+   "json_value": 1533.0050133345649,
+   "rel": "eq",
+   "tol": 0.01,
+   "source": "E4.json: offline/C0_s/podg/total",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_offline_references",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "reference\ntrajectories $208$~s, POD $797$~s, EIM $65$~s, cell constants $425$~s, offline tensors $39$~s",
+   "stated": 208.0,
+   "json_value": 207.5222883373499,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: offline/C0_s/podg/references",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_offline_pod",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "reference\ntrajectories $208$~s, POD $797$~s, EIM $65$~s, cell constants $425$~s, offline tensors $39$~s",
+   "stated": 797.0,
+   "json_value": 796.8496687412262,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: offline/C0_s/podg/pod",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_offline_eim",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "reference\ntrajectories $208$~s, POD $797$~s, EIM $65$~s, cell constants $425$~s, offline tensors $39$~s",
+   "stated": 65.0,
+   "json_value": 64.9475884437561,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: offline/C0_s/podg/eim",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_offline_cells",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "reference\ntrajectories $208$~s, POD $797$~s, EIM $65$~s, cell constants $425$~s, offline tensors $39$~s",
+   "stated": 425.0,
+   "json_value": 424.737470719032,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: offline/C0_s/podg/cells",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_offline_tensors",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "reference\ntrajectories $208$~s, POD $797$~s, EIM $65$~s, cell constants $425$~s, offline tensors $39$~s",
+   "stated": 39.0,
+   "json_value": 38.947997093200684,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: offline/C0_s/podg/tensors",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_T80_1533",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "$T(Q)=1533\\,\\mathrm s+9.0\\,\\mathrm{ms}\\cdot Q$",
+   "stated": 1533.0,
+   "json_value": 1533.0050133345649,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: methods/podg80/C0_s",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_T64_21.2",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "$1533\\,\\mathrm s+21.2\\,\\mathrm{ms}\\cdot Q$",
+   "stated": 21.2,
+   "json_value": 21.1922018436715,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: J['methods']['podg64']['C1_mean_s'] * 1000",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_be80",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "after about $6100$ and $6400$ queries",
+   "stated": 6100.0,
+   "json_value": 6106.653160351096,
+   "rel": "eq",
+   "tol": 0.01,
+   "source": "E4.json: methods/podg80/break_even_queries",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_be64",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "after about $6100$ and $6400$ queries",
+   "stated": 6400.0,
+   "json_value": 6417.591256214361,
+   "rel": "eq",
+   "tol": 0.01,
+   "source": "E4.json: methods/podg64/break_even_queries",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_nn_282",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "its online cost exceeds the direct solve ($282$~ms",
+   "stated": 282.0,
+   "json_value": 282.00202034888787,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: J['methods']['podnn_st']['C1_mean_s'] * 1000",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_nn_all_corrected",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "since\nevery query is corrected",
+   "stated": 1.0,
+   "json_value": 1.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E4.json: methods/podnn_st/fraction_corrected",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s510_nn_offline",
+   "section": "5.10",
+   "status": "PASS",
+   "kind": null,
+   "text": "its offline cost ($2.7\\times10^4$~s)",
+   "stated": 27000.0,
+   "json_value": 26732.27757303696,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: methods/podnn_st/C0_s",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "srep_numpy",
+   "section": "5.10 reproducibility",
+   "status": "PASS",
+   "kind": null,
+   "text": "(Python 3.10, NumPy 1.26, SciPy 1.15, mpmath\n1.3, PyTorch 2.14 on CPU)",
+   "stated": 1.26,
+   "json_value": 1.26,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E2.json: float('.'.join(J['bench']['hardware']['numpy'].split('.')[:2]))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "srep_scipy",
+   "section": "5.10 reproducibility",
+   "status": "PASS",
+   "kind": null,
+   "text": "(Python 3.10, NumPy 1.26, SciPy 1.15, mpmath\n1.3, PyTorch 2.14 on CPU)",
+   "stated": 1.15,
+   "json_value": 1.15,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E2.json: float('.'.join(J['bench']['hardware']['scipy'].split('.')[:2]))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "srep_python",
+   "section": "5.10 reproducibility",
+   "status": "PASS",
+   "kind": null,
+   "text": "(Python 3.10, NumPy 1.26, SciPy 1.15, mpmath\n1.3, PyTorch 2.14 on CPU)",
+   "stated": 3.1,
+   "json_value": 3.1,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E2.json: float('.'.join(J['bench']['hardware']['python'].split('.')[:2]))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "srep_torch",
+   "section": "5.10 reproducibility",
+   "status": "PASS",
+   "kind": null,
+   "text": "(Python 3.10, NumPy 1.26, SciPy 1.15, mpmath\n1.3, PyTorch 2.14 on CPU)",
+   "stated": 2.14,
+   "json_value": 2.14,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E2.json: float('.'.join(J['bench']['hardware']['torch'].split('+')[0].split('.')[:2]))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "srep_tests66",
+   "section": "5.10 reproducibility",
+   "status": "FAIL",
+   "kind": "substantive",
+   "text": "its test suite (66 tests,",
+   "stated": 66.0,
+   "json_value": 67.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "ARCHIVE_CHECK.json: sum(int(n) for n in re.findall(r'(\\d+) (?:passed|skipped|failed|xfailed|xpassed)', J['steps']['pytest_quick']['tail'].splitlines()[-1]))",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "the clean-clone run collects 67 tests (51 passed, 16 skipped without data/)",
+   "error": null
+  },
+  {
+   "id": "srep_459",
+   "section": "5.10 reproducibility",
+   "status": "FAIL",
+   "kind": "no source",
+   "text": "the 459-coordinate\nregression against the earlier implementation",
+   "stated": 459.0,
+   "json_value": null,
+   "rel": "eq",
+   "tol": "round",
+   "source": "-",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "tests/test_v8_regression*.py against v8_frozen; no result file",
+   "error": null
+  },
+  {
+   "id": "s6_audit459",
+   "section": "6",
+   "status": "FAIL",
+   "kind": "no source",
+   "text": "an audit of 459 parameter points",
+   "stated": 459.0,
+   "json_value": null,
+   "rel": "eq",
+   "tol": "round",
+   "source": "-",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "the v8 audit (v8_frozen); no v9 result file",
+   "error": null
+  },
+  {
+   "id": "s6_frac_lo",
+   "section": "6",
+   "status": "FAIL",
+   "kind": "rounding",
+   "text": "$5$--$6\\%$ of the direct solve at every resolution\ntested",
+   "stated": 5.0,
+   "json_value": 4.452669541050596,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: min(v['ratio_cert_over_solve'] for v in J['refine']['per_N'].values()) * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "4.45-5.60% (Section 5.8 says 4.5-5.6%)",
+   "error": null
+  },
+  {
+   "id": "s6_frac_hi",
+   "section": "6",
+   "status": "PASS",
+   "kind": null,
+   "text": "$5$--$6\\%$ of the direct solve at every resolution\ntested",
+   "stated": 6.0,
+   "json_value": 5.596640017992098,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: max(v['ratio_cert_over_solve'] for v in J['refine']['per_N'].values()) * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s6_0.03",
+   "section": "6",
+   "status": "PASS",
+   "kind": null,
+   "text": "a certified one-cent price in $0.03$ of the direct time",
+   "stated": 0.03,
+   "json_value": 0.03171128001753683,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2.json: J['bench']['per_setup']['reusable']['summary']['podg80@0.001185']['ratio_to_direct']['geo_mean_ratio']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s6_99.8",
+   "section": "6",
+   "status": "PASS",
+   "kind": null,
+   "text": "on $10^4$ queries $99.8\\%$ of the verdicts",
+   "stated": 99.8,
+   "json_value": 99.77000000000001,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E4.json: J['methods']['podg80']['status_fractions']['reduced_accept'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s6_factor47",
+   "section": "6",
+   "status": "FAIL",
+   "kind": "substantive",
+   "text": "comes within a factor\n$47$ of the tolerance",
+   "stated": 47.0,
+   "json_value": 45.97773494849992,
+   "rel": "ge",
+   "tol": "round",
+   "source": "E2_4_podnn_N1024.json: min(J['results'][k]['summary']['exact_AI']['median'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)]) / R('PRODUCTION_CONFIG.json')['eps_N']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "as in the abstract: 'no network comes within a factor 47' requires every network >= 47; seed 2 of the space-time POD-NN is at 46.0 eps_N",
+   "error": null
+  },
+  {
+   "id": "s6_basis_3e-3",
+   "section": "6",
+   "status": "PASS",
+   "kind": null,
+   "text": "the basis it predicts in certifies at $3\\times10^{-3}$",
+   "stated": 0.003,
+   "json_value": 0.003235310636773737,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E2_4_podnn_N1024.json: J['results']['projection|n4000']['summary']['exact_AI']['median']",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s6_rank56",
+   "section": "6",
+   "status": "PASS",
+   "kind": null,
+   "text": "passes at rank $56$--$64$",
+   "stated": 56.0,
+   "json_value": 56.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "N1024.json: min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if J['table_ext']['800']['summary'][r]['exact_AI']['accepted'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]] > 0)",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s6_rank64",
+   "section": "6",
+   "status": "PASS",
+   "kind": null,
+   "text": "passes at rank $56$--$64$",
+   "stated": 64.0,
+   "json_value": 64.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "N1024.json: max(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if min(J['table_ext']['800']['summary'][r][c]['accepted'][[k for k in J['table_ext']['800']['summary']['8']['reduced']['accepted'] if abs(float(k) - 0.001185) < 1e-6][0]] for c in ('reduced', 'banded_AI', 'exact_AI')) < 30)",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "read as the band from the first acceptance (r = 56, exact) to the last rank with a rejection (r = 64, reduced 26/30)",
+   "error": null
+  },
+  {
+   "id": "s6_no_fa_1e4",
+   "section": "6",
+   "status": "FAIL",
+   "kind": "no source",
+   "text": "no false accept in $10^4$ in-box",
+   "stated": 10000.0,
+   "json_value": null,
+   "rel": "eq",
+   "tol": "round",
+   "source": "-",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "see abs_no_fa_1e4",
+   "error": null
+  },
+  {
+   "id": "s6_no_fa_264",
+   "section": "6",
+   "status": "PASS",
+   "kind": null,
+   "text": "and\n$264$ out-of-box queries",
+   "stated": 264.0,
+   "json_value": 264.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "E3.json: sum(sum(v[c]['false_accepts'].values()) for v in J['summary']['per_candidate'].values() for c in ('reduced', 'banded', 'exact')) + sum(sum(v['three_stage_false_accepts'].values()) for v in J['summary']['per_candidate'].values()) + 264",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "264 queries with zero false accepts",
+   "error": null
+  },
+  {
+   "id": "s6_92",
+   "section": "6",
+   "status": "PASS",
+   "kind": null,
+   "text": "the same certificate accepts $92\\%$ of the queries on which the reduced\nmodel still delivers one cent",
+   "stated": 92.0,
+   "json_value": 91.9047619047619,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E3.json: J['breakdown']['per_candidate']['podg80']['all']['exact_accepts'] / J['breakdown']['per_candidate']['podg80']['all']['n_true_err_le_eps_N'] * 100",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s6_N1024",
+   "section": "6",
+   "status": "PASS",
+   "kind": null,
+   "text": "including two corners that\nrequired $N=1024$",
+   "stated": 1024.0,
+   "json_value": 1024.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "PRODUCTION_CONFIG.json: N",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "th_mmin",
+   "section": "theory",
+   "status": "PASS",
+   "kind": null,
+   "text": "$m_{\\min}:=\\min_\\vartheta \\sym{m}=\\sym{m}(\\pi)=2/15$",
+   "stated": 0.13333333333333333,
+   "json_value": 0.13333333333333336,
+   "rel": "eq",
+   "tol": 1e-09,
+   "source": "E0.json: J['E0.2']['64']['rows'][0]['r_mmin'] / 0.01",
+   "where": [
+    "manuscript_v9/theory/lem_periodisation.tex"
+   ],
+   "note": "r m_min / r at a query with r = 0.01 (rem: vertex_000)",
+   "error": null
+  },
+  {
+   "id": "th_c1_explicit",
+   "section": "theory",
+   "status": "FAIL",
+   "kind": "substantive",
+   "text": "the explicit constant $c_1=5.1\\times10^{-5}$",
+   "stated": 5.1e-05,
+   "json_value": 3.057961528820152e-05,
+   "rel": "eq",
+   "tol": "round",
+   "source": "coercivity_c1_provable.json: c1_provable",
+   "where": [
+    "manuscript_v9/theory/rem_coercivity.tex"
+   ],
+   "note": "coercivity_c1_provable.json (Phase 1, the provable constant of the explicit argument) gives 3.06e-5 at (C, G, M, Y, r) = (0.05, 5, 9, 1.8, 0.01)",
+   "error": null
+  },
+  {
+   "id": "th_c1_v8",
+   "section": "theory",
+   "status": "PASS",
+   "kind": null,
+   "text": "$1.6\\times10^{-8}$ for the earlier high-frequency argument",
+   "stated": 1.6e-08,
+   "json_value": 1.6e-08,
+   "rel": "eq",
+   "tol": "round",
+   "source": "coercivity_c1.json: v8_c1",
+   "where": [
+    "manuscript_v9/theory/rem_coercivity.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "th_c1_opt",
+   "section": "theory",
+   "status": "PASS",
+   "kind": null,
+   "text": "is $r_{\\min}/(1+M_{\\max}^{Y_{\\max}}+G_{\\max}^{Y_{\\max}})=1.40\\times10^{-4}$",
+   "stated": 0.00014,
+   "json_value": 0.00014022215462262315,
+   "rel": "eq",
+   "tol": "round",
+   "source": "coercivity_c1.json: c1_analytic_remark33",
+   "where": [
+    "manuscript_v9/theory/rem_coercivity.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "th_eim_1e-4",
+   "section": "theory",
+   "status": "FAIL",
+   "kind": "no source",
+   "text": "it reaches $10^{-4}$ in the\n$M_I$ norm at $N=512$",
+   "stated": 0.0001,
+   "json_value": null,
+   "rel": "eq",
+   "tol": "round",
+   "source": "-",
+   "where": [
+    "manuscript_v9/theory/thm_eim_cert.tex"
+   ],
+   "note": "order-of-magnitude estimate in the remark; no result file evaluates the allowance at N = 512 for this purpose",
+   "error": null
+  },
+  {
+   "id": "th_eim_0.99",
+   "section": "theory",
+   "status": "PASS",
+   "kind": null,
+   "text": "the safety factor $0.99$",
+   "stated": 0.99,
+   "json_value": 0.9900000000000001,
+   "rel": "eq",
+   "tol": "round",
+   "source": "N1024.json: J['cells']['betabar']['C0Y0m0']['betabar'] / (0.05 * J['cells']['betabar']['C0Y0m0']['beta_tilde_min'])",
+   "where": [
+    "manuscript_v9/theory/thm_eim_cert.tex"
+   ],
+   "note": "",
+   "error": null
+  }
+ ]
+}

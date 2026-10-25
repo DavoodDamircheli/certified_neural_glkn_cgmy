@@ -258,3 +258,8 @@
     5.3-6.2 ms for r <= 48 (cheap rejection now costs ~3.5 ms instead of ~200 ms), 154 ms at r = 56 (banded/exact stages),
     and equal to the reduced certificate for r >= 62 (4.4-8.3 ms). The uncertified direct solve takes 370 ms cold and
     167 ms warm.
+
+33. **Number check (Phase 4, item 2).** `results/NUMBER_CHECK.md` lists every number in the abstract, Sections 2.5,
+    4.1, 4.3-4.5, 5.1-5.10, 6 and theory/*.tex that the result files do not support, with the value the result file
+    gives. 264 claims: 230 pass, 15 substantive mismatches, 14 numbers that no result file holds, 5 rounding-level.
+    Regenerate with `python3 scripts/make_paper_claims.py && python3 scripts/check_numbers.py`.
