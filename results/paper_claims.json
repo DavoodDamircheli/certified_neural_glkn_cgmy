@@ -535,16 +535,6 @@
    "tol": "abs:0"
   },
   {
-   "id": "s44_online_3e-15",
-   "section": "4.4",
-   "text": "to $3\\times10^{-15}$ for $O(1)$ residuals",
-   "json": "N1024.json",
-   "path": "checks/online_vs_full_perturbed/max_uncompressed_eta_rel_diff",
-   "value": "3e-15",
-   "tol": "round",
-   "rel": "le"
-  },
-  {
    "id": "s44_online_2e-10",
    "section": "4.4",
    "text": "to $2\\times10^{-10}$ for POD--Galerkin candidates",
@@ -794,7 +784,7 @@
   {
    "id": "s51_audit48",
    "section": "5.1",
-   "text": "48 audit queries (first 16 per stratum of the earlier audit)",
+   "text": "48\naudit queries of the earlier version with perturbed initial vectors",
    "json": "E0.json",
    "expr": "len(J['E0.3']['effectivity']['64'])",
    "value": 48,
@@ -839,7 +829,7 @@
   {
    "id": "s51_bench120",
    "section": "5.1",
-   "text": "120 Sobol queries; $10^4$ Sobol queries",
+   "text": "120 Sobol benchmark queries",
    "json": "E2.json",
    "path": "bench/per_setup/reusable/summary/direct/ratio_to_direct/n_queries",
    "value": 120,
@@ -848,7 +838,7 @@
   {
    "id": "s51_e4_1e4",
    "section": "5.1",
-   "text": "120 Sobol queries; $10^4$ Sobol queries",
+   "text": "$10^4$ Sobol queries for the\nmulti-query study",
    "json": "E4.json",
    "path": "meta/n_queries",
    "value": "1e4",
@@ -857,7 +847,7 @@
   {
    "id": "s51_ood200",
    "section": "5.1",
-   "text": "200 Sobol queries outside the box and 64 extended vertices",
+   "text": "200 Sobol queries outside the box plus 64 extended vertices",
    "json": "E3.json",
    "path": "setup/n_sobol",
    "value": 200,
@@ -866,11 +856,101 @@
   {
    "id": "s51_ood64",
    "section": "5.1",
-   "text": "200 Sobol queries outside the box and 64 extended vertices",
+   "text": "200 Sobol queries outside the box plus 64 extended vertices",
    "json": "E3.json",
    "path": "setup/n_vertices",
    "value": 64,
    "tol": "abs:0"
+  },
+  {
+   "id": "s51_N1024",
+   "section": "5.1",
+   "text": "the configuration fixed there, $N=1024$, $N_T=240$,\n$\\varepsilon_N=1.18\\times10^{-3}$",
+   "json": "PRODUCTION_CONFIG.json",
+   "path": "N",
+   "value": 1024,
+   "tol": "abs:0",
+   "note": "was s6_N1024; the conclusion no longer names N = 1024"
+  },
+  {
+   "id": "s51_NT240",
+   "section": "5.1",
+   "text": "the configuration fixed there, $N=1024$, $N_T=240$,\n$\\varepsilon_N=1.18\\times10^{-3}$",
+   "json": "PRODUCTION_CONFIG.json",
+   "path": "N_T",
+   "value": 240,
+   "tol": "abs:0"
+  },
+  {
+   "id": "s51_epsN",
+   "section": "5.1",
+   "text": "the configuration fixed there, $N=1024$, $N_T=240$,\n$\\varepsilon_N=1.18\\times10^{-3}$",
+   "json": "PRODUCTION_CONFIG.json",
+   "path": "eps_N",
+   "value": "1.18e-3",
+   "tol": "round"
+  },
+  {
+   "id": "s3_ratio_sym_lo",
+   "section": "3",
+   "text": "$\\lambda_{\\min}(S_I)/\\smin(\\mu)\\in[1.003,17.8]$ and $\\lambda_{\\min}(S_I)/(\\rf m_{\\min})\\in[7.5,133]$",
+   "json": "E0.json",
+   "expr": "min(J['E0.2'][N]['ratio_symbol'][0] for N in J['E0.2'])",
+   "value": "1.003",
+   "tol": "round",
+   "note": "min over the 288 queries at N = 64, 256, 1024"
+  },
+  {
+   "id": "s3_ratio_sym_hi",
+   "section": "3",
+   "text": "$\\lambda_{\\min}(S_I)/\\smin(\\mu)\\in[1.003,17.8]$ and $\\lambda_{\\min}(S_I)/(\\rf m_{\\min})\\in[7.5,133]$",
+   "json": "E0.json",
+   "attention": "17.745 rounds to 17.7, not 17.8 (an upper end that encloses the data, so checked as an upper bound)",
+   "expr": "max(J['E0.2'][N]['ratio_symbol'][2] for N in J['E0.2'])",
+   "value": "17.8",
+   "tol": "round",
+   "rel": "le",
+   "note": "max over N = 64, 256, 1024 is 17.745 (N = 64), which rounds to 17.7; the stated 17.8 encloses it"
+  },
+  {
+   "id": "s3_ratio_rm_lo",
+   "section": "3",
+   "text": "$\\lambda_{\\min}(S_I)/\\smin(\\mu)\\in[1.003,17.8]$ and $\\lambda_{\\min}(S_I)/(\\rf m_{\\min})\\in[7.5,133]$",
+   "json": "E0.json",
+   "expr": "min(J['E0.2'][N]['ratio_rm'][0] for N in J['E0.2'])",
+   "value": "7.5",
+   "tol": "round"
+  },
+  {
+   "id": "s3_ratio_rm_hi",
+   "section": "3",
+   "text": "$\\lambda_{\\min}(S_I)/\\smin(\\mu)\\in[1.003,17.8]$ and $\\lambda_{\\min}(S_I)/(\\rf m_{\\min})\\in[7.5,133]$",
+   "json": "E0.json",
+   "expr": "max(J['E0.2'][N]['ratio_rm'][2] for N in J['E0.2'])",
+   "value": "133",
+   "tol": "round"
+  },
+  {
+   "id": "s52_sum_ratio_lo",
+   "section": "5.2",
+   "text": "(query, $N$) pairs, with\n$\\lambda_{\\min}(S_I)/\\smin(\\mu)\\in[1.003,17.8]$",
+   "json": "E0.json",
+   "expr": "min(J['E0.2'][N]['ratio_symbol'][0] for N in J['E0.2'])",
+   "value": "1.003",
+   "tol": "round",
+   "note": "verification summary of the main text"
+  },
+  {
+   "id": "s52_sum_ratio_hi",
+   "section": "5.2",
+   "text": "(query, $N$) pairs, with\n$\\lambda_{\\min}(S_I)/\\smin(\\mu)\\in[1.003,17.8]$",
+   "json": "E0.json",
+   "attention": "17.745 rounds to 17.7, not 17.8 (an upper end that encloses the data, so checked as an upper bound)",
+   "expr": "max(J['E0.2'][N]['ratio_symbol'][2] for N in J['E0.2'])",
+   "value": "17.8",
+   "tol": "round",
+   "rel": "le",
+   "note": "max over N = 64, 256, 1024 is 17.745 (N = 64), which rounds to 17.7; the stated 17.8 encloses it"
   },
   {
    "id": "s52_factor_lo",
@@ -1813,7 +1893,7 @@
   {
    "id": "s57_sel_bound",
    "section": "5.7",
-   "text": "picks $\\lambda_R=1$ (bound $1.26$, error $0.46$)",
+   "text": "(bound $1.26$, error $0.46$, against bound $12.2$,\nerror $0.082$ when selecting by the true error",
    "json": "E1.json",
    "path": "selection/per_setting/podnn|n4000/bound_selected/median_exact",
    "value": "1.26",
@@ -1822,7 +1902,7 @@
   {
    "id": "s57_sel_err",
    "section": "5.7",
-   "text": "picks $\\lambda_R=1$ (bound $1.26$, error $0.46$)",
+   "text": "(bound $1.26$, error $0.46$, against bound $12.2$,\nerror $0.082$ when selecting by the true error",
    "json": "E1.json",
    "path": "selection/per_setting/podnn|n4000/bound_selected/median_true_err",
    "value": "0.46",
@@ -1831,7 +1911,7 @@
   {
    "id": "s57_sel0_bound",
    "section": "5.7",
-   "text": "picks $\\lambda_R=0$ (bound $12.2$, error $0.082$)",
+   "text": "(bound $1.26$, error $0.46$, against bound $12.2$,\nerror $0.082$ when selecting by the true error",
    "json": "E1.json",
    "path": "selection/per_setting/podnn|n4000/error_selected/median_exact",
    "value": "12.2",
@@ -1840,7 +1920,7 @@
   {
    "id": "s57_sel0_err",
    "section": "5.7",
-   "text": "picks $\\lambda_R=0$ (bound $12.2$, error $0.082$)",
+   "text": "(bound $1.26$, error $0.46$, against bound $12.2$,\nerror $0.082$ when selecting by the true error",
    "json": "E1.json",
    "path": "selection/per_setting/podnn|n4000/error_selected/median_true_err",
    "value": "0.082",
@@ -2074,7 +2154,7 @@
   {
    "id": "s58_cold_0.30",
    "section": "5.8",
-   "text": "the ratio of the reduced methods rises to $0.30$",
+   "text": "without reusable setup the ratio rises to $0.30$",
    "json": "E2.json",
    "expr": "J['bench']['per_setup']['cold']['summary']['podg80@0.001185']['ratio_to_direct']['geo_mean_ratio']",
    "value": "0.30",
@@ -2084,12 +2164,12 @@
   {
    "id": "s58_init_proj_90",
    "section": "5.8",
-   "text": "($90$~ms, Table~\\ref{tab:cost})",
+   "text": "because the query-independent initial projection, $90$~ms, is rebuilt inside the timer",
    "json": "cost_model.json",
    "path": "remarks/cold_direct_split_ms/initial_projection",
    "value": "90",
    "tol": "round",
-   "note": "the number is in cost_model.json remarks, not in Table tab:cost"
+   "note": "the number is in cost_model.json remarks"
   },
   {
    "id": "s58_nn_1.07",
@@ -2603,7 +2683,7 @@
   {
    "id": "s6_0.03",
    "section": "6",
-   "text": "a certified one-cent price in $0.03$ of the direct time",
+   "text": "at $0.03$ of the direct time from rank $80$ on",
    "json": "E2.json",
    "expr": "J['bench']['per_setup']['reusable']['summary']['podg80@0.001185']['ratio_to_direct']['geo_mean_ratio']",
    "value": "0.03",
@@ -2711,15 +2791,6 @@
    "json": "E3.json",
    "expr": "J['breakdown']['per_candidate']['podg80']['all']['n_true_err_le_eps_N']",
    "value": 210,
-   "tol": "abs:0"
-  },
-  {
-   "id": "s6_N1024",
-   "section": "6",
-   "text": "including two corners that\nrequired $N=1024$",
-   "json": "PRODUCTION_CONFIG.json",
-   "path": "N",
-   "value": 1024,
    "tol": "abs:0"
   },
   {

@@ -1,7 +1,7 @@
 {
- "n": 296,
+ "n": 303,
  "n_fail": 0,
- "manuscript_commit": "374f65e",
+ "manuscript_commit": "071ee45",
  "n_source_backed": 14,
  "n_fail_by_kind": {
   "substantive": 0,
@@ -784,7 +784,7 @@
    "tol": "abs:0",
    "source": "v8_frozen/models/deeponet_final.pt: sum(v.numel() for v in J['model_state_dict'].values())",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "parameter count of the v8 checkpoint's state dict (torch.load, weights only)",
    "error": null
@@ -803,7 +803,7 @@
    "tol": "abs:0",
    "source": "deeponet_old_vs_new.json: summary/n",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -822,7 +822,7 @@
    "tol": "round",
    "source": "deeponet_old_vs_new.json: summary/median_true_err",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -841,7 +841,7 @@
    "tol": "round",
    "source": "deeponet_old_vs_new.json: summary/median_rel_true_err",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -860,7 +860,7 @@
    "tol": "round",
    "source": "deeponet_old_vs_new.json: summary/median_bound_etaS",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -879,7 +879,7 @@
    "tol": "abs:0",
    "source": "deeponet_old_vs_new.json: summary/false_accepts",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -898,7 +898,7 @@
    "tol": "abs:0",
    "source": "deeponet_old_vs_new.json: min(v.get('reject_cheap', 0) for v in J['summary']['status_counts_two_stage'].values())",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -1049,25 +1049,6 @@
    "rel": "eq",
    "tol": "abs:0",
    "source": "E1.json: timing/per_rank/128/rho/1",
-   "where": [
-    "manuscript_v9/main_v9.tex"
-   ],
-   "note": "",
-   "error": null
-  },
-  {
-   "id": "s44_online_3e-15",
-   "section": "4.4",
-   "status": "PASS",
-   "kind": null,
-   "evidence": "result file",
-   "attention": "",
-   "text": "to $3\\times10^{-15}$ for $O(1)$ residuals",
-   "stated": 3e-15,
-   "json_value": 2.7009181496580825e-15,
-   "rel": "le",
-   "tol": "round",
-   "source": "N1024.json: checks/online_vs_full_perturbed/max_uncompressed_eta_rel_diff",
    "where": [
     "manuscript_v9/main_v9.tex"
    ],
@@ -1575,7 +1556,7 @@
    "kind": null,
    "evidence": "result file",
    "attention": "",
-   "text": "48 audit queries (first 16 per stratum of the earlier audit)",
+   "text": "48\naudit queries of the earlier version with perturbed initial vectors",
    "stated": 48.0,
    "json_value": 48.0,
    "rel": "eq",
@@ -1670,7 +1651,7 @@
    "kind": null,
    "evidence": "result file",
    "attention": "",
-   "text": "120 Sobol queries; $10^4$ Sobol queries",
+   "text": "120 Sobol benchmark queries",
    "stated": 120.0,
    "json_value": 120.0,
    "rel": "eq",
@@ -1689,7 +1670,7 @@
    "kind": null,
    "evidence": "result file",
    "attention": "",
-   "text": "120 Sobol queries; $10^4$ Sobol queries",
+   "text": "$10^4$ Sobol queries for the\nmulti-query study",
    "stated": 10000.0,
    "json_value": 10000.0,
    "rel": "eq",
@@ -1708,7 +1689,7 @@
    "kind": null,
    "evidence": "result file",
    "attention": "",
-   "text": "200 Sobol queries outside the box and 64 extended vertices",
+   "text": "200 Sobol queries outside the box plus 64 extended vertices",
    "stated": 200.0,
    "json_value": 200.0,
    "rel": "eq",
@@ -1727,7 +1708,7 @@
    "kind": null,
    "evidence": "result file",
    "attention": "",
-   "text": "200 Sobol queries outside the box and 64 extended vertices",
+   "text": "200 Sobol queries outside the box plus 64 extended vertices",
    "stated": 64.0,
    "json_value": 64.0,
    "rel": "eq",
@@ -1737,6 +1718,177 @@
     "manuscript_v9/main_v9.tex"
    ],
    "note": "",
+   "error": null
+  },
+  {
+   "id": "s51_N1024",
+   "section": "5.1",
+   "status": "PASS",
+   "kind": null,
+   "evidence": "result file",
+   "attention": "",
+   "text": "the configuration fixed there, $N=1024$, $N_T=240$,\n$\\varepsilon_N=1.18\\times10^{-3}$",
+   "stated": 1024.0,
+   "json_value": 1024.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "PRODUCTION_CONFIG.json: N",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "was s6_N1024; the conclusion no longer names N = 1024",
+   "error": null
+  },
+  {
+   "id": "s51_NT240",
+   "section": "5.1",
+   "status": "PASS",
+   "kind": null,
+   "evidence": "result file",
+   "attention": "",
+   "text": "the configuration fixed there, $N=1024$, $N_T=240$,\n$\\varepsilon_N=1.18\\times10^{-3}$",
+   "stated": 240.0,
+   "json_value": 240.0,
+   "rel": "eq",
+   "tol": "abs:0",
+   "source": "PRODUCTION_CONFIG.json: N_T",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s51_epsN",
+   "section": "5.1",
+   "status": "PASS",
+   "kind": null,
+   "evidence": "result file",
+   "attention": "",
+   "text": "the configuration fixed there, $N=1024$, $N_T=240$,\n$\\varepsilon_N=1.18\\times10^{-3}$",
+   "stated": 0.00118,
+   "json_value": 0.0011846335568048742,
+   "rel": "eq",
+   "tol": "round",
+   "source": "PRODUCTION_CONFIG.json: eps_N",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s3_ratio_sym_lo",
+   "section": "3",
+   "status": "PASS",
+   "kind": null,
+   "evidence": "result file",
+   "attention": "",
+   "text": "$\\lambda_{\\min}(S_I)/\\smin(\\mu)\\in[1.003,17.8]$ and $\\lambda_{\\min}(S_I)/(\\rf m_{\\min})\\in[7.5,133]$",
+   "stated": 1.003,
+   "json_value": 1.003269417883453,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: min(J['E0.2'][N]['ratio_symbol'][0] for N in J['E0.2'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "min over the 288 queries at N = 64, 256, 1024",
+   "error": null
+  },
+  {
+   "id": "s3_ratio_sym_hi",
+   "section": "3",
+   "status": "PASS",
+   "kind": null,
+   "evidence": "result file",
+   "attention": "17.745 rounds to 17.7, not 17.8 (an upper end that encloses the data, so checked as an upper bound)",
+   "text": "$\\lambda_{\\min}(S_I)/\\smin(\\mu)\\in[1.003,17.8]$ and $\\lambda_{\\min}(S_I)/(\\rf m_{\\min})\\in[7.5,133]$",
+   "stated": 17.8,
+   "json_value": 17.745076954204418,
+   "rel": "le",
+   "tol": "round",
+   "source": "E0.json: max(J['E0.2'][N]['ratio_symbol'][2] for N in J['E0.2'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "max over N = 64, 256, 1024 is 17.745 (N = 64), which rounds to 17.7; the stated 17.8 encloses it",
+   "error": null
+  },
+  {
+   "id": "s3_ratio_rm_lo",
+   "section": "3",
+   "status": "PASS",
+   "kind": null,
+   "evidence": "result file",
+   "attention": "",
+   "text": "$\\lambda_{\\min}(S_I)/\\smin(\\mu)\\in[1.003,17.8]$ and $\\lambda_{\\min}(S_I)/(\\rf m_{\\min})\\in[7.5,133]$",
+   "stated": 7.5,
+   "json_value": 7.524520475894716,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: min(J['E0.2'][N]['ratio_rm'][0] for N in J['E0.2'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s3_ratio_rm_hi",
+   "section": "3",
+   "status": "PASS",
+   "kind": null,
+   "evidence": "result file",
+   "attention": "",
+   "text": "$\\lambda_{\\min}(S_I)/\\smin(\\mu)\\in[1.003,17.8]$ and $\\lambda_{\\min}(S_I)/(\\rf m_{\\min})\\in[7.5,133]$",
+   "stated": 133.0,
+   "json_value": 133.08750573673385,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: max(J['E0.2'][N]['ratio_rm'][2] for N in J['E0.2'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "",
+   "error": null
+  },
+  {
+   "id": "s52_sum_ratio_lo",
+   "section": "5.2",
+   "status": "PASS",
+   "kind": null,
+   "evidence": "result file",
+   "attention": "",
+   "text": "(query, $N$) pairs, with\n$\\lambda_{\\min}(S_I)/\\smin(\\mu)\\in[1.003,17.8]$",
+   "stated": 1.003,
+   "json_value": 1.003269417883453,
+   "rel": "eq",
+   "tol": "round",
+   "source": "E0.json: min(J['E0.2'][N]['ratio_symbol'][0] for N in J['E0.2'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "verification summary of the main text",
+   "error": null
+  },
+  {
+   "id": "s52_sum_ratio_hi",
+   "section": "5.2",
+   "status": "PASS",
+   "kind": null,
+   "evidence": "result file",
+   "attention": "17.745 rounds to 17.7, not 17.8 (an upper end that encloses the data, so checked as an upper bound)",
+   "text": "(query, $N$) pairs, with\n$\\lambda_{\\min}(S_I)/\\smin(\\mu)\\in[1.003,17.8]$",
+   "stated": 17.8,
+   "json_value": 17.745076954204418,
+   "rel": "le",
+   "tol": "round",
+   "source": "E0.json: max(J['E0.2'][N]['ratio_symbol'][2] for N in J['E0.2'])",
+   "where": [
+    "manuscript_v9/main_v9.tex"
+   ],
+   "note": "max over N = 64, 256, 1024 is 17.745 (N = 64), which rounds to 17.7; the stated 17.8 encloses it",
    "error": null
   },
   {
@@ -1753,7 +1905,8 @@
    "tol": "round",
    "source": "E0.json: min(r['eps%d' % K] / r['K%d' % K] for N in J['E0.1'] for r in J['E0.1'][N] for K in (100,))",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/main_v9.tex",
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -1772,7 +1925,8 @@
    "tol": "round",
    "source": "E0.json: max(r['eps%d' % K] / r['K%d' % K] for N in J['E0.1'] for r in J['E0.1'][N] for K in (100,))",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/main_v9.tex",
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -1791,7 +1945,7 @@
    "tol": "round",
    "source": "E0.json: max(r['eps%d' % K] / r['K%d' % K] for N in J['E0.1'] for r in J['E0.1'][N] for K in (20,))",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -1810,7 +1964,7 @@
    "tol": "round",
    "source": "E0.json: max(r['eps%d' % K] / r['K%d' % K] for N in J['E0.1'] for r in J['E0.1'][N] for K in (5,))",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -1829,7 +1983,8 @@
    "tol": "abs:0",
    "source": "E0.json: len(J['E0.2']['64']['rows'])",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/main_v9.tex",
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "288 verification queries + the worst audit vertex (Table populations and the F2 caption say 288)",
    "error": null
@@ -1848,7 +2003,8 @@
    "tol": "abs:0",
    "source": "E0.json: len(J['E0.2'])",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/main_v9.tex",
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -1867,7 +2023,8 @@
    "tol": "abs:0",
    "source": "E0.json: sum(len(J['E0.2'][N]['violations']) + len(J['E0.2'][N]['gen_violations']) for N in J['E0.2'])",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/main_v9.tex",
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -1886,7 +2043,7 @@
    "tol": "abs:0",
    "source": "E0.json: min(r['gen_min'] for N in J['E0.2'] for r in J['E0.2'][N]['rows'])",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -1905,7 +2062,7 @@
    "tol": "abs:0",
    "source": "E0.json: max(r['gen_max'] / r['Theta'] for N in J['E0.2'] for r in J['E0.2'][N]['rows'])",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -1924,7 +2081,7 @@
    "tol": "round",
    "source": "E0.json: E0.3/sqrtTheta/64/median",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -1943,7 +2100,7 @@
    "tol": "round",
    "source": "E0.json: E0.3/sqrtTheta/64/max",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -1962,7 +2119,7 @@
    "tol": "round",
    "source": "E0.json: E0.3/sqrtTheta/512/median",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -1981,7 +2138,7 @@
    "tol": "round",
    "source": "E0.json: E0.3/sqrtTheta/512/max",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2000,7 +2157,7 @@
    "tol": "round",
    "source": "E0.json: E0.3/sqrtTheta/1024/median",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2019,7 +2176,7 @@
    "tol": "round",
    "source": "E0.json: E0.3/sqrtTheta/1024/max",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2038,7 +2195,7 @@
    "tol": "round",
    "source": "E0.json: E0.3/sqrtTheta/4096/median",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2057,7 +2214,7 @@
    "tol": "round",
    "source": "E0.json: E0.3/sqrtTheta/4096/max",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2076,7 +2233,7 @@
    "tol": "round",
    "source": "E0.json: E0.3/sqrtTheta/16384/median",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2095,7 +2252,7 @@
    "tol": "round",
    "source": "E0.json: E0.3/sqrtTheta/16384/max",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2114,7 +2271,7 @@
    "tol": "round",
    "source": "E0.json: min(float(np.median([q['cands'][c]['ratio'] for q in J['E0.3']['effectivity']['64']])) for c in ['podgal16','podgal32','podgal48','coarse_N/4','perturbed_z0'])",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2133,7 +2290,7 @@
    "tol": "round",
    "source": "E0.json: max(float(np.median([q['cands'][c]['ratio'] for q in J['E0.3']['effectivity']['64']])) for c in ['podgal16','podgal32','podgal48','coarse_N/4','perturbed_z0'])",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2152,7 +2309,7 @@
    "tol": "round",
    "source": "E0.json: min(float(np.median([q['cands'][c]['ratio'] for q in J['E0.3']['effectivity']['512']])) for c in ['podgal16','podgal32','podgal48','coarse_N/4','perturbed_z0'])",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2171,7 +2328,7 @@
    "tol": "round",
    "source": "E0.json: max(float(np.median([q['cands'][c]['ratio'] for q in J['E0.3']['effectivity']['512']])) for c in ['podgal16','podgal32','podgal48','coarse_N/4','perturbed_z0'])",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2190,7 +2347,7 @@
    "tol": "round",
    "source": "E0.json: max(q['cands'][c]['ratio'] for q in J['E0.3']['effectivity']['512'] for c in ['podgal16','podgal32','podgal48','coarse_N/4','perturbed_z0'])",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2209,7 +2366,7 @@
    "tol": 0.15,
    "source": "E1.json: float(np.median([J['eval']['summary']['pod_galerkin_r' + r + '_n800']['banded']['median'] / J['eval']['summary']['pod_galerkin_r' + r + '_n800']['exact']['median'] for r in ['8','16','24','32','40','48','56','62','64','80','96','128']]))",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "median over r = 8-128 of median(eta^X) / median(eta^S) on validation30 (E1.json, Table 6)",
    "error": null
@@ -2228,7 +2385,7 @@
    "tol": "abs:0",
    "source": "tests/test_direct_certificate.py: regex assert d <= (1e-12) \\* scale",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "asserted in the M_I norm for N <= 1024 by the test; E0.json E0.5 lu_vs_gmres (1.5e-12) covers the three Y < 1 queries at N = 64 only",
    "error": null
@@ -2247,7 +2404,7 @@
    "tol": "abs:0",
    "source": "tests/test_spectral_riesz.py: regex \\((1e-20) if N <= 1024 else (1e-18)\\)",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "asserted by the test for N <= 1024; E0.4 stores iteration counts only",
    "error": null
@@ -2266,7 +2423,7 @@
    "tol": "abs:0",
    "source": "tests/test_spectral_riesz.py: regex \\((1e-20) if N <= 1024 else (1e-18)\\) [group 2]",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "asserted by the test for N > 1024",
    "error": null
@@ -2285,7 +2442,7 @@
    "tol": "abs:0",
    "source": "E0.json: len(J['E0.3']['effectivity']['64'])",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2304,7 +2461,7 @@
    "tol": "round",
    "source": "E0.json: float(np.median([q['cands']['perturbed_z0']['err'] for N in J['E0.3']['effectivity'] for q in J['E0.3']['effectivity'][N]]))",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2323,7 +2480,8 @@
    "tol": "round",
    "source": "E0.json: max(abs(q['cands']['perturbed_z0'][k] - 1) for N in J['E0.3']['effectivity'] for q in J['E0.3']['effectivity'][N] for k in ('eff_X', 'eff_S'))",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/main_v9.tex",
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2342,7 +2500,7 @@
    "tol": "abs:0",
    "source": "E0.json: float(np.mean([q['cands']['perturbed_z0']['etaX'] < q['cands']['perturbed_z0']['err'] and q['cands']['perturbed_z0']['etaS'] < q['cands']['perturbed_z0']['err'] for N in J['E0.3']['effectivity'] for q in J['E0.3']['effectivity'][N]]))",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "fraction of the 96 (query, N) cases",
    "error": null
@@ -2361,7 +2519,7 @@
    "tol": "round",
    "source": "E0.json: min(e['alpha_lb'] for e in J['E0.5'])",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2380,7 +2538,7 @@
    "tol": "round",
    "source": "E0.json: min(e['lmin'] for e in J['E0.5'])",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2399,7 +2557,7 @@
    "tol": "round",
    "source": "E0.json: max(e['lmin'] for e in J['E0.5'])",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2418,7 +2576,7 @@
    "tol": "abs:0",
    "source": "E0.json: max(e['sqrtTheta'] for e in J['E0.5'])",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2437,7 +2595,7 @@
    "tol": "abs:0",
    "source": "E0.json: max(e['gmres_max'] for e in J['E0.5'])",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "",
    "error": null
@@ -2456,7 +2614,7 @@
    "tol": "abs:1e-9",
    "source": "E0.json: max(abs(e['perturbed'][k] - 1) for e in J['E0.5'] for k in ('eff_X', 'eff_S'))",
    "where": [
-    "manuscript_v9/main_v9.tex"
+    "manuscript_v9/supplement_v9.tex"
    ],
    "note": "deviation from one",
    "error": null
@@ -3608,7 +3766,7 @@
    "kind": null,
    "evidence": "result file",
    "attention": "",
-   "text": "picks $\\lambda_R=1$ (bound $1.26$, error $0.46$)",
+   "text": "(bound $1.26$, error $0.46$, against bound $12.2$,\nerror $0.082$ when selecting by the true error",
    "stated": 1.26,
    "json_value": 1.263937448890436,
    "rel": "eq",
@@ -3627,7 +3785,7 @@
    "kind": null,
    "evidence": "result file",
    "attention": "",
-   "text": "picks $\\lambda_R=1$ (bound $1.26$, error $0.46$)",
+   "text": "(bound $1.26$, error $0.46$, against bound $12.2$,\nerror $0.082$ when selecting by the true error",
    "stated": 0.46,
    "json_value": 0.4638950781347123,
    "rel": "eq",
@@ -3646,7 +3804,7 @@
    "kind": null,
    "evidence": "result file",
    "attention": "",
-   "text": "picks $\\lambda_R=0$ (bound $12.2$, error $0.082$)",
+   "text": "(bound $1.26$, error $0.46$, against bound $12.2$,\nerror $0.082$ when selecting by the true error",
    "stated": 12.2,
    "json_value": 12.24090528605424,
    "rel": "eq",
@@ -3665,7 +3823,7 @@
    "kind": null,
    "evidence": "result file",
    "attention": "",
-   "text": "picks $\\lambda_R=0$ (bound $12.2$, error $0.082$)",
+   "text": "(bound $1.26$, error $0.46$, against bound $12.2$,\nerror $0.082$ when selecting by the true error",
    "stated": 0.082,
    "json_value": 0.08156203874454332,
    "rel": "eq",
@@ -4140,7 +4298,7 @@
    "kind": null,
    "evidence": "result file",
    "attention": "",
-   "text": "the ratio of the reduced methods rises to $0.30$",
+   "text": "without reusable setup the ratio rises to $0.30$",
    "stated": 0.3,
    "json_value": 0.29861704120630095,
    "rel": "eq",
@@ -4159,7 +4317,7 @@
    "kind": null,
    "evidence": "result file",
    "attention": "",
-   "text": "($90$~ms, Table~\\ref{tab:cost})",
+   "text": "because the query-independent initial projection, $90$~ms, is rebuilt inside the timer",
    "stated": 90.0,
    "json_value": 90.26215504854918,
    "rel": "eq",
@@ -4168,7 +4326,7 @@
    "where": [
     "manuscript_v9/main_v9.tex"
    ],
-   "note": "the number is in cost_model.json remarks, not in Table tab:cost",
+   "note": "the number is in cost_model.json remarks",
    "error": null
   },
   {
@@ -5223,7 +5381,7 @@
    "kind": null,
    "evidence": "result file",
    "attention": "",
-   "text": "a certified one-cent price in $0.03$ of the direct time",
+   "text": "at $0.03$ of the direct time from rank $80$ on",
    "stated": 0.03,
    "json_value": 0.03171128001753683,
    "rel": "eq",
@@ -5438,25 +5596,6 @@
    "rel": "eq",
    "tol": "abs:0",
    "source": "E3.json: J['breakdown']['per_candidate']['podg80']['all']['n_true_err_le_eps_N']",
-   "where": [
-    "manuscript_v9/main_v9.tex"
-   ],
-   "note": "",
-   "error": null
-  },
-  {
-   "id": "s6_N1024",
-   "section": "6",
-   "status": "PASS",
-   "kind": null,
-   "evidence": "result file",
-   "attention": "",
-   "text": "including two corners that\nrequired $N=1024$",
-   "stated": 1024.0,
-   "json_value": 1024.0,
-   "rel": "eq",
-   "tol": "abs:0",
-   "source": "PRODUCTION_CONFIG.json: N",
    "where": [
     "manuscript_v9/main_v9.tex"
    ],

@@ -16,7 +16,7 @@ results/          every number: *.json (self-describing, with provenance), DEVIA
 figures_v9/       F2-F8, PNG (dpi 200) and PDF (vector, fonts embedded)
 tables_v9/        LaTeX tables
 v8_frozen/        read-only v8 reference material (only in the git repository, not in the zip)
-manuscript_v9/    the paper (read-only here; only in the git repository)
+manuscript_v9/    the paper: SIAM main article + supplement (read-only here; only in the git repository)
 data/, checkpoints/   NOT in the archive (27 GB): hashes, sizes and regeneration commands in results/MANIFEST.json -> excluded
 ```
 
@@ -51,28 +51,31 @@ pip install -r requirements.txt --extra-index-url https://download.pytorch.org/w
 
 ## Paper item -> result file -> script
 
-Numbering as in `manuscript_v9/main_v9.tex` (figure 1 is the algorithm, table 1 the parameter box and table 2 the
-query populations; neither has a result file).
+Numbering as in the compiled `manuscript_v9/main_v9.pdf` (SIAM main article) and `manuscript_v9/supplement_v9.pdf`
+(Supplementary Materials, numbers prefixed SM); SIAM numbers floats within each section. Table 1.1 (notation) and
+Fig. 3.1 (the online rule) have no result file; the parameter box and the query populations are prose
+(equation (2.10) and Section 5.1).
 
 | Paper item | Output | Result file | Compute script | Plot/table step (in `build_outputs.py`) |
 |---|---|---|---|---|
-| Fig. 2 (fig:eim) | `figures_v9/F4_eim` | `eim.json` | `run_eim.py build select validate` | `run_eim.do_figure` |
-| Table 3 (tab:assembly-v9) | `tables_v9/tab_assembly_v9.tex` | `E0.json` (E0.1) | `run_E0.py E0.1` | `run_E0.plot_e01` |
-| Fig. 3 (fig:spectral-bound) | `figures_v9/F2_spectral_bound` | `E0.json` (E0.2) | `run_E0.py E0.2` | `run_E0.plot_e02` |
-| Fig. 4 (fig:theta) | `figures_v9/F3_theta_and_effectivity` | `E0.json` (E0.3) | `run_E0.py E0.3` | `run_E0.plot_e03` |
-| Table 4 (tab:pcg-v9) | `tables_v9/tab_pcg_v9.tex` | `E0.json` (E0.4) | `run_E0.py E0.4` | `run_E0.plot_e04` |
-| Table 5 (tab:budget) | `tables_v9/tab_budget_v9.tex` | `E3_1_calibration.json` | `run_E3_1.py` | `run_E3_1.do_table` |
-| Table 6 (tab:pod-ranks) | `tables_v9/tab_pod_ranks_v9.tex` | `E1.json` (eval summary) | `run_E1.py eval` | `make_tables_phase2.py` (only writer) |
-| Fig. 5 (fig:acceptance) | `figures_v9/F5a_acceptance` | `E1.json` | `run_E1.py eval select` | `fig_F5a.main` |
-| Table 7 (tab:podnn) | `tables_v9/tab_podnn_v9.tex` | `E2_4_podnn_N1024.json` | `eval_podnn.py` (via `sweep_N1024.py`) | `make_tables_phase2.py` |
-| Table 8 (tab:training) | `tables_v9/tab_training_v9.tex` | `training_log.json` | `train_podnn.py` (via `sweep_N1024.py`) | `make_tables_phase2.py` |
-| Fig. 6 (fig:online-time) | `figures_v9/F5c_online_time` | `E1.json` (timing); direct-solve line from `E2.json` (bench, cold + reusable medians) | `run_E1.py timing`, `run_E2.py` | `run_E1.do_figs` |
-| Table 9 (tab:benchmark) | `tables_v9/tab_benchmark_v9.tex` | `E2.json` | `run_E2.py bench` | `run_E2.do_figs` |
-| Table 10 (tab:cost) | `tables_v9/tab_cost_v9.tex` | `cost_model.json` | `run_cost_model.py` | `run_cost_model.write_table` |
-| Fig. 7 (fig:benchmark) | `figures_v9/F6a_benchmark`, `F6b_refinement` | `E2.json` | `run_E2.py bench refine` | `run_E2.do_figs` |
-| Table 11 (tab:ood) | `tables_v9/tab_ood_v9.tex` | `E3.json` (summary, breakdown) | `run_E3.py run summary breakdown` | `run_E3.do_table_ood` |
-| Fig. 8 (fig:ood) | `figures_v9/F7_ood` | `E3.json`, `E1.json` | `run_E3.py run summary` | `run_E3.do_fig` |
-| Fig. 9 (fig:amortisation) | `figures_v9/F8_amortisation` | `E4.json`, `E4_progress.json` | `run_E4.py run summary` | `run_E4.plot_f8` |
+| Fig. 4.1 (fig:eim) | `figures_v9/F4_eim` | `eim.json` | `run_eim.py build select validate` | `run_eim.do_figure` |
+| Table 5.1 (tab:budget) | `tables_v9/tab_budget_v9.tex` | `E3_1_calibration.json` | `run_E3_1.py` | `run_E3_1.do_table` |
+| Table 5.2 (tab:pod-ranks) | `tables_v9/tab_pod_ranks_v9.tex` | `E1.json` (eval summary) | `run_E1.py eval` | `make_tables_phase2.py` (only writer) |
+| Fig. 5.1 (fig:acceptance) | `figures_v9/F5a_acceptance` | `E1.json` | `run_E1.py eval select` | `fig_F5a.main` |
+| Fig. 5.2 (fig:benchmark) | `figures_v9/F6a_benchmark`, `F6b_refinement` | `E2.json` | `run_E2.py bench refine` | `run_E2.do_figs` |
+| Table 5.3 (tab:benchmark) | `tables_v9/tab_benchmark_v9.tex` | `E2.json` | `run_E2.py bench` | `run_E2.do_figs` |
+| Table 5.4 (tab:ood) | `tables_v9/tab_ood_v9.tex` | `E3.json` (summary, breakdown) | `run_E3.py run summary breakdown` | `run_E3.do_table_ood` |
+| Fig. 5.3 (fig:ood) | `figures_v9/F7_ood` | `E3.json`, `E1.json` | `run_E3.py run summary` | `run_E3.do_fig` |
+| Fig. 5.4 (fig:online-time) | `figures_v9/F5c_online_time` | `E1.json` (timing); direct-solve line from `E2.json` (bench, cold + reusable medians) | `run_E1.py timing`, `run_E2.py` | `run_E1.do_figs` |
+| Fig. 5.5 (fig:amortisation; one float with Fig. 5.4) | `figures_v9/F8_amortisation` | `E4.json`, `E4_progress.json` | `run_E4.py run summary` | `run_E4.plot_f8` |
+| Table SM8.1 (tab:assembly-v9) | `tables_v9/tab_assembly_v9.tex` | `E0.json` (E0.1) | `run_E0.py E0.1` | `run_E0.plot_e01` |
+| Fig. SM8.1 (fig:spectral-bound) | `figures_v9/F2_spectral_bound` | `E0.json` (E0.2) | `run_E0.py E0.2` | `run_E0.plot_e02` |
+| Fig. SM8.2 (fig:theta) | `figures_v9/F3_theta_and_effectivity` | `E0.json` (E0.3) | `run_E0.py E0.3` | `run_E0.plot_e03` |
+| Table SM8.2 (tab:pcg-v9) | `tables_v9/tab_pcg_v9.tex` | `E0.json` (E0.4) | `run_E0.py E0.4` | `run_E0.plot_e04` |
+| SM9 (DeepONet, text only) | none | `deeponet_old_vs_new.json` | `run_deeponet_old.py` | none |
+| Table SM10.1 (tab:podnn) | `tables_v9/tab_podnn_v9.tex` | `E2_4_podnn_N1024.json` | `eval_podnn.py` (via `sweep_N1024.py`) | `make_tables_phase2.py` |
+| Table SM10.2 (tab:training) | `tables_v9/tab_training_v9.tex` | `training_log.json` | `train_podnn.py` (via `sweep_N1024.py`) | `make_tables_phase2.py` |
+| Table SM11.1 (tab:cost) | `tables_v9/tab_cost_v9.tex` | `cost_model.json` | `run_cost_model.py` | `run_cost_model.write_table` |
 | not in the paper | `figures_v9/F5b_effectivity` | `E1.json` | `run_E1.py eval` | `run_E1.do_figs` |
 
 Numbers in the text: `results/paper_claims.json` lists each one with its result file and path (written by

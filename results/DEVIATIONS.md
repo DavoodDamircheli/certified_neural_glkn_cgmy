@@ -529,3 +529,22 @@ projection of the references. Not evaluated further.
   renamed status names in `prop_twostage.tex` / `prop_threestage.tex` or the online-rule figure, so none needed
   re-pointing. The Section 5.7 sentence "a gap of $46$--$1000$" (was 47) had no claim; two are added (`s57_gap_46`,
   `s57_gap_1000`, from the same paths as `abs_factor46` and `s57_best_1e3`). 296 claims, 296 pass.
+
+# Phase 4 follow-up 4
+
+* **Bundle 4** (SIAM main article + supplement, class files included) committed unchanged as 071ee45, with the
+  one-line change of `check_numbers.py` (corpus: `main_v9.tex`, `supplement_v9.tex`, `theory/*.tex`). The bundle's
+  copy of the brief stays untracked. Tables and figures unchanged; `bash build.sh` leaves every file byte-identical.
+* **Claims:** the 13 reworded claims re-pointed to the new wording (values unchanged); `s44_online_3e-15` dropped (the
+  statement was removed). `s6_N1024` is re-pointed to the Section 5.1 configuration sentence as `s51_N1024`, with
+  `s51_NT240` and `s51_epsN` from the same sentence.
+* **Verification summary (main Section 5.2):** every number was covered except
+  $\lambda_{\min}(S_I)/\smin(\mu)\in[1.003,17.8]$, which had no claim anywhere (it also appears in Section 3 with
+  $\lambda_{\min}(S_I)/(\rf m_{\min})\in[7.5,133]$). Six claims added from `E0.json` E0.2 (`s3_ratio_*`,
+  `s52_sum_ratio_*`). The upper end 17.8 does not round from the data: the maximum is 17.745 (N = 64), which rounds
+  to 17.7. It encloses the data, so it is checked as an upper bound and listed under "Points for the author".
+* **Section labels** in `paper_claims.json` / `NUMBER_CHECK.md` keep the single-file v9 numbering (e.g. "5.7" is now
+  main Section 5.4, "5.2"-"5.5" partly SM8); the checker searches the whole corpus, so the labels only group claims.
+* **README mapping** follows the compiled PDFs, which number floats per section (Table 5.1, Fig. SM8.1, ...), not the
+  sequential numbers of the brief.
+* 303 claims, 303 pass (289 from result files, 14 source-backed).
