@@ -48,7 +48,7 @@ OUT = RES / "NUMBER_CHECK.md"
 
 
 def tex_corpus():
-    files = [MS / "main_v9.tex"] + sorted((MS / "theory").glob("*.tex"))
+    files = [MS / "main_v9.tex", MS / "supplement_v9.tex"] + sorted((MS / "theory").glob("*.tex"))
     return {str(f.relative_to(ROOT)): re.sub(r"\s+", " ", f.read_text()) for f in files if f.exists()}
 
 

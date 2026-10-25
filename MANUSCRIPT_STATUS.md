@@ -1,14 +1,18 @@
-# Manuscript status (v9), 2026-10-25
+# Manuscript status (v9), 2026-10-25 (SIAM format; submission-ready except the archive URL)
 
-`manuscript_v9/main_v9.tex` + `theory/*.tex` + `../tables_v9/` + `../figures_v9/` (PDF figures with PNG
-fallback); 36 pages; compiles with pdflatex x3, no overfull boxes; `cover_letter.tex` (2 pages).
-One `\todo` left: the archive URL in Section 5.10 (plan 4.4), to be filled in when the archive is deposited.
+SIAM article class (`siamart251216.cls`, SISC): `manuscript_v9/main_v9.tex` (main article, 26 pages = the
+journal's hard limit; 20 recommended) + `supplement_v9.tex` (Supplementary Materials, 11 pages: uniform-stability
+proof, exact-assembly consequences, parameter stability, other time schemes, derivative bounds, American put,
+preconditioning/correction, verification studies with Tables assembly/PCG and F2/F3, DeepONet, POD-NN and
+training tables, cost-model table) + `references_v9.tex` (shared bibliography) + `theory/*.tex`. The two
+files cross-reference through `\externaldocument` (compile alternately). `amsart_version/` keeps the previous
+single-file version. `cover_letter.tex` (2 pages). One `\todo` left: the archive URL (reproducibility section).
 
 ## Verification state
-- Number check (`scripts/check_numbers.py`, `results/paper_claims.json`): 294 claims, 294 pass at commit
-  2d2dd74 of the user's repository (280 from result files, 14 source-backed: test thresholds, fixtures,
-  v8 records, NOTES/DEVIATIONS). After the editorial pass two claim texts need re-pointing
-  (`s51_calib_spots`, `th_eim_Q37`); brief `CLAUDE_PHASE4_followup_3.md`.
+- Number check (`scripts/check_numbers.py`, `results/paper_claims.json`): 296 claims, 296 pass at commit
+  73c03a5 of the user's repository (single-file version). After the SIAM split the corpus includes
+  `supplement_v9.tex`; 14 claims need re-pointing to reworded sentences (values unchanged), one claim
+  (3e-15 online agreement) is dropped with its sentence: brief `CLAUDE_PHASE4_followup_4.md`.
 - Archive check: clean clone rebuilds 9 tables byte-identically and 10 figures pixel-identically;
   `run_E0.py` end to end 32 min on one core; 67 tests. Tag `v9-archive` (annotated) on the user's machine.
 - E0.3/E0.4 rerun with deterministic (crc32) seeds; Table 4 and F3 are the rerun values (plain CG 42-1915,
@@ -35,6 +39,7 @@ Strike $\mathcal K$ (the letter $K$ is the alias truncation); Greek $\Gamma_{\rm
 tempering $M$ both kept; Toeplitz blocks $T_G^-$, $T_M^+$; estimators $\eta^S$, $\eta^X$, $\eta^{\bar X}$.
 
 ## Remaining
-- Archive URL (Section 5.10) and removal of the `\todo` macro at submission.
+- Archive URL (reproducibility section) and removal of the `\todo` macro at submission.
+- If a referee round adds text, the main article has about 0.2 page of slack at 26 pages; the next items to
+  move to the supplement would be the online-rule box (Figure 1, 0.5 page) or the notation table (0.35 page).
 - Cover letter: one bracketed line about the earlier version's circulation status to be settled by the author.
-- Fold in the final3 archive (claims re-pointed, tag moved) when it comes back.

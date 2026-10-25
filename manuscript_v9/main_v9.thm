@@ -1,0 +1,35 @@
+\contentsline {theorem}{{Theorem}{2.1}{Parameter-uniform continuity and coercivity}}{4}{theorem.26}%
+\contentsline {proof}{{Proof}{1}{}}{4}{proof.28}%
+\contentsline {remark}{{Remark}{2.2}{Explicit coercivity constant}}{4}{theorem.29}%
+\contentsline {lemma}{{Lemma}{2.3}{Periodised symbol}}{5}{theorem.37}%
+\contentsline {proof}{{Proof}{2}{}}{5}{proof.39}%
+\contentsline {lemma}{{Lemma}{2.4}{Truncation tail}}{6}{theorem.40}%
+\contentsline {proof}{{Proof}{3}{}}{6}{proof.42}%
+\contentsline {lemma}{{Lemma}{2.5}{Symbol inequalities}}{6}{theorem.43}%
+\contentsline {proof}{{Proof}{4}{}}{7}{proof.44}%
+\contentsline {lemma}{{Lemma}{2.6}{L\'evy--Khintchine form of the real symbol}}{8}{theorem.53}%
+\contentsline {proof}{{Proof}{5}{}}{8}{proof.54}%
+\contentsline {theorem}{{Theorem}{2.7}{Rigorous spectral lower bound}}{8}{theorem.55}%
+\contentsline {proof}{{Proof}{6}{}}{8}{proof.57}%
+\contentsline {remark}{{Remark}{2.8}{Assembled versus exact sections}}{8}{theorem.58}%
+\contentsline {theorem}{{Theorem}{3.1}{Crank--Nicolson residual certificate}}{9}{theorem.64}%
+\contentsline {proof}{{Proof}{7}{}}{9}{proof.68}%
+\contentsline {lemma}{{Lemma}{3.2}{Computable two-sided bracket for the dual norm}}{10}{theorem.71}%
+\contentsline {proof}{{Proof}{8}{}}{10}{proof.73}%
+\contentsline {corollary}{{Corollary}{3.3}{Augmented upper certificate}}{10}{theorem.74}%
+\contentsline {remark}{{Remark}{3.4}{Arithmetic scope}}{10}{theorem.76}%
+\contentsline {theorem}{{Theorem}{3.5}{Comparison norm}}{11}{theorem.78}%
+\contentsline {proof}{{Proof}{9}{}}{11}{proof.80}%
+\contentsline {corollary}{{Corollary}{3.6}{Cheap certificate}}{11}{theorem.81}%
+\contentsline {proposition}{{Proposition}{3.7}{Two-stage rule}}{11}{theorem.82}%
+\contentsline {proposition}{{Proposition}{3.8}{Three-stage rule}}{11}{theorem.83}%
+\contentsline {proof}{{Proof}{10}{}}{12}{proof.84}%
+\contentsline {theorem}{{Theorem}{3.9}{Matrix-dependent efficiency}}{12}{theorem.87}%
+\contentsline {proof}{{Proof}{11}{}}{12}{proof.89}%
+\contentsline {proposition}{{Proposition}{3.10}{Guaranteed acceptance}}{13}{theorem.98}%
+\contentsline {proof}{{Proof}{12}{}}{13}{proof.100}%
+\contentsline {lemma}{{Lemma}{4.1}{Error transfer}}{14}{theorem.105}%
+\contentsline {proof}{{Proof}{13}{}}{14}{proof.106}%
+\contentsline {theorem}{{Theorem}{4.2}{Certificate with an affine surrogate operator}}{15}{theorem.109}%
+\contentsline {proof}{{Proof}{14}{}}{15}{proof.110}%
+\contentsline {remark}{{Remark}{4.3}{Reduced online certificate}}{15}{theorem.111}%

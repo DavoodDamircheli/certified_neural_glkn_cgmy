@@ -7,10 +7,10 @@ $S_I\preceq\bar\Theta_\mu\bar X$ by Lemma~\ref{lem:toeplitz}.  Let $\rho_Q^{n+1/
 candidate evaluated with the affine operator $A_Q$, $u_n\ge(\rho_Q^{n+1/2})^\top\bar X^{-1}\rho_Q^{n+1/2}$
 the per-step values of the reduced online estimator (including its rounding term), and $d_n$ the
 allowance of Theorem~\ref{thm:eim-cert} with $\min_\vartheta\bar{\sym{x}}$ in place of $\alpha_{\rm lb}$.  Then
-\[
- \eta^{\bar X}_{\rm aug}:=\Bigl(\beta_0^2+\dt\sum_n(\sqrt{u_n}+d_n)^2\Bigr)^{1/2}\ \ge\ \eta^S_{\rm aug}
- \ \ge\ \Bigl(\beta_0^2+\dt\sum_n\max\bigl\{0,\ \sqrt{\ell_n/\bar\Theta_\mu}-d_n\bigr\}^2\Bigr)^{1/2}=:\lambda^{\bar X}_{\rm aug},
-\]
+\begin{align*}
+ \eta^{\bar X}_{\rm aug}&:=\Bigl(\beta_0^2+\dt\sum_n(\sqrt{u_n}+d_n)^2\Bigr)^{1/2}\ \ge\ \eta^S_{\rm aug}\\
+ &\ \ge\ \Bigl(\beta_0^2+\dt\sum_n\max\bigl\{0,\ \sqrt{\ell_n/\bar\Theta_\mu}-d_n\bigr\}^2\Bigr)^{1/2}=:\lambda^{\bar X}_{\rm aug},
+\end{align*}
 where $\ell_n\le(\rho_Q^{n+1/2})^\top\bar X^{-1}\rho_Q^{n+1/2}$ is the per-step value minus its rounding
 term.  Hence, for a tolerance $\varepsilon$: if $\eta^{\bar X}_{\rm aug}\le\varepsilon$ accept
 (\textsc{reduced accept}); if $\lambda^{\bar X}_{\rm aug}>\varepsilon$ reject (\textsc{cheap reject}:
