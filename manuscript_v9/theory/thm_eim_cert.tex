@@ -24,8 +24,10 @@ Remark~\ref{rem:arithmetic-scope}, with $d_n$ now explicit.
 \end{proof}
 The allowance is of size $\varepsilon_Q\norm{\bar\cc}_2/\sqrt{\alpha_{\rm lb}}$ per step and is
 \emph{not} negligible for accurate candidates: with $\varepsilon_Q\approx10^{-9}\norm{\Ah}_2$,
-$\norm{\Ah}_2\sim h^{-Y}$ and $\norm{\bar\cc}_2\sim K\sqrt{N}\sqrt h$, it reaches $10^{-4}$ in the
-$M_I$ norm at $N=512$, comparable with the residual of a rank-$56$ reduced solution.  Two
+$\norm{\Ah}_2\sim h^{-Y}$ and $\norm{\bar\cc}_2\sim K\sqrt{N}\sqrt h$, its time-accumulated size at
+$N=512$ with $Q=29$ is $7\times10^{-5}$ (median) to $4\times10^{-4}$ (maximum) in the $M_I$ norm on the
+validation queries, comparable with the residual of a rank-$56$ reduced solution, and drops below
+$4\times10^{-6}$ with $Q=37$.  Two
 consequences: the EIM tolerance must be chosen as a function of the target,
 $\varepsilon_Q\norm{\bar\cc}_2\sqrt{T/\alpha_{\rm lb}}\le\varepsilon/10$, and the full-order
 certificate should evaluate the residual with the exact operator $\Ah$ (two FFTs per step, no
@@ -34,7 +36,8 @@ allowance), reserving $A_Q$ for the reduced solve and for the $N$-independent on
 With a fixed comparison norm $\bar X=\Tn{}{\bar{\sym{x}}}$, $\bar{\sym{x}}=\bar r\,\sym{m}+\bar\beta\,\sym{g}_1$,
 chosen for a cell of parameter space such that $\bar r\le \rf$ and $\bar\beta\le\beta_\mu$ on the cell,
 and the affine $A_Q$, the offline/online decomposition of the residual norm applies: the online cost of
-$\eta^{\bar X}$ for a rank-$r$ candidate is $O(Q^2r^2)$ operations, independent of $N_h$.  Since
+$\eta^{\bar X}$ for a rank-$r$ candidate is $O(\varrho\,(Q+2)(2r+1))$ operations with $\varrho\le N_h$ retained rows
+of the compressed $R$-factor, independent of $N_h$ once $\varrho$ saturates.  Since
 $\bar{\sym{x}}\le\sym{x}_\mu\le\sym{s}_\mu$ on the cell, $\rho^\top S_I^{-1}\rho\le\rho^\top\bar X^{-1}\rho$ with no
 further factor; the optional factor $(\inf_\vartheta\sym{s}_\mu/\bar{\sym{x}})^{-1}\le1$ of
 Lemma~\ref{lem:toeplitz} tightens the bound at the cost of one symbol evaluation.  Because

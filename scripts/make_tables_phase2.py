@@ -11,26 +11,26 @@ def fmt(x, d=2):
     if -2 <= e <= 2: return f"{x:.{max(d - e, 0)}f}" if e < d else f"{x:.0f}"
     return f"${x / 10 ** e:.{d-1}f}\\times10^{{{e}}}$"
 
-# ------------------------------------------------ POD ranks (validation30, N = 1024)
-N = json.load(open(RES / "N1024.json"))
-t = N["table_ext"]; eps_keys = list(N["table_ext"]["800"]["summary"]["8"]["reduced"]["accepted"].keys())
-eN = [k for k in eps_keys if abs(float(k) - 0.001185) < 1e-6][0]
+# ------------------------------------------------ POD ranks (validation30, N = 1024; Phase 3 E1 evaluation,
+# the same evaluation that Figures 5-6 read)
+E1 = json.load(open(RES / "E1.json"))["eval"]["summary"]
+eN = "0.001185"
 lines = [r"\begin{table}[!htbp]", r"\centering\small",
  r"\caption{POD--Galerkin candidates on the 30 validation queries at the production configuration "
- r"($N=1024$, $N_T=240$, $Q=36$): median maximum-in-time mass-norm error against the direct solution, "
- r"median effectivity (bound/error) of the three certificates, queries accepted at $\varepsilon_N=1.18\times10^{-3}$ "
- r"under each certificate, and the stage at which the three-stage rule of Proposition~\ref{prop:threestage} settles "
- r"the query (reduced accept / cheap reject / banded accept / exact accept / exact reject). Basis from 800 training "
- r"trajectories; the 4000-trajectory basis gives the same picture (Section~\ref{ssec:e1}). No false accepts occur "
- r"under any certificate at any tolerance of the sweep.}",
+ r"($N=1024$, $N_T=240$, $Q$ matched to $\varepsilon$): median maximum-in-time mass-norm error against the direct "
+ r"solution, median effectivity (bound/error) of the three certificates, queries accepted at "
+ r"$\varepsilon_N=1.18\times10^{-3}$ under each certificate, and the stage at which the three-stage rule of "
+ r"Proposition~\ref{prop:threestage} settles the query (reduced accept / cheap reject / banded accept / exact accept / "
+ r"exact reject). Basis from 800 training trajectories; the 4000-trajectory basis gives the same picture "
+ r"(Section~\ref{ssec:e1}). No false accepts occur under any certificate at any tolerance of the sweep.}",
  r"\label{tab:pod-ranks}", r"\resizebox{\textwidth}{!}{%", r"\begin{tabular}{rrrrrrr}", r"\toprule",
  r"$r$ & error & eff.\ $\eta^S$ & eff.\ $\eta^X$ & eff.\ $\eta^{\bar X}$ & accepted $\bar X$/$X$/$S$ & three-stage\\", r"\midrule"]
-for r in ["8", "16", "24", "32", "40", "48", "56", "62", "64", "80", "96", "128"]:
-    s = t["800"]["summary"][r]; ts = s["three_stage"][eN]
-    acc = f"{s['reduced']['accepted'][eN]}/{s['banded_AI']['accepted'][eN]}/{s['exact_AI']['accepted'][eN]}"
+for r in [8, 16, 24, 32, 40, 48, 56, 62, 64, 80, 96, 128]:
+    s_ = E1[f"pod_galerkin_r{r}_n800"]; ts = s_["three_stage"][eN]
+    acc = f"{s_['reduced']['accepted'][eN]}/{s_['banded']['accepted'][eN]}/{s_['exact']['accepted'][eN]}"
     st = "/".join(str(ts.get(k, 0)) for k in ("reduced_accept", "reject_cheap", "banded_accept", "exact_accept", "exact_reject"))
-    lines.append(f"{r} & {fmt(s['median_true_err'])} & {s['exact_AI']['median_effectivity']:.1f} & {s['banded_AI']['median_effectivity']:.1f} & "
-                 f"{s['reduced']['median_effectivity']:.0f} & {acc} & {st}\\\\")
+    lines.append(f"{r} & {fmt(s_['median_true_err'])} & {s_['exact']['median_effectivity']:.1f} & {s_['banded']['median_effectivity']:.1f} & "
+                 f"{s_['reduced']['median_effectivity_at_eps'][eN]:.0f} & {acc} & {st}\\\\")
 lines += [r"\bottomrule", r"\end{tabular}}", r"\end{table}"]
 (TAB / "tab_pod_ranks_v9.tex").write_text("\n".join(lines) + "\n")
 

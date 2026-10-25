@@ -1,6 +1,6 @@
 \begin{table}[!htbp]
 \centering\small
-\caption{POD--Galerkin candidates on the 30 validation queries at the production configuration ($N=1024$, $N_T=240$, $Q=36$): median maximum-in-time mass-norm error against the direct solution, median effectivity (bound/error) of the three certificates, queries accepted at $\varepsilon_N=1.18\times10^{-3}$ under each certificate, and the stage at which the three-stage rule of Proposition~\ref{prop:threestage} settles the query (reduced accept / cheap reject / banded accept / exact accept / exact reject). Basis from 800 training trajectories; the 4000-trajectory basis gives the same picture (Section~\ref{ssec:e1}). No false accepts occur under any certificate at any tolerance of the sweep.}
+\caption{POD--Galerkin candidates on the 30 validation queries at the production configuration ($N=1024$, $N_T=240$, $Q$ matched to $\varepsilon$): median maximum-in-time mass-norm error against the direct solution, median effectivity (bound/error) of the three certificates, queries accepted at $\varepsilon_N=1.18\times10^{-3}$ under each certificate, and the stage at which the three-stage rule of Proposition~\ref{prop:threestage} settles the query (reduced accept / cheap reject / banded accept / exact accept / exact reject). Basis from 800 training trajectories; the 4000-trajectory basis gives the same picture (Section~\ref{ssec:e1}). No false accepts occur under any certificate at any tolerance of the sweep.}
 \label{tab:pod-ranks}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{rrrrrrr}
@@ -17,8 +17,8 @@ $r$ & error & eff.\ $\eta^S$ & eff.\ $\eta^X$ & eff.\ $\eta^{\bar X}$ & accepted
 62 & $1.9\times10^{-5}$ & 11.3 & 22.0 & 50 & 24/30/30 & 24/0/6/0/0\\
 64 & $1.7\times10^{-5}$ & 10.5 & 20.0 & 42 & 26/30/30 & 26/0/4/0/0\\
 80 & $6.6\times10^{-7}$ & 9.5 & 19.3 & 47 & 30/30/30 & 30/0/0/0/0\\
-96 & $4.3\times10^{-8}$ & 9.2 & 15.4 & 143 & 30/30/30 & 30/0/0/0/0\\
-128 & $2.3\times10^{-8}$ & 4.6 & 5.3 & 119 & 30/30/30 & 30/0/0/0/0\\
+96 & $3.6\times10^{-8}$ & 9.1 & 16.8 & 231 & 30/30/30 & 30/0/0/0/0\\
+128 & $9.9\times10^{-9}$ & 4.3 & 5.3 & 417 & 30/30/30 & 30/0/0/0/0\\
 \bottomrule
 \end{tabular}}
 \end{table}

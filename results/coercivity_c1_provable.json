@@ -1,11 +1,11 @@
 {
- "c1_provable": 3.057961528820152e-05,
- "argmin": [
-  0.05,
-  5.0,
-  9.0,
-  1.8,
-  0.01
- ],
- "high_freq_branch": 0.0008874738920479846
+ "formula": "c1 = min_box min{ r/(1+2^{1+Y/2} a^Y), C kappa_Y / 2^{Y/2} }, a = max(M_max, G_max), kappa_Y = 2 e^{-pi} / ((2-Y) pi^Y)  (Appendix A.1, eq. c1-explicit)",
+ "c1_provable": 5.1071989916957514e-05,
+ "Y_at_min": 1.8,
+ "branch": "low-frequency",
+ "low_branch_min": 5.1071989916957514e-05,
+ "high_branch_min": 0.0008874715062177713,
+ "a_star": 9.0,
+ "c1_sharp_at_xi0": 0.00014022215462262315,
+ "note": "supersedes an earlier evaluation (3.06e-5) of a looser bound w <= 1 + 2^{Y/2}(M^Y+G^Y) + 2^{1+Y/2} a^Y"
 }
