@@ -36,8 +36,10 @@ def png_equal(a, b):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--workdir", default=None)
-    ap.add_argument("--skip-e0", action="store_true")
+    ap.add_argument("--skip-e0", action="store_true", help="skip run_E0.py (the quick tests still run)")
+    ap.add_argument("--out", default=None, help="result file (default results/ARCHIVE_CHECK.json)")
     a = ap.parse_args()
+    out = Path(a.out) if a.out else OUT
     work = Path(a.workdir or tempfile.mkdtemp(prefix="cgmy_clean_clone_"))
     clone = work / "repo"; venv = work / "venv"; logs = work / "logs"
     logs.mkdir(parents=True, exist_ok=True)
@@ -74,19 +76,19 @@ def main():
     res["all_figures_pixel_identical"] = all(v["pixel_identical"] for v in cmp_.values() if v["kind"] == "figure")
     res["n_tables"] = sum(v["kind"] == "table" for v in cmp_.values())
     res["n_figures"] = sum(v["kind"] == "figure" for v in cmp_.values())
-    OUT.write_text(json.dumps(res, indent=1))
+    out.write_text(json.dumps(res, indent=1))
     print("build:", res["steps"]["build"]["returncode"], "tables identical:", res["all_tables_identical"],
           "figures pixel-identical:", res["all_figures_pixel_identical"], flush=True)
     if not a.skip_e0:
         res["steps"]["run_E0"] = run(f"{py} scripts/run_E0.py --nproc 1", clone, env=env, log=logs / "run_E0.log")
         print("run_E0:", res["steps"]["run_E0"]["returncode"], f"{res['steps']['run_E0']['wall_s'] / 60:.1f} min", flush=True)
-        res["steps"]["pytest_quick"] = run(f"CGMY_FULL_TESTS=0 {py} -m pytest tests -q", clone, env=env, log=logs / "pytest.log")
-        print("pytest:", res["steps"]["pytest_quick"]["returncode"], res["steps"]["pytest_quick"]["tail"][-200:], flush=True)
+    res["steps"]["pytest_quick"] = run(f"CGMY_FULL_TESTS=0 {py} -m pytest tests -q", clone, env=env, log=logs / "pytest.log")
+    print("pytest:", res["steps"]["pytest_quick"]["returncode"], res["steps"]["pytest_quick"]["tail"][-200:], flush=True)
     sys.path.insert(0, str(ROOT))
     from cgmy_cert.provenance import cpu_model
     res["host"] = dict(cpu_model=cpu_model(), python=sys.version.split()[0])
     res["finished"] = time.strftime("%Y-%m-%dT%H:%M:%S%z")
-    OUT.write_text(json.dumps(res, indent=1))
+    out.write_text(json.dumps(res, indent=1))
 
 
 if __name__ == "__main__":
