@@ -1,10 +1,10 @@
 {
  "n": 291,
- "n_fail": 5,
+ "n_fail": 3,
  "manuscript_commit": "fd561a3",
  "n_source_backed": 14,
  "n_fail_by_kind": {
-  "substantive": 4,
+  "substantive": 2,
   "no source": 0,
   "rounding": 1,
   "text": 0
@@ -5010,13 +5010,13 @@
   {
    "id": "srep_tables_identical",
    "section": "5.10 reproducibility",
-   "status": "FAIL",
-   "kind": "substantive",
+   "status": "PASS",
+   "kind": null,
    "evidence": "result file",
    "attention": "",
    "text": "A clean clone rebuilds every table byte-identically",
    "stated": 1.0,
-   "json_value": null,
+   "json_value": 1.0,
    "rel": "eq",
    "tol": "abs:0",
    "source": "ARCHIVE_CHECK.json: float(J['all_tables_identical'] and J['recheck']['all_tables_identical'] and J['build_only_check']['all_tables_identical'])",
@@ -5024,18 +5024,18 @@
     "manuscript_v9/main_v9.tex"
    ],
    "note": "first clean-clone check, the recheck and the build-only check of follow-up 1",
-   "error": "KeyError: 'build_only_check'"
+   "error": null
   },
   {
    "id": "srep_figures_identical",
    "section": "5.10 reproducibility",
-   "status": "FAIL",
-   "kind": "substantive",
+   "status": "PASS",
+   "kind": null,
    "evidence": "result file",
    "attention": "",
    "text": "and every figure\npixel-identically from the result files",
    "stated": 1.0,
-   "json_value": null,
+   "json_value": 1.0,
    "rel": "eq",
    "tol": "abs:0",
    "source": "ARCHIVE_CHECK.json: float(J['all_figures_pixel_identical'] and J['recheck']['all_figures_pixel_identical'] and J['build_only_check']['all_figures_pixel_identical'])",
@@ -5043,7 +5043,7 @@
     "manuscript_v9/main_v9.tex"
    ],
    "note": "",
-   "error": "KeyError: 'build_only_check'"
+   "error": null
   },
   {
    "id": "srep_32min",

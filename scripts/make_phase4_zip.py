@@ -5,11 +5,11 @@ tables_v9, README.md, requirements.txt, build.sh, Makefile).  No data files (dat
 SHA-256, sizes and regeneration commands are in results/MANIFEST.json -> excluded.  The zip must stay below 100 MB.
 The file list is results/MANIFEST.json -> archive (scripts/make_manifest.py); every file is re-hashed and must match the
 manifest, so the zip and the manifest describe the same archive.  Usage: python3 scripts/make_manifest.py &&
-python3 scripts/make_phase4_zip.py
+python3 scripts/make_phase4_zip.py [--suffix _final]
 """
 from __future__ import annotations
 
-import json, sys, time, zipfile
+import argparse, json, sys, time, zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,7 +21,9 @@ LIMIT_ZIP = 100 * 2 ** 20
 
 
 def main():
-    out = ROOT / f"phase4_archive_{time.strftime('%Y%m%d')}.zip"
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--suffix", default="", help="appended to the file name, e.g. _final")
+    out = ROOT / f"phase4_archive_{time.strftime('%Y%m%d')}{ap.parse_args().suffix}.zip"
     arch = json.loads(MAN.read_text())["archive"]["files"]
     stale = [k for k, v in arch.items() if not (ROOT / k).is_file() or sha256(ROOT / k) != v["sha256"]]
     if stale:

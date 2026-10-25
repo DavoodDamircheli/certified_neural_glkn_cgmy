@@ -244,5 +244,105 @@
     "pixel_identical": true
    }
   }
+ },
+ "build_only_check": {
+  "note": "clean clone + venv + build.sh + diff (no run_E0.py, no tests; their wall times above are kept)",
+  "clone_commit": "830aede38967e99c65e89ee66e7fa9e29413c52c",
+  "started": "2026-10-25T14:14:43-0500",
+  "finished": "2026-10-25T14:15:07-0500",
+  "all_tables_identical": true,
+  "all_figures_pixel_identical": true,
+  "n_tables": 9,
+  "n_figures": 10,
+  "wall_s": {
+   "clone": 0.24615740776062012,
+   "venv": 1.139922857284546,
+   "pip_install": 17.51918888092041,
+   "build": 4.4369423389434814
+  },
+  "returncodes": {
+   "clone": 0,
+   "venv": 0,
+   "pip_install": 0,
+   "build": 0
+  },
+  "comparison": {
+   "tables_v9/tab_assembly_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "tables_v9/tab_benchmark_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "tables_v9/tab_budget_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "tables_v9/tab_cost_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "tables_v9/tab_ood_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "tables_v9/tab_pcg_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "tables_v9/tab_pod_ranks_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "tables_v9/tab_podnn_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "tables_v9/tab_training_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "figures_v9/F2_spectral_bound.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F3_theta_and_effectivity.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F4_eim.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F5a_acceptance.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F5b_effectivity.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F5c_online_time.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F6a_benchmark.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F6b_refinement.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F7_ood.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F8_amortisation.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   }
+  }
  }
 }

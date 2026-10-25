@@ -165,3 +165,60 @@ Each claim names its result file and path. Regenerate with
 * `phase4_archive_20261025.zip` (5.6 MB, 197 files), built by `scripts/make_phase4_zip.py` from the manifest's file list.
   The data files (data/) and checkpoints are not included;
 * git tag `v9-archive`. Nothing was pushed.
+
+## Addendum: follow-up 1 (number check closed against the corrected manuscript)
+
+* **Manuscript checked:** commit `fd561a3` ("paper-side corrections after NUMBER_CHECK", the bundle unpacked
+  unchanged). Claims and checker: `830aede`. Clean-clone build-only check: `830aede`, recorded in
+  `ARCHIVE_CHECK.json -> build_only_check`. It gives 9 tables byte-identical and 10 figures pixel-identical; venv + pip
+  0.3 min, build 4.4 s. `run_E0.py` and the tests were not rerun there, and the earlier wall times are kept (32 min, 2.6 min).
+  Quick tests run locally once: 63 passed, 3 skipped, 1 xpassed (67).
+* **Claims checked: 291. Passed: 288**, of which 274 come from result files and 14 are source-backed. Failed: 3
+  (2 substantive, 1 rounding-level). There are no "text not found" and no "no source" claims.
+* **The source-backed claims** are listed in their own section of `NUMBER_CHECK.md`. Their evidence:
+  * the query fixture (459, twice);
+  * the test suite (LU/GMRES 1e-12; bracket widths 1e-20 / 1e-18, three claims);
+  * the v8 DeepONet checkpoint (80,002 parameters, counted from `model_state_dict`, which loads with `weights_only=True`);
+  * the frozen v8 `tab_corner.tex` (N = 64 corner gaps 2.22 and 2.07 dollars);
+  * `cgmy_cert.params` (aliasing exponent 48 >= 46);
+  * `DEVIATIONS.md` (Gram residual 1e-8);
+  * `NOTES_FOR_PAPER.md` (float32 1e-3 and the three allowance sizes of Remark 4.3).
+* **Still disagreeing with a result file** (the manuscript is unchanged; paths and values are also in `NUMBER_CHECK.md`):
+  1. Section 5.7, "raises the reduced effectivity to $120$--$140$" at r >= 96. Table 6 is now built from `E1.json`,
+     where `eval/summary/pod_galerkin_r96_n800/reduced/median_effectivity` = 230.6 and the r128 value = 416.8.
+     120-140 are the Phase 2 numbers (`N1024.json table_ext/800/summary/{96,128}/reduced/median_effectivity` = 143, 119),
+     which the table no longer shows. Suggested: "to $230$--$420$". The "$4\times10^{-8}$" in the same sentence
+     still holds at r = 96 (3.6e-8), but at r = 128 E1 gives 9.9e-9.
+  2. Section 5.7, "bounds $0.055$--$0.058$": the smallest per-seed median is
+     `E2_4_podnn_N1024.json results/podnn_N1024_r48_n4000_lamR1_seed2_spacetime/summary/exact_AI/median` = 0.05447,
+     which rounds to 0.054. Suggested: "$0.054$--$0.058$".
+* **Remark 4.3 (theory/thm_eim_cert.tex):** no result file holds the allowance sizes $7\times10^{-5}$ / $4\times10^{-4}$
+  (Q = 29) and $4\times10^{-6}$ (Q = 37). They are not in `E2_3_reduced_cert.json`, `eim.json` or any other `results/*.json`. Their
+  only record is `NOTES_FOR_PAPER.md` item 10 (6.8e-5, 4.3e-4, 3.9e-6), against which they are registered. Reword
+  them, or regenerate them into a result file.
+* **Where the brief and the repository differ:**
+  * `tab_pod_ranks_E1_v9.tex` was not byte-identical to the new `tab_pod_ranks_v9.tex`: the numbers were the same but
+    the layout and label differed. It is deleted as asked; `make_tables_phase2.py` is now the only writer of Table 6.
+  * `coercivity_constant_provable.py` reproduces the committed `c1_provable` to 1 ulp (5.107198991695751e-05 against
+    5.1071989916957514e-05); the committed JSON is kept.
+  * The suggested v8 regex ("by more than \$2 at two box corners") does not occur in v8's `main.tex`, which says
+    "price gaps exceeding \$2". The claim reads the generated v8 table instead. Its run directory is not in
+    `v8_frozen/runs`; only the hash of its `cos/prices.csv` is in `evidence_v6.json`.
+  * The Gram-form ratio and the float32 bound have no JSON record, so they are read from `DEVIATIONS.md` and
+    `NOTES_FOR_PAPER.md`.
+* **How some numbers are read:**
+  * "27~GB" is binary (29.0e9 bytes = 27.05 GiB; 29 GB in decimal).
+  * "effectivity $9$--$15$" is checked as a range that encloses the medians 9.53-14.90; rounded endpoints would read 10-15.
+  * Section 3 was outside the Phase 4 claim scope. Its PCG sentence changed with the E0.4 rerun, so three claims were
+    added: 8-12 and 42-1915 iterations, and the 1e-18 bracket width.
+* **Not covered by claims:**
+  * The sentence after the algorithm figure (`alg:pcc`) says PCG takes "at most $15$ iterations in all reported runs". `tab_pcg` gives at most 12 for PCG; 15 is
+    the GMRES maximum.
+  * Figure 6's legend shows the E1 cold direct solve (370 ms, validation30[1:11]), while Section 5.8 quotes E2's 337 ms
+    on bench120.
+  * The reproducibility paragraph still carries `\todo{Phase 4.4: archive URL ...}`.
+* **Deliverables:**
+  * `results/MANIFEST.json`: 196 archive files, 22.4 MB; 116 excluded files, 27.1 GB.
+  * `phase4_archive_20261025_final.zip`: about 5.6 MB, 197 files, built by `scripts/make_phase4_zip.py --suffix _final`.
+    No data files and no checkpoints.
+  * Tag `v9-archive`, moved with `git tag -f` to the commit that adds this addendum. Nothing was pushed.

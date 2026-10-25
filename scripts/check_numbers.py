@@ -282,7 +282,7 @@ def main():
                   "| id | section | text in the manuscript | stated | result file | source | note |", "|---|---|---|---|---|---|---|"]
         for r in kinds[k]:
             rel = {"le": " (bound: <=)", "ge": " (bound: >=)"}.get(r["rel"], "")
-            lines.append(f"| {r['id']} | {r['section']} | `{r['text']}` | {fmt(r['stated'])}{rel} | {fmt(r['json_value'])} | "
+            lines.append(f"| {r['id']} | {r['section']} | `{' '.join(r['text'].split())}` | {fmt(r['stated'])}{rel} | {fmt(r['json_value'])} | "
                          f"`{r['source']}` | {(r['note'] + (' ' + r['error'] if r['error'] else '')).strip()} |")
         lines.append("")
     att = [r for r in rows if r["attention"]]
