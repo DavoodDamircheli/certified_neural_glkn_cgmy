@@ -144,5 +144,105 @@
    54
   ],
   "note": "estimate from typical single-thread benchmark ratios of a mainstream laptop core to the 285K, not a measurement; the plan's target is < 1 h"
+ },
+ "recheck": {
+  "note": "build + quick tests (no E0) in a fresh clone after the manuscript bundle (e6ed506), the seed fix rerun (87447a5) and item 2; python3 scripts/archive_check.py --skip-e0 --out ...",
+  "clone_commit": "3fff942e6fd9157040afc89b31744cd358cdd62d",
+  "started": "2026-10-25T10:45:41-0500",
+  "finished": "2026-10-25T10:48:44-0500",
+  "all_tables_identical": true,
+  "all_figures_pixel_identical": true,
+  "n_tables": 10,
+  "n_figures": 10,
+  "wall_min": {
+   "clone": 0.0,
+   "venv": 0.02,
+   "pip_install": 0.29,
+   "build": 0.07,
+   "pytest_quick": 2.64
+  },
+  "pytest_tail": "51 passed, 16 skipped, 5 warnings in 158.01s (0:02:38)",
+  "comparison": {
+   "tables_v9/tab_assembly_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "tables_v9/tab_benchmark_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "tables_v9/tab_budget_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "tables_v9/tab_cost_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "tables_v9/tab_ood_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "tables_v9/tab_pcg_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "tables_v9/tab_pod_ranks_E1_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "tables_v9/tab_pod_ranks_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "tables_v9/tab_podnn_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "tables_v9/tab_training_v9.tex": {
+    "kind": "table",
+    "identical": true
+   },
+   "figures_v9/F2_spectral_bound.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F3_theta_and_effectivity.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F4_eim.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F5a_acceptance.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F5b_effectivity.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F5c_online_time.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F6a_benchmark.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F6b_refinement.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F7_ood.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   },
+   "figures_v9/F8_amortisation.png": {
+    "kind": "figure",
+    "pixel_identical": true
+   }
+  }
  }
 }
