@@ -80,3 +80,8 @@ Fig. 3.1 (the online rule) have no result file; the parameter box and the query 
 
 Numbers in the text: `results/paper_claims.json` lists each one with its result file and path (written by
 `scripts/make_paper_claims.py`); `python3 scripts/check_numbers.py` checks them and writes `results/NUMBER_CHECK.md`.
+
+## License and citation
+
+Code: MIT (`LICENSE`). Result files, figures, tables and the large data files: CC BY 4.0 (`LICENSE-DATA`).
+Citation metadata: `CITATION.cff`; Zenodo metadata for the software record: `.zenodo.json`.

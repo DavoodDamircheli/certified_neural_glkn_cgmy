@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below, together with the accompanying article."
+title: "cgmy_cert: code and results for 'Symbol-based residual certification of reduced and neural surrogates for tempered-fractional CGMY pricing'"
+type: software
+authors:
+  - family-names: Damircheli
+    given-names: Davood
+    affiliation: Louisiana State University
+    orcid: "https://orcid.org/0000-0003-3099-6382"
+license: MIT
+repository-code: "https://github.com/DavoodDamircheli/certified_neural_glkn_cgmy"
+version: v1.0-sisc
+keywords:
+  - CGMY
+  - tempered fractional
+  - option pricing
+  - a posteriori error estimation
+  - residual certification
+  - reduced basis
+  - POD
+  - neural surrogates
+  - Galerkin
+preferred-citation:
+  type: article
+  authors:
+    - family-names: Damircheli
+      given-names: Davood
+      affiliation: Louisiana State University
+      orcid: "https://orcid.org/0000-0003-3099-6382"
+  title: "Symbol-based residual certification of reduced and neural surrogates for tempered-fractional CGMY pricing"
+  year: 2026
+  identifiers:
+    - type: other
+      value: "arXiv:2611.03463"
+  url: "https://arxiv.org/abs/2611.03463"
