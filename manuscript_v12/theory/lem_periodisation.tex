@@ -1,0 +1,44 @@
+Write $\vartheta_k:=\vartheta+2\pi k$ and
+$\widehat N_p(\vartheta)=\bigl(\tfrac{\sin(\vartheta/2)}{\vartheta/2}\bigr)^p$
+(up to a unimodular factor), so that $|\widehat N_p(\vartheta)|^2\le(2/|\vartheta|)^{2p}$.
+\begin{lemma}[Periodised symbol]\label{lem:periodisation}
+Let $p\ge2$ and $Y\in(0,2)\setminus\{1\}$.  The exact Galerkin matrix of
+$\Aop$ in the basis $\{\phi_{h,k}\}$ is the Toeplitz matrix
+$(\Ah)_{kk'}=t_{k-k'}$ with
+\begin{equation}
+\begin{gathered}
+ t_m=\frac1{2\pi}\int_{-\pi}^{\pi}\sym{a}_\mu(\vartheta)e^{i\vartheta m}\,d\vartheta,
+ \\
+ \sym{a}_\mu(\vartheta):=\sum_{k\in\mathbb Z}\bigl|\widehat N_p(\vartheta_k)\bigr|^2A_\mu(\vartheta_k/h),
+\end{gathered}
+ \label{eq:periodised}
+\end{equation}
+where the series converges absolutely and uniformly on $[-\pi,\pi]$, and
+$\sym{a}_\mu$ is real-analytic and $2\pi$-periodic.  Likewise the mass matrix,
+the first-derivative matrix and the $H^1$ stiffness matrix $h^2R^{(1)}_h$
+have symbols
+$\sym{m}(\vartheta)=\sum_k|\widehat N_p(\vartheta_k)|^2$,
+$\tfrac{i}{h}\sym{d}_1(\vartheta)$ with $\sym{d}_1(\vartheta)=\sum_k|\widehat N_p(\vartheta_k)|^2\vartheta_k$,
+and $\sym{g}_1(\vartheta)=\sum_k|\widehat N_p(\vartheta_k)|^2\vartheta_k^2$.
+For $p=3$,
+$\sym{m}(\vartheta)=\tfrac{11}{20}+\tfrac{13}{30}\cos\vartheta+\tfrac1{60}\cos2\vartheta$,
+$\sym{d}_1(\vartheta)=\tfrac56\sin\vartheta+\tfrac1{12}\sin2\vartheta$,
+$\sym{g}_1(\vartheta)=1-\tfrac23\cos\vartheta-\tfrac13\cos2\vartheta$,
+and $m_{\min}:=\min_\vartheta \sym{m}=\sym{m}(\pi)=2/15$.
+\end{lemma}
+\begin{proof}
+With $\widehat\phi_{h,k}(\xi)=h^{1/2}\widehat N_p(h\xi)e^{-i\xi(x_{\min}+kh)}$ and
+Plancherel,
+\[
+a_\mu(\phi_{h,k'},\phi_{h,k})=\frac1{2\pi}\int_\R A_\mu(\xi)\,h|\widehat N_p(h\xi)|^2e^{i\xi h(k-k')}d\xi;
+\]
+substitute $\vartheta=h\xi$ and split $\R=\bigcup_k[-\pi,\pi)+2\pi k$.  Since
+$|A_\mu(\xi)|\lesssim 1+|\xi|^{\max(Y,1)}$ and $|\widehat N_p(\vartheta)|^2\lesssim|\vartheta|^{-2p}$,
+the terms are bounded by $|\vartheta_k|^{\max(Y,1)-2p}$, summable because
+$2p-\max(Y,1)>1$.  Analyticity follows from that of each term and uniform
+convergence of derivatives.  The mass, drift and stiffness symbols are
+trigonometric polynomials of degree $p-1$ whose coefficients are the exact
+entries $\int N_pN_p(\cdot-m)$, $\int N_p'N_p(\cdot-m)$, $\int N_p'N_p'(\cdot-m)$
+(for $p=3$: $\tfrac1{120}(1,26,66,26,1)$, $(\tfrac1{24},\tfrac5{12},0,-\tfrac5{12},-\tfrac1{24})$
+and $(-\tfrac16,-\tfrac13,1,-\tfrac13,-\tfrac16)$).
+\end{proof}

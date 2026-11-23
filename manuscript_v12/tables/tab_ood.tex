@@ -1,0 +1,35 @@
+\begin{table}[!htbp]
+\centering\small
+\caption{Out-of-distribution study: 264 queries outside the parameter box (200 Sobol points in the
+shells $C\in[1,2]$, $Y\in[0.9,1.1)\cup(1.8,1.95]$, $G\in[0.5,1)$, $M\in[9,15]$, and 64 vertices of the
+extended box) at the production configuration.  Top: queries on which the candidate's true error
+is below $\varepsilon_N$ (``works''), queries the exact certificate accepts (``certified''), and
+precision of two rules as detectors of ``true error $>\varepsilon_N$'': the certificate (recall 1 by
+theorem) and the naive rule that rejects every query outside the training box (recall 1, but it
+discards every working query).  Bottom: POD--Galerkin $r=80$ by shell (a query leaving the box in
+several coordinates counts in each), with the median true error and the median EIM error
+$\varepsilon_Q$ (inside the box: $1.7\times10^{-9}$).}
+\label{tab:ood}
+\begin{tabular}{lrrrr}
+\toprule
+candidate & works & certified & precision (certificate) & precision (naive rule)\\
+\midrule
+POD--Galerkin $r=64$ & 196 & 181 & 0.82 & 0.26\\
+POD--Galerkin $r=80$ & 210 & 193 & 0.76 & 0.20\\
+space--time POD-NN & 0 & 0 & -- & --\\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{tabular}{lrrrrr}
+\toprule
+shell ($r=80$) & queries & works & certified & median error & median $\varepsilon_Q$\\
+\midrule
+$C>1$ & 122 & 104 & 95 & $3.7\times10^{-6}$ & $5.3\times10^{-8}$\\
+$Y<1.1$ & 39 & 36 & 31 & $6.1\times10^{-6}$ & $1.4\times10^{-8}$\\
+$Y>1.8$ & 36 & 18 & 15 & $2.8\times10^{-3}$ & $6.1\times10^{-7}$\\
+$G<1$ & 27 & 21 & 13 & $3.9\times10^{-4}$ & $3.1\times10^{-6}$\\
+$M>9$ & 111 & 101 & 94 & $8.6\times10^{-6}$ & $2.5\times10^{-7}$\\
+vertices & 64 & 34 & 31 & $2.0\times10^{-4}$ & $4.3\times10^{-6}$\\
+\bottomrule
+\end{tabular}
+\end{table}

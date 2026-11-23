@@ -1,0 +1,15 @@
+\begin{table}[!htbp]
+\centering\small
+\caption{POD-NN training details (production configuration). MLP $6\to256\to256\to256\to$ output with SiLU, double precision, inputs $(\mu,T)$ standardised, $\alpha^0$ fixed to the projection of $z_h^0$; loss = relative least squares in the reduced coordinates $+\lambda_R\,\eta^{\bar X}$ (reduced online certificate, differentiable); Adam, learning rate $10^{-3}$ with cosine decay to $10^{-5}$, 2000 epochs, batch 64, validation every 10 epochs on the 30-query set, checkpoint = epoch with the smallest median reduced bound. Intel Core Ultra 9 285K, 3 threads per run.}
+\label{tab:training}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrr}
+\toprule
+variant & output & parameters & runs & wall time per run (h)\\
+\midrule
+standard, 800 trajectories & $r\times N_T=11\,520$ & $3.09$~M & $\lambda_R\in\{0,10^{-2},10^{-1},1\}$, seed 0 & 0.9--2.7\\
+standard, 4000 trajectories & $r\times N_T=11\,520$ & $3.09$~M & $\lambda_R\in\{0,10^{-2},10^{-1},1\}$, seed 0; $\lambda_R=1$, seeds 1--2 & 3.5--7.8\\
+space--time, 4000 trajectories & $r\times r_t=1\,104$ & $0.42$~M & $\lambda_R=1$, seeds 0--2 & 5.9--7.1\\
+\bottomrule
+\end{tabular}}
+\end{table}

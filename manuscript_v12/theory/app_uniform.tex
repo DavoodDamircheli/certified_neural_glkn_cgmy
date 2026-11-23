@@ -1,0 +1,43 @@
+\subsection{Proof of Theorem~\ref{thm:uniform-coercivity}}
+\label{app:proof-uniform}\label{ssec:lk-coercivity}
+Let $a_\ast:=\max\{M_{\max},G_{\max}\}$, $\kappa_Y:=2e^{-\pi}/((2-Y)\pi^{Y})$,
+$\gamma_{\max}:=\max_{Y\in[Y_{\min},Y_{\max}]}\Gamma(-Y)$, $\Omega_\ast:=\sup_{\Pset}|\rf-\omega_S|$ and
+$\lambda_\ast:=\sup_{\Pset}\lambda_0$; the last two are finite because $\omega_S$ and $\Gamma(-Y)$ are
+continuous on the compact box.  Admissible constants are
+\begin{equation}
+  c_1=\min_{\mu\in\Pset}\min\Bigl\{\frac{\rf}{1+2^{1+Y/2}a_\ast^{Y}},\ \frac{C\kappa_Y}{2^{Y/2}}\Bigr\}
+  =\frac{r_{\min}}{1+2^{1+Y_{\max}/2}a_\ast^{Y_{\max}}},
+  \label{eq:c1-explicit}
+\end{equation}
+the second branch being the larger on the box \eqref{eq:numerical-box}, and
+$C_{\rm cont}=2\Omega_\ast+2\lambda_\ast+4C_{\max}\gamma_{\max}\max\{1,a_\ast^2\}^{Y_{\max}/2}$.
+Write $s=Y/2\in(1/2,1)$ and $w_\mu(\xi)=1+(M^2+\xi^2)^{s}+(G^2+\xi^2)^{s}$ for the weight of
+\eqref{eq:HMG-norm}.  By definition $a_\mu(v,w)=a_\R(\widetilde v,\widetilde w)$ and
+$\norm{v}_{V_\mu}=\norm{\widetilde v}_{H^{s}_{M,G}(\R)}$, so it suffices to argue on the full line;
+all constants are independent of $h$ and $\Omega$.
+
+\begin{proof}
+\emph{Continuity.}  Since $(1+\xi^2)^{s}\le2(1+|\xi|^{2s})\le2w_\mu(\xi)$, the standard $H^{s}$ norm is
+at most $\sqrt2$ times the weighted one.  As $Y>1$, $|\xi|\le(1+\xi^2)^{s}$, and
+$(a^2+\xi^2)^{s}\le\max\{1,a^2\}^{s}(1+\xi^2)^{s}$, so \eqref{eq:symbol} gives
+$|A_\mu(\xi)|\le\tfrac12C_{\rm cont}(1+\xi^2)^{s}$.  Plancherel's theorem and the Cauchy--Schwarz
+inequality give $|a_\R(u,w)|\le\tfrac12C_{\rm cont}\norm{u}_{H^s}\norm{w}_{H^s}\le
+C_{\rm cont}\norm{u}_{H^s_{M,G}}\norm{w}_{H^s_{M,G}}$.
+
+\emph{Coercivity.}  By Lemma~\ref{lem:LK}, $\Real A_\mu(\xi)=\rf+C[I_G(\xi)+I_M(\xi)]\ge\rf$.  For
+$|\xi|\ge a$, restricting the integral $I_a$ to $0<x\le\pi/|\xi|$ and using $1-\cos u\ge2u^2/\pi^2$
+on $|u|\le\pi$ and $e^{-ax}\ge e^{-\pi}$ there gives $I_a(\xi)\ge\kappa_Y|\xi|^{Y}$.  Since
+$(a^2+\xi^2)^{Y/2}\le2^{Y/2}\max\{a,|\xi|\}^{Y}$, the weight satisfies
+$w_\mu\le1+2^{1+Y/2}a_\ast^{Y}$ for $|\xi|\le a_\ast$ and $w_\mu\le1+2^{1+Y/2}|\xi|^{Y}$ for
+$|\xi|\ge a_\ast$.  Hence $\Real A_\mu\ge\rf\,w_\mu/(1+2^{1+Y/2}a_\ast^{Y})$ for $|\xi|\le a_\ast$, and,
+for $|\xi|\ge a_\ast\ge\max\{G,M\}$, $\Real A_\mu\ge\rf+2C\kappa_Y|\xi|^{Y}\ge
+\min\{\rf,C\kappa_Y/2^{Y/2}\}\,w_\mu$.  Thus $\Real A_\mu\ge c_1w_\mu$ everywhere, and Plancherel's
+theorem gives $a_\mu(v,v)=\Real a_\mu(v,v)\ge c_1\norm{v}_{V_\mu}^2$ for real $v$.
+\end{proof}
+
+On the box \eqref{eq:numerical-box}, $c_1=5.11\times10^{-5}$ (attained at $Y=Y_{\max}$, $\rf=r_{\min}$,
+$a_\ast=M_{\max}=9$) and $C_{\rm cont}\approx2.5\times10^3$.  The infimum of $\Real A_\mu/w_\mu$ is
+attained at $\xi=0$, where it equals $r_{\min}/(1+M_{\max}^{Y_{\max}}+G_{\max}^{Y_{\max}})
+=1.40\times10^{-4}$ (confirmed numerically over $544$ box points and $\xi\in[0,10^6]$), so the
+explicit constant is within a factor three of the optimal one.  Only the continuity estimate uses
+$Y>1$; the lower bounds for $I_a$ hold for every $Y\in(0,2)$.

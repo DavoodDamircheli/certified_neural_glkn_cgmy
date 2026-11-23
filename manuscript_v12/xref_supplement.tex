@@ -1,0 +1,55 @@
+% Cross-references to the Supplementary Materials, frozen from its compiled .aux.
+\newlabel{sm:notation}{{SM1}{SM1}{Notation}{}{}}
+\newlabel{sm:notation@cref}{{[section][1][]SM1}{[SM1][1][]SM1}}
+\newlabel{tab:notation}{{SM1.1}{SM1}{Notation}{}{}}
+\newlabel{tab:notation@cref}{{[table][1][1]SM1.1}{[SM1][1][]SM1}}
+\newlabel{sm:verification}{{SM2}{SM1}{Verification of the assembly, the bounds and the solvers}{}{}}
+\newlabel{sm:verification@cref}{{[section][2][]SM2}{[SM1][1][]SM1}}
+\newlabel{tab:assembly-v9}{{SM2.1}{SM2}{Assembly verification against the exact Galerkin matrix (40-digit real-line fixture): relative operator-norm error of the free matrix $A_I$, median / max over the ten cost-study queries ($N\le 256$; three at $N=512$). The principal-period rule is the alias sum with $K=0$; $\varepsilon _K/\|A_I\|_2$ is the bound of Lemma~\ref {lem:tail}}{}{}}
+\newlabel{tab:assembly-v9@cref}{{[table][1][2]SM2.1}{[SM1][1][]SM2}}
+\newlabel{fig:spectral-bound}{{SM2.1}{SM2}{Ratios $\lambda _{\min }(S_I)/\smin (\mu )$ (left) and $\lambda _{\min }(S_I)/(\rf m_{\min })$ (right) over the 288 verification queries at $N=64,256,1024$; the star marks the vertex $\mu =(0.05,5,9,1.1,0.01)$, at which $\lambda _{\min }(S_I)/\smin (\mu )$ is closest to one. Both ratios are $\ge 1$ at every query, as Theorem~\ref {thm:spectral} asserts}{}{}}
+\newlabel{fig:spectral-bound@cref}{{[figure][1][2]SM2.1}{[SM1][1][]SM2}}
+\newlabel{fig:theta}{{SM2.2}{SM2}{Left: the a-priori effectivity bound $\sqrt {\Thmu }$ of the banded certificate as a function of $N$ (symbol only, 288 queries). Right: observed ratio $\eta ^X/\eta ^S$ for POD--Galerkin candidates (ranks 16, 32, 48), the prolonged coarse solution and exact dynamics from a perturbed initial vector, at $N=64$ and $N=512$}{}{}}
+\newlabel{fig:theta@cref}{{[figure][2][2]SM2.2}{[SM1][1][]SM2}}
+\newlabel{tab:pcg-v9}{{SM2.2}{SM3}{Iteration counts (median / max over 20 Sobol queries) to relative residual $10^{-12}$: conjugate gradients for the Riesz system $S_Iv=\rho $ with and without the circulant preconditioner built from the symbol samples, and circulant-preconditioned GMRES per Crank--Nicolson step for $B_+=M_I+\tfrac {\Delta \tau }{2}A_I$ (60 steps, warm start, mean over steps / max)}{}{}}
+\newlabel{tab:pcg-v9@cref}{{[table][2][2]SM2.2}{[SM1][3][]SM3}}
+\newlabel{sm:deeponet}{{SM3}{SM3}{Stress test: a neural operator trained on a different discretisation}{}{}}
+\newlabel{sm:deeponet@cref}{{[section][3][]SM3}{[SM1][3][]SM3}}
+\newlabel{sm:training}{{SM4}{SM4}{Neural reduced candidates: results and training details}{}{}}
+\newlabel{sm:training@cref}{{[section][4][]SM4}{[SM1][3][]SM4}}
+\newlabel{tab:podnn}{{SM4.1}{SM4}{Neural reduced candidates (POD-NN, $r=48$) on the 30 validation queries at the production configuration: median true error and median augmented bounds of the three certificates, with the effectivity of the exact one. Standard output: $r\times N_T$ coefficients; space--time output: $r\times r_t$ coefficients of a temporal POD ($r_t=23$). Checkpoints selected by the validation median of the reduced certificate. The projection of the reference trajectories onto the same basis and the POD--Galerkin solution are the attainable floor. At $\varepsilon _N=1.18\times 10^{-3}$ the certificate rejects every POD-NN query, each by the cheap rejection of the first stage}{}{}}
+\newlabel{tab:podnn@cref}{{[table][1][4]SM4.1}{[SM1][3][]SM4}}
+\newlabel{tab:training}{{SM4.2}{SM4}{POD-NN training details (production configuration). MLP $6\to 256\to 256\to 256\to $ output with SiLU, double precision, inputs $(\mu ,T)$ standardised, $\alpha ^0$ fixed to the projection of $z_h^0$; loss = relative least squares in the reduced coordinates $+\lambda _R\,\eta ^{\bar X}$ (reduced online certificate, differentiable); Adam, learning rate $10^{-3}$ with cosine decay to $10^{-5}$, 2000 epochs, batch 64, validation every 10 epochs on the 30-query set, checkpoint = epoch with the smallest median reduced bound. Intel Core Ultra 9 285K, 3 threads per run}{}{}}
+\newlabel{tab:training@cref}{{[table][2][4]SM4.2}{[SM1][3][]SM4}}
+\newlabel{sm:cost}{{SM5}{SM4}{Operation counts and measured constants of the cost model}{}{}}
+\newlabel{sm:cost@cref}{{[section][5][]SM5}{[SM1][4][]SM4}}
+\newlabel{tab:cost}{{SM5.1}{SM5}{Cost model of Section~\ref {ssec:cost} with measured constants (one thread, idle machine; medians over five benchmark queries; $m=2N_h$, $i_n$ and $p_n$ the GMRES and PCG iteration counts per step). Times in ms; $c$ is the fitted time per operation of the stated count with its maximum relative deviation; where the per-step interpreter overhead matters the two-constant fit $t=c'\,\mathrm {ops}+d\,\mathrm {calls}$ is also given. The spectral-data row is the fine verification grid; the online path uses the fast mode ($2.5$~ms, Section~\ref {ssec:benchmark}). The reduced rows do not depend on $N$ by construction}{}{}}
+\newlabel{tab:cost@cref}{{[table][1][5]SM5.1}{[SM1][4][]SM5}}
+\newlabel{sm:extensions}{{SM6}{SM5}{Extensions not used in the main text}{}{}}
+\newlabel{sm:extensions@cref}{{[section][6][]SM6}{[SM1][5][]SM5}}
+\newlabel{ssec:solution-operator}{{SM6.1}{SM5}{Discrete parameter stability}{}{}}
+\newlabel{ssec:solution-operator@cref}{{[subsection][1][6]SM6.1}{[SM1][5][]SM5}}
+\newlabel{prop:discrete-lipschitz}{{SM6.1}{SM5}{Discrete parameter stability}{}{}}
+\newlabel{prop:discrete-lipschitz@cref}{{[proposition][1][6]SM6.1}{[SM1][5][]SM5}}
+\newlabel{eq:discrete-lipschitz}{{SM6.1}{SM5}{Discrete parameter stability}{}{}}
+\newlabel{eq:discrete-lipschitz@cref}{{[equation][1][6]SM6.1}{[SM1][5][]SM5}}
+\newlabel{eq:param-residual}{{SM6.2}{SM5}{Discrete parameter stability}{}{}}
+\newlabel{eq:param-residual@cref}{{[equation][2][6]SM6.2}{[SM1][5][]SM5}}
+\newlabel{eq:matrix-difference}{{SM6.3}{SM5}{Discrete parameter stability}{}{}}
+\newlabel{eq:matrix-difference@cref}{{[equation][3][6]SM6.3}{[SM1][5][]SM5}}
+\newlabel{ssec:semidiscrete}{{SM6.2}{SM6}{Other time schemes and exponential shifts}{}{}}
+\newlabel{ssec:semidiscrete@cref}{{[subsection][2][6]SM6.2}{[SM1][5][]SM6}}
+\newlabel{ssec:be-certificate}{{SM6.2}{SM6}{Other time schemes and exponential shifts}{}{}}
+\newlabel{ssec:be-certificate@cref}{{[subsection][2][6]SM6.2}{[SM1][5][]SM6}}
+\newlabel{ssec:shifted}{{SM6.2}{SM6}{Other time schemes and exponential shifts}{}{}}
+\newlabel{ssec:shifted@cref}{{[subsection][2][6]SM6.2}{[SM1][5][]SM6}}
+\newlabel{eq:semidiscrete-certificate}{{SM6.4}{SM6}{Other time schemes and exponential shifts}{}{}}
+\newlabel{eq:semidiscrete-certificate@cref}{{[equation][4][6]SM6.4}{[SM1][6][]SM6}}
+\newlabel{eq:be-certificate}{{SM6.5}{SM6}{Other time schemes and exponential shifts}{}{}}
+\newlabel{eq:be-certificate@cref}{{[equation][5][6]SM6.5}{[SM1][6][]SM6}}
+\newlabel{ssec:correction-extension}{{SM6.3}{SM6}{Preconditioned correction}{}{}}
+\newlabel{ssec:correction-extension@cref}{{[subsection][3][6]SM6.3}{[SM1][6][]SM6}}
+\newlabel{prop:correction-contraction}{{SM6.2}{SM6}{Preconditioned correction}{}{}}
+\newlabel{prop:correction-contraction@cref}{{[proposition][2][6]SM6.2}{[SM1][6][]SM6}}
+\newlabel{eq:contraction}{{SM6.6}{SM6}{Preconditioned correction}{}{}}
+\newlabel{eq:contraction@cref}{{[equation][6][6]SM6.6}{[SM1][6][]SM6}}

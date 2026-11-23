@@ -1,0 +1,127 @@
+\documentclass[11pt]{article}
+\usepackage[letterpaper,margin=0.9in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage[protrusion=true,expansion=false]{microtype}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.45em}
+\pagestyle{empty}
+\setlength{\emergencystretch}{3em}
+
+\begin{document}
+
+\noindent Davood Damircheli\\
+Department of Mathematics\\
+Louisiana State University\\
+Baton Rouge, LA 70803, USA\\
+\href{mailto:ddamircheli@lsu.edu}{ddamircheli@lsu.edu}
+
+November 22, 2026
+
+Editor-in-Chief\\
+\emph{SIAM Journal on Scientific Computing}\\
+Society for Industrial and Applied Mathematics
+
+\textbf{Re: Submission of ``Symbol-based residual certification of reduced and neural surrogates for
+tempered-fractional CGMY pricing''}
+
+Dear Editor-in-Chief,
+
+I am pleased to submit the above manuscript, together with its Supplementary Materials, for
+consideration in the section \emph{Numerical Algorithms for Scientific Computing} of SISC.
+
+Fast surrogates of parametric PDE solution maps, whether projection-based reduced models or
+neural networks, are only as useful as the guarantee that comes with each prediction. The paper
+gives such a guarantee for a demanding class of problems: nonlocal, nonsymmetric parabolic
+equations whose fractional order varies with the parameters, here the tempered-fractional
+pricing equation of the CGMY model. Every prediction, from any surrogate, is certified query by
+query against the spline Galerkin discretisation, and the certificate is cheap enough to be used
+online. The key observation is that the discretisation is shift-invariant, so that the symbol
+calculus of Toeplitz sections replaces each numerically estimated ingredient of certified
+reduced-basis methods by a closed-form one. The main contributions are:
+\begin{itemize}[leftmargin=1.6em,itemsep=0.15em,topsep=0.2em]
+\item \textbf{Exact assembly.} The Galerkin matrices are Toeplitz sections of an explicit
+periodised Fourier symbol; summing its alias series to a proven tail gives the exact Galerkin
+system to $10^{-8}$, verified against an independent 40-digit computation.
+\item \textbf{A closed-form stability constant.} A L\'evy--Khintchine argument gives a rigorous,
+parameter-explicit lower bound for the symmetric part, valid for all $Y\in(0,2)\setminus\{1\}$,
+so that no eigenvalue computation or successive constraint method is needed.
+\item \textbf{An $O(N)$ certificate and an $N$-independent reduced certificate.} A banded comparison
+norm built from the mass and stiffness symbols gives a rigorous bound with explicit effectivity,
+and empirical interpolation of the one-variable symbol makes the operator affine (about 36 terms)
+with an error transfer that involves no unknown constant. Together with a numerically stable
+offline/online evaluation, this certifies reduced models at a cost independent of the resolution,
+and a three-stage rule escalates to full order only when needed.
+\item \textbf{Evidence at a resolution that prices the whole parameter box to one cent.} The
+full-order certificate costs $6\%$ of a direct solve; the certified POD--Galerkin model costs
+$3\%$ and settles $99.8\%$ of $10^4$ queries without touching the full space. There is no false
+accept on any of the 414 queries with a reference solution, and outside the training box the
+certificate accepts 193 of the 210 queries on which the reduced model remains within one cent.
+For neural reduced models the certificate is a sharp diagnostic: it rejects every inadequate
+prediction within milliseconds and identifies the mechanism. The framework also yields a residual
+certificate for the American put.
+\end{itemize}
+The ingredients (symbol-based assembly and stability constants, banded comparison norms, affine
+interpolation of a univariate symbol, query-wise certification of learned surrogates) apply to any
+shift-invariant discretisation of a nonlocal operator, including fractional diffusion and other
+L\'evy-type models beyond finance, which is why I believe the paper suits SISC.
+
+\textbf{Related work by the author.}
+(i) A preprint of this manuscript is available as
+\href{https://arxiv.org/abs/2611.03463}{arXiv:2611.03463}. The submitted version contains the same
+theory and the same numerical results; it differs from the preprint only by editorial revision
+(presentation, length and the Supplementary Materials). The preprint has not been submitted to any
+other journal.
+(ii) The deterministic spline Galerkin discretisation on which the certificate is built is the
+subject of a companion paper, ``A B-spline Galerkin method for option pricing under the CGMY
+tempered stable process,'' currently under review at the \emph{SIAM Journal on Financial
+Mathematics}. That paper develops and analyses the discretisation; the present one takes it as
+given and contributes the certification theory, the reduced and neural surrogates and their
+evaluation. The overlap is limited to the model definition, recalled in Section~2 for
+self-containedness. I would be glad to provide a copy of the companion manuscript to the editor
+and referees.
+
+\textbf{Length and supplementary materials.} The main article has 26 pages, above the recommended
+20 and within the 26-page limit. The theory and the numerical evidence depend on each other: the
+certificate's cost and reliability claims rest on the calibration, benchmark and out-of-distribution
+studies. The main article is self-contained: every result it claims is proved there, including the
+uniform-stability theorem and the American-put certificate in Appendix~A. The 8-page Supplementary
+Materials contain only supporting data (notation, full verification studies, a neural-operator
+stress test, training and cost tables) and three extensions that the main article does not use. I would be happy to shorten the article
+further following the editor's guidance.
+
+\textbf{Reproducibility.} All results were produced by a single package with a 67-test suite; a clean
+clone regenerates every table and figure of the paper from the stored result files, and every number
+in the numerical section is checked against those files by a script. The archive is available at
+\url{https://github.com/DavoodDamircheli/ertified_neural_glkn_cgmy}.
+
+\textbf{Suggested referees.} The following experts cover the reduced-basis, Toeplitz/fractional and
+computational-finance aspects of the paper:
+\begin{itemize}[leftmargin=1.6em,itemsep=0.1em,topsep=0.2em]
+\item Bernard Haasdonk, University of Stuttgart, Germany: certified reduced-basis methods and
+a posteriori error bounds, including option pricing.
+\item Stefano Serra-Capizzano, University of Insubria, Italy, and Uppsala University, Sweden: spectral
+symbols of Toeplitz and GLT sequences, and preconditioning of fractional diffusion equations.
+\item Olena Burkovska, Oak Ridge National Laboratory, USA: model order reduction for nonlocal and
+fractional models, and reduced-basis methods for option pricing.
+\item Kathrin Glau, Queen Mary University of London, UK: complexity reduction and parametric
+option pricing under L\'evy models.
+\item Cornelis W. Oosterlee, Utrecht University, the Netherlands: Fourier methods and machine
+learning in computational finance.
+\end{itemize}
+I have no conflict of interest with any of them.
+
+The manuscript is not published, accepted or under consideration elsewhere, and its posting on
+arXiv is consistent with SIAM's policy on preprints. Thank you for considering this submission; I look
+forward to the referees' comments.
+
+Sincerely,
+
+\vspace{0.6em}
+Davood Damircheli\\
+Department of Mathematics, Louisiana State University
+
+\end{document}

@@ -1,0 +1,11 @@
+\begin{proposition}[Two-stage rule]\label{prop:twostage}
+Let $\eta^X$ be the cheap residual estimator and $\eta^S$ the exact one, with the common
+initial term $\beta_0$.  Then
+$\eta^S\le\eta^X\le\sqrt{\Thmu}\,\eta^S$.  Hence, for a tolerance $\varepsilon$:
+if $(\beta_0^2+(\eta^X)^2)^{1/2}\le\varepsilon$ accept (\textsc{banded accept});
+if $(\beta_0^2+(\eta^X)^2/\Thmu)^{1/2}>\varepsilon$ reject without further work
+(\textsc{cheap reject}: the exact bound cannot pass);
+otherwise compute $\eta^S$ by the bracket of Lemma~\ref{lem:guaranteed} with
+$\alpha_{\rm lb}=\min\sym{s}_{\mu,K}-\varepsilon_K(\mu)$ and decide
+(\textsc{exact accept} / \textsc{exact reject}).
+\end{proposition}

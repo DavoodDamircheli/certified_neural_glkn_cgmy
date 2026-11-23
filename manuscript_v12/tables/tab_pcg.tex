@@ -1,0 +1,18 @@
+\begin{table}[!htbp]
+\centering\small
+\caption{Iteration counts (median / max over 20 Sobol queries) to relative residual $10^{-12}$: conjugate gradients for the Riesz system $S_Iv=\rho$ with and without the circulant preconditioner built from the symbol samples, and circulant-preconditioned GMRES per Crank--Nicolson step for $B_+=M_I+\tfrac{\Delta\tau}{2}A_I$ (60 steps, warm start, mean over steps / max).}
+\label{tab:pcg-v9}
+\begin{tabular}{rrrr}
+\toprule
+$N$ & plain CG & circulant PCG & circulant GMRES ($B_+$)\\
+\midrule
+64 & 42 / 45 & 8 / 8 & 5.0 / 5\\
+128 & 74 / 82 & 9 / 9 & 5.0 / 6\\
+256 & 130 / 154 & 9 / 10 & 6.0 / 7\\
+512 & 224 / 292 & 10 / 10 & 7.0 / 8\\
+1024 & 384 / 548 & 10 / 11 & 7.1 / 12\\
+2048 & 648 / 1025 & 11 / 11 & 8.0 / 13\\
+4096 & 1080 / 1915 & 11 / 12 & 9.0 / 15\\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,26 @@
+\begin{table}[!htbp]
+\centering\small
+\caption{Neural reduced candidates (POD-NN, $r=48$) on the 30 validation queries at the production configuration: median true error and median augmented bounds of the three certificates, with the effectivity of the exact one. Standard output: $r\times N_T$ coefficients; space--time output: $r\times r_t$ coefficients of a temporal POD ($r_t=23$). Checkpoints selected by the validation median of the reduced certificate. The projection of the reference trajectories onto the same basis and the POD--Galerkin solution are the attainable floor. At $\varepsilon_N=1.18\times10^{-3}$ the certificate rejects every POD-NN query, each by the cheap rejection of the first stage.}
+\label{tab:podnn}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrr}
+\toprule
+candidate & error & $\eta^S_{\rm aug}$ & $\eta^X_{\rm aug}$ & $\eta^{\bar X}_{\rm aug}$ & eff.\ $\eta^S$\\
+\midrule
+800 traj., $\lambda_R=0$ & 0.183 & 33.7 & 42.0 & 103 & 178.5\\
+800 traj., $\lambda_R=1$ & 1.76 & 5.20 & 8.19 & 18.9 & 3.0\\
+4000 traj., $\lambda_R=0$ & 0.0816 & 12.2 & 16.4 & 37.4 & 148.0\\
+4000 traj., $\lambda_R=10^{-2}$ & 0.448 & 1.27 & 2.11 & 4.90 & 2.9\\
+4000 traj., $\lambda_R=10^{-1}$ & 0.485 & 1.28 & 2.15 & 4.95 & 2.8\\
+4000 traj., $\lambda_R=1$, seed 0 & 0.458 & 1.26 & 2.07 & 4.94 & 2.9\\
+\quad seed 1 & 0.473 & 1.24 & 2.04 & 4.80 & 2.8\\
+\quad seed 2 & 0.464 & 1.27 & 2.08 & 4.95 & 2.8\\
+space--time, 4000 traj., $\lambda_R=1$, seed 0 & 0.0159 & 0.0582 & 0.0891 & 0.190 & 3.7\\
+\quad seed 1 & 0.0161 & 0.0559 & 0.0841 & 0.195 & 3.6\\
+\quad seed 2 & 0.0142 & 0.0545 & 0.0815 & 0.176 & 3.8\\
+\midrule
+projection of the references & $3.3\times10^{-4}$ & $3.2\times10^{-3}$ & $6.2\times10^{-3}$ & 0.0127 & 10.2\\
+POD--Galerkin, $r=48$ & $3.5\times10^{-4}$ & $3.8\times10^{-3}$ & $8.2\times10^{-3}$ & 0.0154 & 11.0\\
+\bottomrule
+\end{tabular}}
+\end{table}

@@ -1,0 +1,342 @@
+\documentclass[supplement,hidelinks]{siamart251216}
+\usepackage{amssymb,mathtools}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage[protrusion=true,expansion=false]{microtype}
+\usepackage{placeins}
+\graphicspath{{figures/}}
+\usepackage{bm}
+\usepackage{textcomp}
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.9}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.65}
+\setlength{\emergencystretch}{1.5em}
+\ifpdf
+\hypersetup{
+ pdftitle={Supplementary Materials: Symbol-based residual certification of reduced and neural surrogates for tempered-fractional CGMY pricing},
+ pdfauthor={D. Damircheli}}
+\fi
+\input{xref_main}
+\newsiamremark{remark}{Remark}
+\newsiamthm{assumption}{Assumption}
+\headers{Symbol-based certification for CGMY pricing}{D. Damircheli}
+\title{Symbol-based residual certification of reduced and neural surrogates for tempered-fractional CGMY pricing}
+\author{Davood Damircheli\thanks{Department of Mathematics, Louisiana State University, Baton Rouge, LA 70803, USA
+(\email{ddamircheli@lsu.edu}).}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Pset}{\mathcal{P}}
+\newcommand{\Sop}{\mathcal{S}}
+\newcommand{\Vh}{V_h^0}
+\newcommand{\Vmu}{V_{\mu}}
+\newcommand{\Vp}[1]{V_{#1}}
+\newcommand{\Mh}{M_h}
+\newcommand{\Ah}{A_h}
+\newcommand{\Sh}{S_h}
+\newcommand{\norm}[1]{\left\lVert #1\right\rVert}
+\newcommand{\ip}[2]{\left\langle #1,#2\right\rangle}
+\newcommand{\dt}{\Delta\tau}
+\newcommand{\etaSharp}{\eta_{\mathrm{sh}}}
+\newcommand{\etaMass}{\eta_{\mathrm{ms}}}
+\newcommand{\etaGuar}{\eta_{\mathrm{gu}}}
+\newcommand{\ee}{\mathbf e}
+\newcommand{\cc}{\mathbf c}
+\newcommand{\rr}{\bm\rho}
+\newcommand{\ff}{\mathbf f}
+\newcommand{\vv}{\mathbf v}
+\newcommand{\bb}{\mathbf b}
+\newcommand{\zz}{\mathbf z}
+\newcommand{\yy}{\mathbf y}
+\newcommand{\ww}{\mathbf w}
+\newcommand{\sres}{\mathbf s}
+\newcommand{\dd}{\bm\delta}
+\newcommand{\rf}{r}
+\newcommand{\Hs}{H^{s_\mu}_{M,G}}
+\newcommand{\Dm}{\mathcal D_G^-}
+\newcommand{\Dp}{\mathcal D_M^+}
+\newcommand{\Aop}{\mathcal A_\mu}
+\DeclareMathOperator{\Real}{Re}
+\newcommand{\Tn}[2]{T_{#1}(#2)}          %
+\newcommand{\sym}[1]{#1}                 %
+\newcommand{\smin}{s_{\min}}
+\newcommand{\Thmu}{\Theta_\mu}
+
+\begin{document}
+\maketitle
+\noindent These Supplementary Materials collect the notation table, the verification studies, the
+stress test of a neural operator, the neural-candidate and training tables, the operation counts and
+measured cost constants, and three extensions that are not used in the main text.  All results
+claimed in the main article are proved there (including Appendix~\ref{app:proofs}); nothing in the
+main article depends on the proofs of Section~\ref{sm:extensions}.
+
+\section{Notation}
+\label{sm:notation}
+\begin{table}[ht]
+\centering\footnotesize
+\caption{Notation.}
+\label{tab:notation}
+\begin{tabular}{@{}l@{\ \ }>{\raggedright\arraybackslash}p{3.3cm}@{\ \ }l@{\ \ }>{\raggedright\arraybackslash}p{3.3cm}@{}}
+\toprule
+$\mu=(C,G,M,Y,r)$, $T$, $\mathcal K$ & model parameters, maturity, strike &
+$N$, $h$, $p$ & cells, mesh width, spline order ($p=3$)\\
+$N_h$, $N_T$, $\dt$ & free unknowns, time steps, step size &
+$A_\mu(\xi)$ & full-line symbol of $\Aop$, \eqref{eq:symbol}\\
+$\sym{a}_\mu$, $\sym{s}_\mu=\Real\sym{a}_\mu$ & periodised symbol, its real part &
+$\sym{m},\sym{d}_1,\sym{g}_1$ & mass, drift, stiffness symbols\\
+$K$, $\varepsilon_K$ & alias truncation, tail bound &
+$\Tn{n}{f}$ & $n\times n$ Toeplitz section of $f$\\
+$M_I,A_I,S_I$ & free mass, operator, symmetric part &
+$\alpha_{\rm lb}$, $\smin$ & spectral lower bound, $\min_\vartheta\sym{s}_\mu$\\
+$X_I$, $\beta_\mu$, $\Thmu$ & banded comparison norm, its factors &
+$\bar X$, $\bar\Theta_\mu$ & cell comparison norm (reduced stage)\\
+$\rr^{n+1/2}$, $\beta_0$ & CN residual, initial discrepancy &
+$\eta^S,\eta^X,\eta^{\bar X}$ & exact, banded, reduced estimators\\
+$Q$, $\varepsilon_Q$, $A_Q$ & EIM rank, error, affine operator &
+$r$, $V$, $\varrho$ & POD rank, basis, retained rows\\
+$\varepsilon$, $\varepsilon_N$ & tolerance; one cent at $N=1024$ &
+$\eta_{\rm aug}$, $\lambda^{\bar X}_{\rm aug}$ & augmented bound, lower companion\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\FloatBarrier
+\section{Verification of the assembly, the bounds and the solvers}
+\label{sm:verification}
+The studies of this section use the design of Section~\ref{ssec:design} of the main text (60 Crank--Nicolson
+steps, several $N$); they verify the assembly of Section~\ref{ssec:assembly}, the bounds of
+Theorems~\ref{thm:spectral} and~\ref{thm:comparison} and the solvers of Section~\ref{ssec:comparison}.
+\subsection{Assembly verification}
+Table~\ref{tab:assembly-v9} compares the assembled free matrix with the exact Galerkin matrix,
+computed independently at 40 digits (alias series summed in closed form through Hurwitz zeta
+tails, Toeplitz entries by a high-precision trapezoid rule).  The truncation error decreases
+like $K^{-(2p-Y-1)}$ as predicted by Lemma~\ref{lem:tail}, and the bound $\varepsilon_K$ is
+within a factor $1.1$--$3.7$ of the observed error at $K=100$ (at most $4.4$ at $K=20$ and $8.6$ at $K=5$).
+\input{tables/tab_assembly}
+\subsection{Spectral bound and comparison norm}
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.94\linewidth]{F2_spectral_bound.pdf}
+\caption{Ratios $\lambda_{\min}(S_I)/\smin(\mu)$ (left) and $\lambda_{\min}(S_I)/(\rf m_{\min})$ (right)
+over the 288 verification queries at $N=64,256,1024$; the star marks the vertex
+$\mu=(0.05,5,9,1.1,0.01)$, at which $\lambda_{\min}(S_I)/\smin(\mu)$ is closest to one.  Both ratios are $\ge1$ at every query, as Theorem~\ref{thm:spectral} asserts.}
+\label{fig:spectral-bound}
+\end{figure}
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.94\linewidth]{F3_theta_and_effectivity.pdf}
+\caption{Left: the a-priori effectivity bound $\sqrt{\Thmu}$ of the banded certificate as a function of
+$N$ (symbol only, 288 queries).  Right: observed ratio $\eta^X/\eta^S$ for POD--Galerkin candidates
+(ranks 16, 32, 48), the prolonged coarse solution and exact dynamics from a perturbed initial vector,
+at $N=64$ and $N=512$.}
+\label{fig:theta}
+\end{figure}
+The bound of Theorem~\ref{thm:spectral} and the two-sided comparison \eqref{eq:comparison} hold at
+all $289\times3$ tested (query, $N$) pairs (the 288 verification queries and the starred vertex); the generalised eigenvalues of $(S_I,X_I)$ lie in
+$[1,\Thmu]$ in every case.  The a-priori factor $\sqrt{\Thmu}$ grows like
+$(\min(G,M)h)^{(Y-2)/2}$ (median $1.15$, $1.74$, $2.05$, $2.91$, $4.11$ at $N=64$, $512$, $1024$,
+$4096$, $16384$; maxima $1.75$, $3.78$, $4.93$, $8.30$, $13.6$), because the tempering scale moves
+below the resolution of a degree-$(p-1)$ trigonometric minorant.  The observed ratio
+$\eta^X/\eta^S$ on candidates is much smaller: median $1.08$--$1.13$ at $N=64$ and $1.4$--$1.7$ at
+$N=512$ (maximum $3.1$), so at the production resolution the banded certificate costs a factor
+below two in effectivity; the production candidates of Section~\ref{ssec:e1} confirm the factor
+$\eta^X/\eta^S\approx2$ at $N=1024$.
+\subsection{Riesz solves and reference trajectories}
+\input{tables/tab_pcg}
+Dense-LU and circulant-GMRES references agree to $10^{-12}$ in the $M_I$ norm for
+$N\le1024$; the bracket width at convergence is below $10^{-20}$ relative for $N\le1024$ and
+below $10^{-18}$ at $N=4096$, where it is set by the roundoff of the recomputed residual.
+\subsection{Initial-error tests and \texorpdfstring{$Y<1$}{Y<1}}
+On the 48 exact-dynamics cases with perturbed initial vectors ($\|\delta\|_{M_I}=10^{-4}$), both
+$\eta^X_{\rm aug}$ and $\eta^S_{\rm aug}$ hold with effectivity $1.00\pm10^{-6}$, whereas the
+residual-only estimators (without $\beta_0$) underestimate the error in every case, which confirms
+that the initial term of the augmented bound is essential.  For $Y\in\{0.5,0.8,0.95\}$
+(same $C,G,M,\rf$ as the reference query) the bound $\alpha_{\rm lb}=0.0500=\rf$ is positive,
+$\lambda_{\min}(S_I)\in[0.052,0.055]$, $\sqrt{\Thmu}\le1.5$, the preconditioned GMRES solve of
+$B_+$ needs at most five iterations per step, and the certificate holds with effectivity one on
+perturbed exact dynamics; the discrete framework therefore covers the finite-variation regime
+without change.
+\section{Stress test: a neural operator trained on a different discretisation}
+\label{sm:deeponet}
+The neural-operator candidate is a DeepONet with payoff and parameter branches and a time
+trunk, latent dimension 64 and 80,002 trainable parameters, followed by a coefficient decoder
+that supplies the spline-valued output; with $\mathcal K=100$ fixed it is a parameter map for a
+single strike, and the payoff branch accommodates other payoffs.  It is trained on the
+principal-period ($K=0$) discretisation, which differs from the exact Galerkin system by
+$0.31$--$0.41$ in relative operator norm (Table~\ref{tab:assembly-v9}), and is certified as a
+candidate of the exact system ($N=64$, $N_T=60$, 120 benchmark queries).  The certificate rejects it
+at every tolerance of the sweep $10^{-3}\times\{0.1,\dots,10\}$: the median true error is $0.78$
+(relative $3.1\times10^{-3}$), the median exact bound $3.4$, with no false accept.  The certificate
+thus detects, query by query, that a surrogate was trained for a different discrete problem; the
+neural candidate of the production study is the POD-NN below.
+\section{Neural reduced candidates: results and training details}
+\label{sm:training}
+Table~\ref{tab:podnn} reports every POD-NN checkpoint of Section~\ref{ssec:e1} of the main text on
+the 30 validation queries, and Table~\ref{tab:training} lists the optimiser, schedule, parameter
+counts and wall times of the runs.
+\input{tables/tab_podnn}
+\input{tables/tab_training}
+\section{Operation counts and measured constants of the cost model}
+\label{sm:cost}
+Let ${\rm it}_B$ be the mean number of preconditioned GMRES iterations per Crank--Nicolson step
+(Table~\ref{tab:pcg-v9}: $5$--$9$), and count one FFT of length $2N_h$ as $5N_h\log_2N_h$
+flops.  Per query,
+\begin{align*}
+ \text{direct solve:}&\quad N_T\,{\rm it}_B\,(2\cdot5N_h\log_2N_h+O(N_h)),\\
+ \text{certificate }(\eta^X):&\quad N_T\,(2\cdot5N_h\log_2N_h)+N_T(2p-1)N_h+O(p^2N_h),\\
+ \text{certificate }(\eta^S):&\quad N_T\,{\rm it}_{\rm PCG}\,(2\cdot5N_h\log_2N_h)+\text{the above},\\
+ \text{reduced solve:}&\quad (Q+2)r^2+N_T\,r^2,\\
+ \text{reduced certificate }(\eta^{\bar X}):&\quad \varrho\,(Q+2)(2r+1)+N_T\,r\,(Q+2),
+\end{align*}
+with $\varrho\le N_h$ retained rows, plus the symbol evaluation $O(LK)$ common to all certified variants.  These counts underlie Section~\ref{ssec:cost} of the main text;
+Table~\ref{tab:cost} gives the measured constants from the refinement study of
+Section~\ref{ssec:benchmark}.
+\input{tables/tab_cost}
+\FloatBarrier
+\section{Extensions not used in the main text}
+\label{sm:extensions}
+The following results complement the main article; none of its statements depends on them.
+\subsection{Discrete parameter stability}
+\label{ssec:solution-operator}
+\begin{proposition}[Discrete parameter stability of the solution map]
+\label{prop:discrete-lipschitz}
+Fix a mesh, a time grid, and a payoff $\psi$; the assembled symmetric
+matrix $\Sh(\mu_1)$ is positive definite by Theorem~\ref{thm:spectral}. Let
+$\mu_1,\mu_2\in\Pset$
+with $\cc_h(\mu_1),\cc_h(\mu_2)$ the corresponding Crank--Nicolson
+trajectories of \eqref{eq:cn-reference}.  Then, for every
+$m=1,\dots,N_T$,
+\begin{equation}
+\begin{aligned}
+  \norm{\cc_h^m(\mu_1)-\cc_h^m(\mu_2)}_{\Mh}^2
+  \le{}& \norm{\cc_h^0(\mu_1)-\cc_h^0(\mu_2)}_{\Mh}^2\\
+  &+\dt\sum_{n=0}^{m-1}
+  \bigl\lVert\bm\varrho^{\,n+1/2}\bigr\rVert_{\Sh(\mu_1)^{-1}}^2 ,
+\end{aligned}
+  \label{eq:discrete-lipschitz}
+\end{equation}
+where the parameter-perturbation residual is
+\begin{equation}
+  \bm\varrho^{\,n+1/2}
+  :=\bigl(\Ah(\mu_1)-\Ah(\mu_2)\bigr)\overline\cc_h^{\,n+1/2}(\mu_2)
+   -\bigl(\overline\ff^{\,n+1/2}(\mu_1)-\overline\ff^{\,n+1/2}(\mu_2)\bigr).
+  \label{eq:param-residual}
+\end{equation}
+Under exact assembly of the conforming variational matrices,
+Theorem~\ref{thm:uniform-coercivity} additionally gives
+\begin{equation}
+\begin{aligned}
+  &\norm{\bigl(\Ah(\mu_1)-\Ah(\mu_2)\bigr)\vv}_{\Sh(\mu_1)^{-1}}\\
+  &\qquad\le
+  \frac{1}{c_1}\,
+  \sup_{0\ne v_h,w_h\in\Vh}
+  \frac{|a_{\mu_1}(v_h,w_h)-a_{\mu_2}(v_h,w_h)|}
+       {\norm{v_h}_{\Vp{\mu_1}}\norm{w_h}_{\Vp{\mu_1}}}\,
+  \norm{\vv}_{\Sh(\mu_1)},
+\end{aligned}
+  \label{eq:matrix-difference}
+\end{equation}
+so a bound on the difference of the two bilinear forms in a \emph{single}
+norm---that of $\mu_1$---suffices, and no common energy space is needed.
+\end{proposition}
+
+\begin{proof}
+The difference $\ee^n:=\cc_h^n(\mu_1)-\cc_h^n(\mu_2)$ satisfies the
+Crank--Nicolson error equation \eqref{eq:discrete-error-equation} with
+$\rr_\theta^{n+1/2}$ replaced by $\bm\varrho^{\,n+1/2}$ of
+\eqref{eq:param-residual}, since $\cc_h(\mu_2)$ solves the $\mu_2$ scheme
+exactly.  Apply Theorem~\ref{thm:fully-discrete-certificate} with
+$\Sh=\Sh(\mu_1)$.  Estimate \eqref{eq:matrix-difference} follows from
+the continuity argument above applied to the bilinear form
+$a_{\mu_1}-a_{\mu_2}$.
+\end{proof}
+This fixed-grid statement compares both trajectories in the norm of the
+first parameter.
+
+\subsection{Other time schemes and exponential shifts}
+\label{ssec:semidiscrete}\label{ssec:be-certificate}\label{ssec:shifted}
+The following extensions follow the same energy argument as
+Theorem~\ref{thm:fully-discrete-certificate}.
+For a differentiable candidate and a semidiscrete reference, define
+$\rho=\Mh\dot\cc_\theta+\Ah\cc_\theta-\ff$. Then
+\begin{equation}
+ \|\ee(t)\|_{\Mh}^2+\int_0^t\|\ee\|_{\Sh}^2
+ \le\|\ee(0)\|_{\Mh}^2+\int_0^t\|\rho\|_{\Sh^{-1}}^2.
+ \label{eq:semidiscrete-certificate}
+\end{equation}
+Multiply the error equation by $\ee^\top$, apply Young's inequality, and
+integrate.
+For backward Euler, the residual is
+$\rho^{n+1}=\Mh(c_\theta^{n+1}-c_\theta^n)/\dt_n
++\Ah c_\theta^{n+1}-f^{n+1}$ and
+\begin{equation}
+ \|\ee^{n+1}\|_{\Mh}^2+\|\ee^{n+1}-\ee^n\|_{\Mh}^2
+ +\dt_n\|\ee^{n+1}\|_{\Sh}^2
+ \le\|\ee^n\|_{\Mh}^2+\dt_n\|\rho^{n+1}\|_{\Sh^{-1}}^2.
+ \label{eq:be-certificate}
+\end{equation}
+This follows from
+$2y^\top\Mh(y-z)=\|y\|_{\Mh}^2-\|z\|_{\Mh}^2+\|y-z\|_{\Mh}^2$.
+A Rannacher start combines backward-Euler half steps with CN
+\cite{Rannacher1984}; summing the corresponding bounds, with the initial
+term retained, gives the certificate for the mixed trajectory.
+Each step must use its own scheme's residual.
+
+For an exact-assembly G\aa rding bound
+$a_\mu(v,v)\ge c_1\|v\|_{V_\mu}^2-c_2\|v\|_{L^2}^2$, choose
+$\sigma>c_2$ and set
+$A_\sigma=\Ah+\sigma\Mh$, $S_\sigma=\Sh+\sigma\Mh$.
+Then $S_\sigma\succeq(\sigma-c_2)\Mh$.
+Advance $d_h$ by CN for the shifted operator with forcing
+$g^n=e^{-\sigma\tau_n}f^n$, and reconstruct
+$c_{h,\sigma}^n=e^{\sigma\tau_n}d_h^n$.
+For $d_\theta^n=e^{-\sigma\tau_n}c_\theta^n$ and its shifted CN residual
+$\rho_\sigma$, the same theorem yields
+\[
+ \max_m\|c_{h,\sigma}^m-c_\theta^m\|_{\Mh}
+ \le e^{\sigma T}
+ \left(\|d_h^0-d_\theta^0\|_{\Mh}^2+
+ \dt\sum_n\|\rho_\sigma^{n+1/2}\|_{S_\sigma^{-1}}^2\right)^{1/2}.
+\]
+This certifies the reconstructed shifted target, which is a discrete trajectory
+distinct from unshifted CN because exponential transformation and CN
+discretisation do not commute. With positive rates no shift is needed, and the
+numerical studies use unshifted CN.
+
+\subsection{Preconditioned correction}
+\label{ssec:correction-extension}
+If $P_h\succ0$ and $\Sh\succeq\gamma_P P_h$ with $\gamma_P>0$, then
+$r^\top\Sh^{-1}r\le\gamma_P^{-1}r^\top P_h^{-1}r$.
+Alternatively $P_h$ can accelerate the Riesz iteration while the bracket
+uses its independent bound on $\lambda_{\min}(\Sh)$.
+\begin{proposition}[Contraction of a preconditioned correction]
+\label{prop:correction-contraction}
+Fix a time step and write the step equation as $B_+\zz=\bb$.  Let $P\succ0$ be
+a preconditioner and consider the Richardson iteration
+$\zz^{(i+1)}=\zz^{(i)}+P^{-1}(\bb-B_+\zz^{(i)})$ with residuals
+$\sres^{(i)}=\bb-B_+\zz^{(i)}$.  Then
+\begin{equation}
+  \norm{\sres^{(i+1)}}_{P^{-1}}\le\rho_P\,\norm{\sres^{(i)}}_{P^{-1}},
+  \qquad
+  \rho_P:=\bigl\lVert I-P^{-1/2}B_+P^{-1/2}\bigr\rVert_2 .
+  \label{eq:contraction}
+\end{equation}
+If $P=\Mh+\tfrac{\dt}{2}\Sh$, the symmetric part of $B_+$, then
+\[
+I-P^{-1/2}B_+P^{-1/2}=-\tfrac{\dt}{2}P^{-1/2}N_hP^{-1/2},\qquad N_h=\tfrac12(\Ah-\Ah^\top),
+\]
+with $N_h$ skew symmetric, so $\rho_P$ is determined entirely by the nonsymmetric part of the
+CGMY operator and satisfies $\rho_P\le\tfrac{\dt}{2}\lVert P^{-1/2}N_hP^{-1/2}\rVert_2$.
+\end{proposition}
+
+\begin{proof}
+$\sres^{(i+1)}=(I-B_+P^{-1})\sres^{(i)}$, so
+$P^{-1/2}\sres^{(i+1)}=(I-P^{-1/2}B_+P^{-1/2})P^{-1/2}\sres^{(i)}$ and
+\eqref{eq:contraction} follows by taking Euclidean norms.  For the second
+claim, $B_+=P+\tfrac{\dt}{2}N_h$ by \eqref{eq:Sh} and the definition of $N_h$.
+\end{proof}
+The Richardson correction therefore contracts whenever $\rho_P<1$, a condition
+governed by the skew part of the operator and the step size.  The experiments use
+circulant-preconditioned GMRES, whose iteration counts are reported in Table~\ref{tab:pcg-v9}.
+\input{references}
+\end{document}

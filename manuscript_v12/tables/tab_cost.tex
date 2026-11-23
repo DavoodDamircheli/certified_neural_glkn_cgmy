@@ -1,0 +1,25 @@
+\begin{table}[!htbp]
+\centering\small
+\caption{Cost model of Section~\ref{ssec:cost} with measured constants (one thread, idle machine; medians over five benchmark queries; $m=2N_h$, $i_n$ and $p_n$ the GMRES and PCG iteration counts per step). Times in ms; $c$ is the fitted time per operation of the stated count with its maximum relative deviation; where the per-step interpreter overhead matters the two-constant fit $t=c'\,\mathrm{ops}+d\,\mathrm{calls}$ is also given. The spectral-data row is the fine verification grid; the online path uses the fast mode ($2.5$~ms, Section~\ref{ssec:benchmark}). The reduced rows do not depend on $N$ by construction.}
+\label{tab:cost}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrrr}
+\toprule
+component & op count & $N=256$ & $N=512$ & $N=1024$ & $N=2048$ & $N=4096$ & $c$ (fit res.)\\
+\midrule
+assembly & $L(2K+1)$ & 21.63 & 57.02 & 106.37 & 209.78 & 408.07 & $1.25\times10^{-7}$ (16\%)\\
+spectral data (fine mode; online fast mode $2.5$~ms) & $n_g(2K+1)$ & 477.85 & 478.78 & 476.70 & 476.52 & 476.85 & $1.23\times10^{-7}$ (1\%)\\
+direct solve & $(\sum_n i_n+N_T)\,m\log m$ & 76.64 & 78.41 & 148.17 & 246.94 & 591.73 & $4.52\times10^{-9}$ (156\%); $c'=2.2\times10^{-9}$, $d=3.7\times10^{-5}$ (11\%)\\
+residual & $N_T\,m\log m$ & 1.11 & 2.47 & 6.18 & 15.27 & 53.96 & $1.25\times10^{-9}$ (68\%)\\
+banded $\eta^X$ & $N_T N_h$ & 0.80 & 1.61 & 3.33 & 6.76 & 13.38 & $1.35\times10^{-8}$ (6\%); $c'=1.3\times10^{-8}$, $d=0$ (6\%)\\
+exact $\eta^S$ & $\sum_n p_n\,m\log m$ & 61.49 & 60.83 & 141.40 & 237.32 & 678.46 & $2.65\times10^{-9}$ (115\%); $c'=1.7\times10^{-9}$, $d=1.2\times10^{-5}$ (21\%)\\
+\midrule
+\multicolumn{8}{l}{reduced model at $N=1024$, $Q=36$ (independent of $N$ by construction)}\\
+component & op count & $r=16$ & $r=32$ & $r=48$ & $r=64$ & $r=80$ & $c$ (fit res.)\\
+reduced solve & $(Q{+}2)r^2+r^3+3N_Tr^2$ & 0.78 & 0.86 & 0.97 & 1.11 & 1.29 & $5.37\times10^{-10}$ (638\%); $c'=8.8\times10^{-11}$, $d=3.3\times10^{-6}$ (4\%)\\
+reduced certificate & $\rho(r{+}1)(Q{+}2{+}2N_T)$ & 0.27 & 0.61 & 1.10 & 1.80 & 2.74 & $8.73\times10^{-11}$ (36\%); $c'=7.6\times10^{-11}$, $d=3.9\times10^{-7}$ (4\%)\\
+$\ell(\nu)+\varepsilon_Q$ & $161(2K+1)$ & 2.73 & 2.73 & 2.73 & 2.73 & 2.73 & $8.56\times10^{-8}$ (3\%)\\
+$\rho$ (retained rows) & & 263 & 390 & 524 & 668 & 819 & \\
+\bottomrule
+\end{tabular}}
+\end{table}

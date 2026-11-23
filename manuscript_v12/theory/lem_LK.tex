@@ -1,0 +1,17 @@
+\begin{lemma}[L\'evy--Khintchine form of the real symbol]\label{lem:LK}
+For $Y\in(0,2)\setminus\{1\}$, $a>0$ and $\xi\in\R$,
+\[
+ C\Gamma(-Y)\bigl[a^Y-\Real(a+i\xi)^Y\bigr]
+ =C\,I_a(\xi),\qquad
+ I_a(\xi):=\int_0^\infty(1-\cos\xi x)\,e^{-ax}x^{-1-Y}dx\ \ge0 .
+\]
+Consequently $\Real A_\mu(\xi)=\rf+C\,[I_G(\xi)+I_M(\xi)]\ge \rf$ for all $\xi$,
+without any restriction $Y>1$.
+\end{lemma}
+\begin{proof}
+For $Y\in(1,2)$: $\int_0^\infty(e^{-zx}-1+zx)x^{-1-Y}dx=\Gamma(-Y)z^Y$,
+$\Real z\ge0$; apply with $z=a+i\xi$ and $z=a$, subtract, use
+$\Gamma(1-Y)=-Y\Gamma(-Y)$ and take real parts.  For $Y\in(0,1)$ use
+$\int_0^\infty(e^{-zx}-1)x^{-1-Y}dx=\Gamma(-Y)z^Y$ in the same way; the
+sign of $\Gamma(-Y)$ cancels against that of the bracket.
+\end{proof}

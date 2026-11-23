@@ -1,0 +1,26 @@
+\begin{proposition}[Three-stage rule]\label{prop:threestage}
+Let $\bar X=\Tn{N_h}{\bar{\sym{x}}}$ be the comparison matrix of a cell containing $\mu$
+(Remark~\ref{rem:reduced-online}), so that $\bar X\preceq X_I\preceq S_I$, and let
+$\bar\Theta_\mu:=\sup_\vartheta\sym{s}_\mu(\vartheta)/\bar{\sym{x}}(\vartheta)$, so that
+$S_I\preceq\bar\Theta_\mu\bar X$ by Lemma~\ref{lem:toeplitz}.  Let $\rho_Q^{n+1/2}$ be the residual of a
+candidate evaluated with the affine operator $A_Q$, $u_n\ge(\rho_Q^{n+1/2})^\top\bar X^{-1}\rho_Q^{n+1/2}$
+the per-step values of the reduced online estimator (including its rounding term), and $d_n$ the
+allowance of Theorem~\ref{thm:eim-cert} with $\min_\vartheta\bar{\sym{x}}$ in place of $\alpha_{\rm lb}$.  Then
+\begin{align*}
+ \eta^{\bar X}_{\rm aug}&:=\Bigl(\beta_0^2+\dt\sum_n(\sqrt{u_n}+d_n)^2\Bigr)^{1/2}\ \ge\ \eta^S_{\rm aug}\\
+ &\ \ge\ \Bigl(\beta_0^2+\dt\sum_n\max\bigl\{0,\ \sqrt{\ell_n/\bar\Theta_\mu}-d_n\bigr\}^2\Bigr)^{1/2}=:\lambda^{\bar X}_{\rm aug},
+\end{align*}
+where $\ell_n\le(\rho_Q^{n+1/2})^\top\bar X^{-1}\rho_Q^{n+1/2}$ is the per-step value minus its rounding
+term.  Hence, for a tolerance $\varepsilon$: if $\eta^{\bar X}_{\rm aug}\le\varepsilon$ accept
+(\textsc{reduced accept}); if $\lambda^{\bar X}_{\rm aug}>\varepsilon$ reject (\textsc{cheap reject}:
+no full-order certificate can pass); otherwise apply Proposition~\ref{prop:twostage} at full order
+with the exact operator $\Ah$ (\textsc{banded accept}, \textsc{exact accept}, \textsc{exact reject}).
+Only the first two stages are independent of $N$.
+\end{proposition}
+\begin{proof}
+$\rho^{n+1/2}=\rho_Q^{n+1/2}+E^\top(\bar A_h-\bar A_Q)\overline{\bar\cc}_\theta$ with
+$\norm{E^\top(\bar A_h-\bar A_Q)\overline{\bar\cc}_\theta}_{S_I^{-1}}\le d_n$ (Theorem~\ref{thm:eim-cert},
+$S_I\succeq\bar X$); the upper bound follows from $S_I^{-1}\preceq\bar X^{-1}$ and the lower one from
+$S_I^{-1}\succeq\bar\Theta_\mu^{-1}\bar X^{-1}$ (Loewner order of Lemma~\ref{lem:toeplitz}); then
+Theorem~\ref{thm:fully-discrete-certificate}.
+\end{proof}

@@ -1,0 +1,13 @@
+{
+  "process": {
+    "compiler": "pdflatex"
+  },
+  "sources": [
+    {"filename": "main.tex", "usage": "toplevel"},
+    {"filename": "supplement.tex", "usage": "toplevel"},
+    {"filename": "xref_main.tex", "usage": "include"},
+    {"filename": "xref_supplement.tex", "usage": "include"},
+    {"filename": "references.tex", "usage": "include"}
+  ],
+  "stamp": true
+}
