@@ -8,5 +8,17 @@
       "created": "2026-11-23T00:26:02.744076+00:00",
       "discarded": "2026-11-22: sandbox test draft deleted (DELETE -> 204, GET -> 404); flow tested: create with reserved DOI, upload pod_bases.tar, MD5 match, metadata PUT"
     }
+  },
+  "zenodo": {
+    "software": {
+      "version_doi": "10.5281/zenodo.24451956",
+      "concept_doi": "10.5281/zenodo.24451955",
+      "version": "v1.0-sisc",
+      "github_release": "https://github.com/DavoodDamircheli/certified_neural_glkn_cgmy/releases/tag/v1.0-sisc",
+      "release_commit": "28147c68807a81b38c107b85471233d69cfb92f9",
+      "release_published": "2026-11-23T01:16:07Z",
+      "record": "https://doi.org/10.5281/zenodo.24451956",
+      "verified": "2026-11-23 via DataCite (api.datacite.org): state findable, type Software, creator ORCID 0000-0003-3099-6382, rights mit, IsSupplementTo arXiv:2611.03463, IsVersionOf 10.5281/zenodo.24451955; zenodo.org itself returned a 403 network block from this machine"
+    }
   }
 }
