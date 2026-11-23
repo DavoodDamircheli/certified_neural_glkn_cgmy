@@ -54,9 +54,9 @@ pip install -r requirements.txt --extra-index-url https://download.pytorch.org/w
 
 Numbering as in the compiled `manuscript_v12/main.pdf` (SIAM main article, as submitted to SISC) and
 `manuscript_v12/supplement.pdf` (Supplementary Materials, numbers prefixed SM); SIAM numbers floats within each
-section. Table SM1.1 (notation), Appendix A (proofs) and the cost-model formulas of Section SM5 have no result file of
-their own (the measured constants of SM5 are in Table SM5.1); the parameter box and the query populations are prose
-(equation (2.9) and Section 5.1).
+section. Table SM1.1 (notation), Fig. 3.1 (the online rule), Appendix A (proofs) and the cost-model formulas of
+Section SM5 have no result file of their own (the measured constants of SM5 are in Table SM5.1); the parameter box and
+the query populations are prose (equation (2.9) and Section 5.1).
 
 | Paper item | Output | Result file | Compute script | Plot/table step (in `build_outputs.py`) |
 |---|---|---|---|---|
