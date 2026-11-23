@@ -1,5 +1,10 @@
 # Deviations from the plan / brief (Phase 2-3)
 
+> Record kept as written during Phases 2-4. Paths in it refer to the layout of that time: `tables_v9/` is now
+> `tables/`, `figures_v9/` is `figures/`, `v8_frozen/` is the slimmed `legacy_v8/`, `manuscript_v12/` is `paper/`;
+> `manuscript_v9/`, the `CLAUDE_*.md` briefs, the `PHASE*_REPORT.md` files and `MANUSCRIPT_STATUS.md` were removed in
+> the Phase 5a cleanup (they remain in the git tag `pre-cleanup`).
+
 Each entry: what the plan says, what was done, the best achieved value, and where it is recorded.
 
 ## 2.1 EIM rank selection: Q = max(Q_tol, Q_op)

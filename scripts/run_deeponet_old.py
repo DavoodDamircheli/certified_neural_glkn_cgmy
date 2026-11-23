@@ -2,7 +2,7 @@
 """Plan 2.5 (first half): certify the v8 DeepONet checkpoint as a candidate of the *new* (exact-assembly)
 system at N = 64, N_T = 60 on bench120 -> results/deeponet_old_vs_new.json.
 
-The network inputs are built with the v8 code itself (v8_frozen/numerics/src, read-only): normalised mu
+The network inputs are built with the v8 code itself (legacy_v8/numerics/src, read-only): normalised mu
 (log for C, G, M), payoff projection psi / K, and c^0 = v8 compute_initial_coefficients (asserted equal to the
 v9 initial vector).  The checkpoint is loaded with v8's load_checkpoint (hard discretisation / box check);
 production_dataset.h5 is not needed.  The prediction is the raw coefficient trajectory c(tau_n), n = 0..60;
@@ -19,8 +19,8 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-V8SRC = ROOT / "v8_frozen" / "numerics" / "src"
-V8MODEL = ROOT / "v8_frozen" / "models"
+V8SRC = ROOT / "legacy_v8" / "numerics" / "src"
+V8MODEL = ROOT / "legacy_v8" / "models"
 sys.path.insert(0, str(ROOT))
 from cgmy_cert.params import Query, Mesh, load_queries_json  # noqa: E402
 from cgmy_cert.direct import reference_trajectory, initial_raw_coefficients, mass_norm  # noqa: E402
@@ -45,7 +45,7 @@ def v8_predictor():
     from correction.krylov import compute_initial_coefficients
     from learning.normalization import normalize_mu, normalize_psi, stats_from_box
     from deeponet_coeff import DeepONetCoeffNet
-    box = load_parameter_box(ROOT / "v8_frozen" / "numerics" / "configs" / "base.yaml")
+    box = load_parameter_box(ROOT / "legacy_v8" / "numerics" / "configs" / "base.yaml")
     msh = Mesh(N=N)
     v8mesh = V8Mesh(N=N, p=3, x_min=msh.x_min, x_max=msh.x_max)
     net, meta = load_checkpoint(V8MODEL / "deeponet_final.pt", DeepONetCoeffNet, mesh=v8mesh,
@@ -122,7 +122,7 @@ def main():
     out = dict(meta=dict(description="Plan 2.5: v8 DeepONet checkpoint certified as a candidate of the v9 exact-"
                          "assembly system (A_I, no EIM/allowance) at N = 64, N_T = 60 on bench120. Bounds are augmented "
                          "(beta0 included), true error = max_n mass-norm error vs dense LU reference, same units.",
-                         checkpoint="v8_frozen/models/deeponet_final.pt", checkpoint_meta=meta,
+                         checkpoint="legacy_v8/models/deeponet_final.pt", checkpoint_meta=meta,
                          population="bench120 (tests/fixtures/queries.json)", eps_sweep=list(EPS), N=N, N_T=NT,
                          inputs="v8 code: normalize_mu (log C,G,M), psi = european_put projection, c0 = "
                                 "compute_initial_coefficients; production_dataset.h5 not needed",

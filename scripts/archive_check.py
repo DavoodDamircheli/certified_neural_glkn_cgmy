@@ -61,7 +61,7 @@ def main():
     env.pop("PYTHONPATH", None)
     # committed outputs (before build.sh overwrites them)
     committed = {}
-    for d in ("tables_v9", "figures_v9"):
+    for d in ("tables", "figures"):
         for p in sorted((clone / d).iterdir()):
             committed[f"{d}/{p.name}"] = p.read_bytes()
     snap = work / "committed"; snap.mkdir(exist_ok=True)

@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 import numpy as np
-ROOT = Path(__file__).resolve().parents[1]; RES = ROOT / "results"; TAB = ROOT / "tables_v9"
+ROOT = Path(__file__).resolve().parents[1]; RES = ROOT / "results"; TAB = ROOT / "tables"
 
 def fmt(x, d=2):
     if x == 0: return "0"

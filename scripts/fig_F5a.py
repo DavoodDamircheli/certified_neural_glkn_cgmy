@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 import sys  # noqa: E402
 sys.path.insert(0, str(ROOT))
 from cgmy_cert.figio import save_fig  # noqa: E402
-RES = ROOT / "results"; FIG = ROOT / "figures_v9"
+RES = ROOT / "results"; FIG = ROOT / "figures"
 PAL = ["#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7", "#56B4E9"]       # Okabe-Ito, fixed order
 CERTS = (("reduced", "reduced online"), ("banded_AI", "banded full-order"), ("exact_AI", "exact full-order"))
 CERT_ALIAS = dict(banded_AI="banded", exact_AI="exact")             # E1.json key names

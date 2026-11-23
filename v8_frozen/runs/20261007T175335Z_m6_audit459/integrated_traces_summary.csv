@@ -1,7 +1,0 @@
-delivered,legacy_only_rejections_processed,n,n_accepted_after_correction,n_accepted_direct,predictor,stratum
-16,0,16,16,0,DeepONet,sobol_main_box
-16,0,16,0,16,pod_r48,sobol_main_box
-16,3,16,16,0,DeepONet,exact_vertex
-16,3,16,0,16,pod_r48,exact_vertex
-16,16,16,16,0,DeepONet,known_failure
-16,16,16,0,16,pod_r48,known_failure

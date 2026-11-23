@@ -12,7 +12,7 @@ Steps
   select   POD-NN bound-selected and error-selected checkpoint per setting (size, representation)
   timing   F5c data: online solve, reduced certificate and three-stage total at eps_N per rank, and the uncertified
            direct solve at N = 1024 (timing protocol, one performance core, idle machine)
-  figs     F5a (update), F5b, F5c (tables_v9/tab_pod_ranks_v9.tex: scripts/make_tables_phase2.py)
+  figs     F5a (update), F5b, F5c (tables/tab_pod_ranks_v9.tex: scripts/make_tables_phase2.py)
 Writes results/E1.json.
 """
 from __future__ import annotations
@@ -40,7 +40,7 @@ from cgmy_cert.provenance import provenance  # noqa: E402
 PC = json.loads((ROOT / "results" / "PRODUCTION_CONFIG.json").read_text())
 N, NT, EPS_N = PC["N"], PC["N_T"], PC["eps_N"]
 EPS = tuple(PC["eps_sweep"])
-DATA = ROOT / "data"; RES = ROOT / "results"; FIG = ROOT / "figures_v9"; TAB = ROOT / "tables_v9"; CK = ROOT / "checkpoints"
+DATA = ROOT / "data"; RES = ROOT / "results"; FIG = ROOT / "figures"; TAB = ROOT / "tables"; CK = ROOT / "checkpoints"
 OUT = RES / "E1.json"
 SPEC = "CYm:3x3x2"
 RANKS = (8, 16, 24, 32, 40, 48, 56, 62, 64, 80, 96, 128)
@@ -399,7 +399,7 @@ def do_figs(res, e2=None):
         for sp in ("top", "right"):
             a.spines[sp].set_visible(False)
         fig.tight_layout(); save_fig(fig, FIG / "F5c_online_time.png"); plt.close(fig)
-    # tables_v9/tab_pod_ranks_v9.tex is written by scripts/make_tables_phase2.py alone (from E1.json)
+    # tables/tab_pod_ranks_v9.tex is written by scripts/make_tables_phase2.py alone (from E1.json)
     print("figures written", flush=True)
 
 

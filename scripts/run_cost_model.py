@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Phase 3, item 0 (plan 2.6): cost model with measured constants -> results/cost_model.json, tables_v9/tab_cost_v9.tex.
+"""Phase 3, item 0 (plan 2.6): cost model with measured constants -> results/cost_model.json, tables/tab_cost_v9.tex.
 
-Per N in {256, 512, 1024, 2048, 4096} (5 bench120 queries, timing protocol of CLAUDE_PHASE3.md):
+Per N in {256, 512, 1024, 2048, 4096} (5 bench120 queries, timing protocol of cgmy_cert/timing.py):
   assembly        free_matrices (symbol on the L-grid, L (2K+1) alias terms)          ops = L (2K+1)
   spectral_data   graded grid (fixed size), all spectral quantities                     ops = n_grid (2K+1)
   direct solve    CN march, circulant-preconditioned GMRES                              ops = (sum_n iters_n + N_T) m2 log2 m2
@@ -39,7 +39,7 @@ PC = json.loads((ROOT / "results" / "PRODUCTION_CONFIG.json").read_text())
 NT, K = PC["N_T"], 100
 NS = (256, 512, 1024, 2048, 4096)
 RANKS = (16, 32, 48, 64, 80, 128)
-RES = ROOT / "results"; TAB = ROOT / "tables_v9"; DATA = ROOT / "data"
+RES = ROOT / "results"; TAB = ROOT / "tables"; DATA = ROOT / "data"
 OUT = RES / "cost_model.json"
 
 
@@ -196,7 +196,7 @@ def _tex_e(x, d):
 
 
 def write_table(out):
-    """tables_v9/tab_cost_v9.tex (layout and caption as edited in the manuscript; numbers from cost_model.json)."""
+    """tables/tab_cost_v9.tex (layout and caption as edited in the manuscript; numbers from cost_model.json)."""
     f = out["fits"]; med = out["median_times_full_order"]; mr = out["median_times_reduced"]
     fast_ms = out.get("remarks", {}).get("spectral_data_ms", {}).get("fast_online")
     lines = [r"\begin{table}[!htbp]", r"\centering\small",

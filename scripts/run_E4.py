@@ -22,7 +22,7 @@ from cgmy_cert.params import sobol_queries, Query  # noqa: E402
 from cgmy_cert.timing import pin, check_single_thread, hardware, loadavg  # noqa: E402
 from cgmy_cert.provenance import provenance  # noqa: E402
 
-RES = ROOT / "results"; FIG = ROOT / "figures_v9"
+RES = ROOT / "results"; FIG = ROOT / "figures"
 OUT = RES / "E4.json"; PROG = RES / "E4_progress.json"
 METHODS = ("direct", "podg80", "podg64", "podnn_st")
 
@@ -130,7 +130,7 @@ def do_summary():
 
 
 def plot_f8(res=None, prog=None):
-    """figures_v9/F8_amortisation.{png,pdf} from results/E4.json and results/E4_progress.json (no computation)."""
+    """figures/F8_amortisation.{png,pdf} from results/E4.json and results/E4_progress.json (no computation)."""
     res = json.loads(OUT.read_text()) if res is None else res
     prog = json.loads(PROG.read_text()) if prog is None else prog
     rows, meth, n = prog["rows"], res["methods"], len(prog["rows"])

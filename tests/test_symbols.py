@@ -11,8 +11,8 @@ from cgmy_cert.symbols import (bspline_ft_sq, alias_sum, mass_symbol, drift_symb
                                theta_grid, fourier_coefficients, toeplitz_section, free_matrices,
                                legacy_principal_period_free, eps_K_fractional, eps_K_full, symbols)
 
-V8 = ROOT / "v8_frozen"
-needs_v8 = pytest.mark.skipif(not V8.is_dir(), reason="v8_frozen/ (read-only v8 reference) not present in this checkout")
+V8 = ROOT / "legacy_v8"
+needs_v8 = pytest.mark.skipif(not V8.is_dir(), reason="legacy_v8/ (read-only v8 reference) not present in this checkout")
 
 
 def test_bspline_ft_sq():

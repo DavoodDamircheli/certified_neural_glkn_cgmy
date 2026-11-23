@@ -1,4 +1,4 @@
-"""Timing protocol of CLAUDE_PHASE3.md (all wall-clock numbers that may enter the paper).
+"""Timing protocol for all wall-clock numbers that may enter the paper.
 
 Idle machine (load averages recorded before/after), one thread (OMP/MKL/OPENBLAS = 1, torch 1 thread), pinned to one
 performance core, one warm-up query outside the population, 5 repetitions per query in a reproducibly shuffled method

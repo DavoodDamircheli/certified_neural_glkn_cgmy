@@ -1,5 +1,5 @@
 {
- "description": "Numbers in manuscript_v12 (main.tex, supplement.tex, theory/*.tex) and the result files that support them; written by scripts/make_paper_claims.py, checked by scripts/check_numbers.py",
+ "description": "Numbers in paper (main.tex, supplement.tex, theory/*.tex) and the result files that support them; written by scripts/make_paper_claims.py, checked by scripts/check_numbers.py",
  "claims": [
   {
    "id": "abs_exact_1e-8",
@@ -386,7 +386,7 @@
    "section": "4.3",
    "text": "latent dimension 64 and 80,002 trainable parameters",
    "json": null,
-   "file": "v8_frozen/models/deeponet_final.pt",
+   "file": "legacy_v8/models/deeponet_final.pt",
    "kind": "source-backed",
    "expr": "sum(v.numel() for v in J['model_state_dict'].values())",
    "value": 80002,
@@ -1302,14 +1302,14 @@
    "section": "5.6",
    "text": "had price gaps above two dollars at $N=64$",
    "json": null,
-   "file": "v8_frozen/manuscript_v8/provenance/frozen_tables/tab_corner.tex",
+   "file": "legacy_v8/manuscript_v8/provenance/frozen_tables/tab_corner.tex",
    "regex": "Q\\\\_audit\\\\_0(?:401|397) & 64 & \\$([0-9.]+)\\$",
    "agg": "min",
    "kind": "source-backed",
    "value": "2",
    "tol": "abs:0",
    "rel": "ge",
-   "note": "v8 frozen table tab_corner (generated from the raw CSVs by v8's v6_build_manuscript_assets.py): max_s |V_h(T) - COS| at N = 64 is 2.22 (Q_audit_0401) and 2.07 (Q_audit_0397) dollars; the smaller is checked. The run 20261007T175334Z_corner_refinement behind it is not in v8_frozen/runs (its cos/prices.csv is only hashed in provenance/evidence_v6.json)"
+   "note": "v8 frozen table tab_corner (generated from the raw CSVs by v8's v6_build_manuscript_assets.py): max_s |V_h(T) - COS| at N = 64 is 2.22 (Q_audit_0401) and 2.07 (Q_audit_0397) dollars; the smaller is checked. The run 20261007T175334Z_corner_refinement behind it is not in legacy_v8/runs (its cos/prices.csv is only hashed in provenance/evidence_v6.json)"
   },
   {
    "id": "s56_ref30_512",

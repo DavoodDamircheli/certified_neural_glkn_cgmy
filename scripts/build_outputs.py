@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate every table in tables_v9/ and every figure in figures_v9/ (PNG + PDF) from results/*.json only.
+"""Regenerate every table in tables/ and every figure in figures/ (PNG + PDF) from results/*.json only.
 
 No solver call, no data file: each step below is the plot/table function of the script that produced the result file,
 called directly (the scripts' main() functions are not run, so no result file is rewritten).
@@ -23,20 +23,20 @@ def steps():
     import run_E0, run_eim, run_E3_1, run_cost_model, fig_F5a, run_E1, run_E2, run_E3, run_E4
     e0 = js("E0.json")
     return [
-        ("tables_v9/tab_assembly_v9.tex", lambda: run_E0.plot_e01(e0)),
-        ("figures_v9/F2_spectral_bound", lambda: run_E0.plot_e02(e0)),
-        ("figures_v9/F3_theta_and_effectivity", lambda: run_E0.plot_e03(e0)),
-        ("tables_v9/tab_pcg_v9.tex", lambda: run_E0.plot_e04(e0)),
-        ("figures_v9/F4_eim", lambda: run_eim.do_figure(js("eim.json"))),
-        ("tables_v9/tab_budget_v9.tex", lambda: run_E3_1.do_table(js("E3_1_calibration.json"))),
-        ("tables_v9/tab_cost_v9.tex", lambda: run_cost_model.write_table(js("cost_model.json"))),
-        ("figures_v9/F5a_acceptance", lambda: _f5a(fig_F5a)),
-        ("figures_v9/F5b, F5c", lambda: run_E1.do_figs(js("E1.json"), js("E2.json"))),
-        ("figures_v9/F6a, F6b, tables_v9/tab_benchmark_v9.tex", lambda: run_E2.do_figs(js("E2.json"))),
-        ("figures_v9/F7_ood", lambda: run_E3.do_fig(js("E3.json"))),
-        ("tables_v9/tab_ood_v9.tex", lambda: run_E3.do_table_ood(js("E3.json"))),
-        ("figures_v9/F8_amortisation", lambda: run_E4.plot_f8()),
-        ("tables_v9/tab_pod_ranks_v9.tex, tab_podnn_v9.tex, tab_training_v9.tex (make_tables_phase2.py)",
+        ("tables/tab_assembly_v9.tex", lambda: run_E0.plot_e01(e0)),
+        ("figures/F2_spectral_bound", lambda: run_E0.plot_e02(e0)),
+        ("figures/F3_theta_and_effectivity", lambda: run_E0.plot_e03(e0)),
+        ("tables/tab_pcg_v9.tex", lambda: run_E0.plot_e04(e0)),
+        ("figures/F4_eim", lambda: run_eim.do_figure(js("eim.json"))),
+        ("tables/tab_budget_v9.tex", lambda: run_E3_1.do_table(js("E3_1_calibration.json"))),
+        ("tables/tab_cost_v9.tex", lambda: run_cost_model.write_table(js("cost_model.json"))),
+        ("figures/F5a_acceptance", lambda: _f5a(fig_F5a)),
+        ("figures/F5b, F5c", lambda: run_E1.do_figs(js("E1.json"), js("E2.json"))),
+        ("figures/F6a, F6b, tables/tab_benchmark_v9.tex", lambda: run_E2.do_figs(js("E2.json"))),
+        ("figures/F7_ood", lambda: run_E3.do_fig(js("E3.json"))),
+        ("tables/tab_ood_v9.tex", lambda: run_E3.do_table_ood(js("E3.json"))),
+        ("figures/F8_amortisation", lambda: run_E4.plot_f8()),
+        ("tables/tab_pod_ranks_v9.tex, tab_podnn_v9.tex, tab_training_v9.tex (make_tables_phase2.py)",
          lambda: __import__("runpy").run_path(str(ROOT / "scripts" / "make_tables_phase2.py"), run_name="__main__")),
     ]
 

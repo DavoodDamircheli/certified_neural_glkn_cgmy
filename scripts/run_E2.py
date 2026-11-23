@@ -12,7 +12,7 @@ the direct solve), then the banded certificate on the corrected trajectory.
 Setups: cold = per query the mesh, z_h^0, assembly, spectral data, factorisations and all symbol work inside the timer;
 reusable = only query-independent data cached (mesh, z_h^0 -- the strike is fixed --, POD bases, offline tensors, EIM
 columns and the 161-node EIM data, the network).  Offline products (reduced blocks, tensors, network) are cached in both.
-Timing protocol of CLAUDE_PHASE3.md (one performance core, idle machine, warm-up, 5 repetitions, shuffled order,
+Timing protocol of cgmy_cert/timing.py (one performance core, idle machine, warm-up, 5 repetitions, shuffled order,
 medians of per-query medians, geometric-mean ratios to method 1 with 95% query-bootstrap CIs).
 Tolerances eps_N x {0.3, 1, 3} (methods 3-5 depend on eps; 1-2 do not).
 Usage: OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 python3 scripts/run_E2.py [bench] [refine] [figs]
@@ -42,7 +42,7 @@ from cgmy_cert.provenance import provenance  # noqa: E402
 PC = json.loads((ROOT / "results" / "PRODUCTION_CONFIG.json").read_text())
 N, NT, EPS_N = PC["N"], PC["N_T"], PC["eps_N"]
 EPS = tuple(EPS_N * f for f in (0.3, 1.0, 3.0))
-DATA = ROOT / "data"; RES = ROOT / "results"; FIG = ROOT / "figures_v9"; TAB = ROOT / "tables_v9"; CK = ROOT / "checkpoints"
+DATA = ROOT / "data"; RES = ROOT / "results"; FIG = ROOT / "figures"; TAB = ROOT / "tables"; CK = ROOT / "checkpoints"
 OUT = RES / "E2.json"
 SPEC = "CYm:3x3x2"
 

@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
-"""Phase 4, item 1.5: results/MANIFEST.json -> 'archive' section: SHA-256 and size of every file in the archive (code,
-tests, scripts, results, figures, tables, fixtures, top-level files) and of every excluded data file and checkpoint, with
+"""Phase 4, item 1.5: results/MANIFEST.json -> 'archive' section: SHA-256 and size of every tracked file in the
+archive (code, tests, scripts, results, figures, tables, paper, legacy_v8, fixtures, top-level files) and of every excluded data file and checkpoint, with
 the command that regenerates each.  The earlier per-file provenance entries ('files') are kept.
 """
 from __future__ import annotations
 
-import json, re, sys, time
+import json, re, subprocess, sys, time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from cgmy_cert.eim import sha256  # noqa: E402
 
-ARCHIVE_DIRS = ("cgmy_cert", "tests", "scripts", "results", "figures_v9", "tables_v9")
-TOP = ("README.md", "requirements.txt", "build.sh", "Makefile", "PHASE1_REPORT.md", "CLAUDE_PHASE2.md", "CLAUDE_PHASE3.md",
-       "CLAUDE_PHASE4.md")
+ARCHIVE_DIRS = ("cgmy_cert", "tests", "scripts", "results", "figures", "tables", "paper", "legacy_v8")
+TOP = ("README.md", "requirements.txt", "build.sh", "Makefile", "LICENSE", "LICENSE-DATA", "CITATION.cff", ".zenodo.json",
+       ".gitignore")
 SKIP = ("__pycache__", ".pytest_cache")
 MAN = ROOT / "results" / "MANIFEST.json"
 
@@ -49,10 +49,12 @@ def regen(rel):
 def main():
     man = json.loads(MAN.read_text())
     arch = {}
-    for d in ARCHIVE_DIRS:
-        for p in sorted((ROOT / d).rglob("*")):
-            if p.is_file() and not any(s in p.parts for s in SKIP) and p.resolve() != MAN.resolve():
-                arch[str(p.relative_to(ROOT))] = dict(sha256=sha256(p), bytes=p.stat().st_size)
+    tracked = subprocess.run(["git", "ls-files", "--", *ARCHIVE_DIRS], cwd=ROOT, capture_output=True, text=True,
+                             check=True).stdout.split("\n")
+    for rel in sorted(t for t in tracked if t):
+        p = ROOT / rel
+        if p.is_file() and not any(s in p.parts for s in SKIP) and p.resolve() != MAN.resolve():
+            arch[rel] = dict(sha256=sha256(p), bytes=p.stat().st_size)
     for t in TOP:
         p = ROOT / t
         if p.exists():

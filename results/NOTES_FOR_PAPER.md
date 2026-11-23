@@ -1,5 +1,10 @@
 # Notes for the paper (suggestions only; manuscript_v9/ is edited elsewhere)
 
+> Record kept as written during Phases 2-4. Paths in it refer to the layout of that time: `tables_v9/` is now
+> `tables/`, `figures_v9/` is `figures/`, `v8_frozen/` is the slimmed `legacy_v8/`, `manuscript_v12/` is `paper/`;
+> `manuscript_v9/`, the `CLAUDE_*.md` briefs, the `PHASE*_REPORT.md` files and `MANUSCRIPT_STATUS.md` were removed in
+> the Phase 5a cleanup (they remain in the git tag `pre-cleanup`).
+
 ## Section 5 / Lemma 5.1 (EIM error), from plan 2.1
 
 1. **The derivative margin is not needed for the assembled operators.** A_I and A_Q are Toeplitz

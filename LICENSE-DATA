@@ -3,7 +3,7 @@ Copyright (c) 2026 Davood Damircheli
 The code in this repository (cgmy_cert/, scripts/, tests/, build.sh, Makefile) is licensed under the
 MIT License (see LICENSE).
 
-The result files and derived outputs (results/, figures_v9/, tables_v9/, data/, checkpoints/, and the
+The result files and derived outputs (results/, figures/, tables/, data/, checkpoints/, and the
 archives of the companion Zenodo data record) are licensed under the Creative Commons Attribution 4.0
 International License (CC BY 4.0), reproduced below and available at
 https://creativecommons.org/licenses/by/4.0/legalcode

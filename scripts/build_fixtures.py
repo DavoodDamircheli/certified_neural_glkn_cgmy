@@ -29,7 +29,7 @@ from cgmy_cert.symbols import free_matrices, legacy_principal_period_free  # noq
 
 FIX = ROOT / "tests" / "fixtures"
 FIX.mkdir(parents=True, exist_ok=True)
-V8 = ROOT / "v8_frozen"
+V8 = ROOT / "legacy_v8"
 DPS = 40
 STRING_LAGS = (0, 1, 2, 5, 10, 30, 65)
 

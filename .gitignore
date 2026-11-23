@@ -385,3 +385,18 @@ CLAUDE.local.md
 
 # Phase 5: archives for the Zenodo data record (not in git)
 zenodo_data/
+
+# Phase 5a: LaTeX theorem lists (ntheorem) and the large data (archived on Zenodo, see README_DATA / README)
+*.thm
+data/
+checkpoints/
+# LaTeX build artefacts in paper/ (re-ignored after the !paper/** negation above; the PDFs stay tracked)
+paper/**/*.aux
+paper/**/*.log
+paper/**/*.out
+paper/**/*.toc
+paper/**/*.bbl
+paper/**/*.blg
+paper/**/*.synctex.gz
+paper/**/*.fls
+paper/**/*.fdb_latexmk

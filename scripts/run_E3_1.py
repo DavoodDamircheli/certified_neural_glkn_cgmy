@@ -3,13 +3,13 @@
 
 ref30 + the two v8 corner queries (Q_audit_0397 = Corner A, Q_audit_0401 = Corner B, tab_corner.tex of v8):
 discrete price V_h(T, S) vs COS at N in {128, 256, 512, 1024}, N_T in {60, 240}, spots S = 0.8K..1.2K.
-COS: v8_frozen/numerics/validation/cos_pricer.py (cos_put_price, 8192 modes, range parameter L = 30),
+COS: legacy_v8/numerics/validation/cos_pricer.py (cos_put_price, 8192 modes, range parameter L = 30),
 cross-checked against the v8 Carr-Madan pricer on 10 (query, spot) rows.  The Galerkin price is the
 raw coefficient vector at tau = T (free part from a dense-LU CN solve, prescribed boundary values) evaluated
 at x = log S.
 Production N = smallest N with max |V_h - V_COS| <= 1 cent over queries and spots (at the chosen N_T);
 eps_N = tau_$ / max_s beta_I(x_s) (direct.spot_price_factor), tau_$ = 1 cent; also tau_$ = 0.1 cent at N = 1024.
-Outputs: results/E3_1_calibration.json, tables_v9/tab_budget_v9.tex, results/PRODUCTION_CONFIG.json.
+Outputs: results/E3_1_calibration.json, tables/tab_budget_v9.tex, results/PRODUCTION_CONFIG.json.
 """
 from __future__ import annotations
 
@@ -21,13 +21,13 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "v8_frozen" / "numerics"))
+sys.path.insert(0, str(ROOT / "legacy_v8" / "numerics"))
 from cgmy_cert.params import Query, Mesh, load_queries_json  # noqa: E402
 from cgmy_cert.direct import reference_trajectory, raw_basis_eval, lifting, spot_price_factor  # noqa: E402
 from cgmy_cert.symbols import free_matrices  # noqa: E402
 from cgmy_cert.provenance import provenance  # noqa: E402
 
-RES = ROOT / "results"; TAB = ROOT / "tables_v9"
+RES = ROOT / "results"; TAB = ROOT / "tables"
 OUT = RES / "E3_1_calibration.json"
 NS = (128, 256, 512, 1024)
 NTS = (60, 240)
@@ -92,7 +92,7 @@ def do_cos(res, nproc):
     with Pool(nproc) as pool:
         out = pool.map(_cos, [q.as_dict() for q in qs], chunksize=1)
     res["cos"] = {qid: dict(prices=p, wall_s=w) for qid, p, w in out}
-    res["cos_meta"] = dict(pricer="v8_frozen/numerics/validation/cos_pricer.py: cos_put_price", modes=COS_N,
+    res["cos_meta"] = dict(pricer="legacy_v8/numerics/validation/cos_pricer.py: cos_put_price", modes=COS_N,
                            range_parameter_L=COS_L, wall_s=time.time() - t0, provenance=provenance(nproc=nproc))
     save(res)
     print(f"COS: {len(out)} queries, {time.time() - t0:.0f}s", flush=True)

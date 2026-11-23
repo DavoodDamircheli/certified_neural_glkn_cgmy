@@ -1,4 +1,0 @@
-candidate,n,n_bound_holds,n_invalid_bound,effectivity_median,effectivity_max,n_residual_only_would_underestimate
-homogeneous_error_from_perturbed_ic,48,48,0,1.0000000000000044,1.000000000000228,48
-pod_r16,48,48,0,5.365867136376483,10.645270326090852,0
-raw_deeponet,48,48,0,4.982662679786114,26.283933615546836,0

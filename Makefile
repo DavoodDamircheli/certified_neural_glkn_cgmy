@@ -10,4 +10,4 @@ fixtures:
 e0:
 	python3 scripts/run_E0.py --nproc 2
 paper:
-	cd manuscript_v9 && pdflatex -interaction=nonstopmode main_v9 && pdflatex -interaction=nonstopmode main_v9 && pdflatex -interaction=nonstopmode main_v9
+	bash paper/build_paper.sh

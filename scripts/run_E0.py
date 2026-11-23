@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Phase 1.8: verification experiments E0.1-E0.5.  Writes results/E0.json, tables_v9/*.tex and
-figures_v9/*.png.  Usage: python3 scripts/run_E0.py [E0.1 E0.2 E0.3 E0.4 E0.5] [--nproc 2]"""
+"""Phase 1.8: verification experiments E0.1-E0.5.  Writes results/E0.json, tables/*.tex and
+figures/*.png.  Usage: python3 scripts/run_E0.py [E0.1 E0.2 E0.3 E0.4 E0.5] [--nproc 2]"""
 from __future__ import annotations
 
 import json, zlib, sys, time, argparse
@@ -20,7 +20,7 @@ from cgmy_cert.riesz import pcg_bracket, circulant_preconditioner, plain_cg_iter
 from cgmy_cert.direct import reference_trajectory, cn_march, mass_norm, free_basis_eval  # noqa: E402
 from cgmy_cert.certificate import certify  # noqa: E402
 
-RES = ROOT / "results"; FIG = ROOT / "figures_v9"; TAB = ROOT / "tables_v9"
+RES = ROOT / "results"; FIG = ROOT / "figures"; TAB = ROOT / "tables"
 for d in (RES, FIG, TAB):
     d.mkdir(exist_ok=True)
 OUT = RES / "E0.json"
@@ -318,7 +318,7 @@ def e05(res, nproc):
 # ====================================================================== plot steps (JSON only)
 
 def plot_e01(res):
-    """tables_v9/tab_assembly_v9.tex from E0.json -> E0.1 (no computation)."""
+    """tables/tab_assembly_v9.tex from E0.json -> E0.1 (no computation)."""
     rows = {int(N): v for N, v in res["E0.1"].items()}
     lines = [r"\begin{table}[!htbp]", r"\centering\small",
              r"\caption{Assembly verification against the exact Galerkin matrix (40-digit real-line "
@@ -337,7 +337,7 @@ def plot_e01(res):
 
 
 def plot_e02(res):
-    """figures_v9/F2_spectral_bound.{png,pdf} from E0.json -> E0.2."""
+    """figures/F2_spectral_bound.{png,pdf} from E0.json -> E0.2."""
     out = res["E0.2"]
     import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
     fig, axs = plt.subplots(1, 2, figsize=(8.5, 3.3))
@@ -363,7 +363,7 @@ def plot_e02(res):
 
 
 def plot_e03(res):
-    """figures_v9/F3_theta_and_effectivity.{png,pdf} from E0.json -> E0.3."""
+    """figures/F3_theta_and_effectivity.{png,pdf} from E0.json -> E0.3."""
     theta, eff = res["E0.3"]["sqrtTheta"], res["E0.3"]["effectivity"]
     Ns = sorted(int(N) for N in theta)
     import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
@@ -393,7 +393,7 @@ def plot_e03(res):
 
 
 def plot_e04(res):
-    """tables_v9/tab_pcg_v9.tex from E0.json -> E0.4."""
+    """tables/tab_pcg_v9.tex from E0.json -> E0.4."""
     out = res["E0.4"]
     Ns = sorted(int(N) for N in out)
     lines = [r"\begin{table}[!htbp]", r"\centering\small",

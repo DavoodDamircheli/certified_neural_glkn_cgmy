@@ -7,8 +7,8 @@ import pytest
 from conftest import ROOT
 
 pytest.importorskip("torch")
-pytestmark = pytest.mark.skipif(not (ROOT / "v8_frozen" / "models" / "deeponet_final.pt").exists(),
-                                reason="v8_frozen not present")
+pytestmark = pytest.mark.skipif(not (ROOT / "legacy_v8" / "models" / "deeponet_final.pt").exists(),
+                                reason="legacy_v8 not present")
 
 
 def test_v8_deeponet_prediction_inputs():

@@ -3,7 +3,7 @@
 
 Claims file results/paper_claims.json: {"claims": [{"id", "section", "text", "json", "path" | "expr", "transform"
 (optional), "value" (optional), "tol" (optional), "rel" (optional), "note" (optional)}]}.
-  * "text" must occur verbatim in manuscript_v12/main.tex, supplement.tex or theory/*.tex (whitespace-normalised);
+  * "text" must occur verbatim in paper/main.tex, supplement.tex or theory/*.tex (whitespace-normalised);
   * "path" is a JSON path into results/<json>: keys separated by '/', list indices as integers, and the selectors
     "*" (all children, gives a list), "@min", "@max", "@median", "@len" applied to the list built so far (plain
     components are always keys, so a key named "median" is addressed as "median");
@@ -18,7 +18,7 @@ Claims file results/paper_claims.json: {"claims": [{"id", "section", "text", "js
   * "rel": "eq" (default), "le" (the text says the quantity is at most / below the stated number: PASS if
     result <= stated, up to the tolerance), "ge" (at least);
   * instead of "json" (a file in results/), a claim can name another source:
-      "file": a path relative to the repository root (tests/fixtures/*.json, v8_frozen/..., a .md or .py file);
+      "file": a path relative to the repository root (tests/fixtures/*.json, legacy_v8/..., a .md or .py file);
               .json is loaded as J, .pt with torch.load (CPU, weights only), anything else as text;
       "regex" (with "file"): a pattern whose capture group ("group", default 1) is the number; with "agg": "min" or
               "max" it is applied to every match;
@@ -42,7 +42,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 RES = ROOT / "results"
-MS = ROOT / "manuscript_v12"
+MS = ROOT / "paper"
 CLAIMS = RES / "paper_claims.json"
 OUT = RES / "NUMBER_CHECK.md"
 

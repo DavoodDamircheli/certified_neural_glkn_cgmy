@@ -13,7 +13,7 @@ the brief is not triggered).  Rules recorded in the JSON:
     doubled for a query if the difference exceeds 1e-10 relative;
   * references by direct GMRES at the query (N = 1024, N_T = 240), true error max_n mass norm.
 Candidates: POD-Galerkin r = 64 and 80 (basis 800), space-time POD-NN (3 seeds).  Proxy: seed-ensemble disagreement
-max_n ||z_seed - z_mean||_{M_I} > eps_N.  Writes results/E3.json and figures_v9/F7_ood.png.
+max_n ||z_seed - z_mean||_{M_I} > eps_N.  Writes results/E3.json and figures/F7_ood.png.
 """
 from __future__ import annotations
 
@@ -41,7 +41,7 @@ from cgmy_cert.provenance import provenance  # noqa: E402
 PC = json.loads((ROOT / "results" / "PRODUCTION_CONFIG.json").read_text())
 N, NT, EPS_N = PC["N"], PC["N_T"], PC["eps_N"]
 EPS = tuple(PC["eps_sweep"])
-DATA = ROOT / "data"; RES = ROOT / "results"; FIG = ROOT / "figures_v9"; CK = ROOT / "checkpoints"
+DATA = ROOT / "data"; RES = ROOT / "results"; FIG = ROOT / "figures"; CK = ROOT / "checkpoints"
 OUT = RES / "E3.json"
 SPEC = "CYm:3x3x2"
 EXT = dict(C=(0.05, 2.0), G=(0.5, 5.0), M=(2.0, 15.0), Y=(0.9, 1.95), r=BOX["r"], T=BOX["T"])
@@ -298,7 +298,7 @@ def do_breakdown(res):
 
 
 def do_table_ood(res):
-    """tables_v9/tab_ood_v9.tex (layout and caption as edited in the manuscript; numbers from E3.json summary/breakdown)."""
+    """tables/tab_ood_v9.tex (layout and caption as edited in the manuscript; numbers from E3.json summary/breakdown)."""
     bd = res["breakdown"]["per_candidate"]
     st = [k for k in bd if "spacetime" in k]
     e_in = res["summary"]["distributions"]["eps_Q_in_validation30"]["median"]
@@ -334,7 +334,7 @@ def do_table_ood(res):
         lines.append(f"{lab[sh]} & {v['n_queries']} & {v['n_true_err_le_eps_N']} & {v['exact_accepts']} & "
                      f"{tex_e(v['median_true_err'])} & {tex_e(v['median_eps_Q'])}\\\\")
     lines += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
-    (ROOT / "tables_v9" / "tab_ood_v9.tex").write_text("\n".join(lines) + "\n")
+    (ROOT / "tables" / "tab_ood_v9.tex").write_text("\n".join(lines) + "\n")
 
 
 def do_fig(res):

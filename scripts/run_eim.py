@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Phase 2.1: build the EIM of the fractional symbol family for every production N, validate the
 operator-norm bound eps_Q on the 1000 Sobol test queries (seed 2026) at N = 64 and 512, write
-results/eim.json and figures_v9/F4_eim.png.
+results/eim.json and figures/F4_eim.png.
 
 The operational rank is Q = max(Q_tol, Q_op) (step `select`, see DEVIATIONS.md).
 Usage: python3 scripts/run_eim.py [build] [select] [validate] [figure] [--N 64 128 256 512 1024] [--nproc 8]
@@ -22,7 +22,7 @@ from cgmy_cert.eim import (build_eim, load_eim, eim_path, sha256, eim_test_queri
 from cgmy_cert.symbols import free_matrices  # noqa: E402
 from cgmy_cert.provenance import provenance  # noqa: E402
 
-RES = ROOT / "results"; FIG = ROOT / "figures_v9"
+RES = ROOT / "results"; FIG = ROOT / "figures"
 OUT = RES / "eim.json"
 PAL = ["#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7", "#56B4E9"]   # Okabe-Ito, fixed order
 N_DEFAULT = (64, 128, 256, 512, 1024)
