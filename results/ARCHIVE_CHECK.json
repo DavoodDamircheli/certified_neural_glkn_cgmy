@@ -247,18 +247,18 @@
  },
  "build_only_check": {
   "note": "clean clone + venv + build.sh + diff (no run_E0.py, no tests; their wall times above are kept)",
-  "clone_commit": "46f4e5b3324709f24113173cdb8b17f7b78cbd2c",
-  "started": "2026-11-22T18:22:19-0600",
-  "finished": "2026-11-22T18:22:42-0600",
+  "clone_commit": "29e916a9a2e95ba7581a1413a514cd9334843143",
+  "started": "2026-11-22T18:48:11-0600",
+  "finished": "2026-11-22T18:48:36-0600",
   "all_tables_identical": true,
   "all_figures_pixel_identical": true,
   "n_tables": 9,
   "n_figures": 10,
   "wall_s": {
-   "clone": 0.22846484184265137,
-   "venv": 1.1293532848358154,
-   "pip_install": 16.412668466567993,
-   "build": 4.422594308853149
+   "clone": 0.12814831733703613,
+   "venv": 1.1479554176330566,
+   "pip_install": 18.875808000564575,
+   "build": 4.504715919494629
   },
   "returncodes": {
    "clone": 0,
@@ -267,79 +267,79 @@
    "build": 0
   },
   "comparison": {
-   "tables_v9/tab_assembly_v9.tex": {
+   "tables/tab_assembly_v9.tex": {
     "kind": "table",
     "identical": true
    },
-   "tables_v9/tab_benchmark_v9.tex": {
+   "tables/tab_benchmark_v9.tex": {
     "kind": "table",
     "identical": true
    },
-   "tables_v9/tab_budget_v9.tex": {
+   "tables/tab_budget_v9.tex": {
     "kind": "table",
     "identical": true
    },
-   "tables_v9/tab_cost_v9.tex": {
+   "tables/tab_cost_v9.tex": {
     "kind": "table",
     "identical": true
    },
-   "tables_v9/tab_ood_v9.tex": {
+   "tables/tab_ood_v9.tex": {
     "kind": "table",
     "identical": true
    },
-   "tables_v9/tab_pcg_v9.tex": {
+   "tables/tab_pcg_v9.tex": {
     "kind": "table",
     "identical": true
    },
-   "tables_v9/tab_pod_ranks_v9.tex": {
+   "tables/tab_pod_ranks_v9.tex": {
     "kind": "table",
     "identical": true
    },
-   "tables_v9/tab_podnn_v9.tex": {
+   "tables/tab_podnn_v9.tex": {
     "kind": "table",
     "identical": true
    },
-   "tables_v9/tab_training_v9.tex": {
+   "tables/tab_training_v9.tex": {
     "kind": "table",
     "identical": true
    },
-   "figures_v9/F2_spectral_bound.png": {
+   "figures/F2_spectral_bound.png": {
     "kind": "figure",
     "pixel_identical": true
    },
-   "figures_v9/F3_theta_and_effectivity.png": {
+   "figures/F3_theta_and_effectivity.png": {
     "kind": "figure",
     "pixel_identical": true
    },
-   "figures_v9/F4_eim.png": {
+   "figures/F4_eim.png": {
     "kind": "figure",
     "pixel_identical": true
    },
-   "figures_v9/F5a_acceptance.png": {
+   "figures/F5a_acceptance.png": {
     "kind": "figure",
     "pixel_identical": true
    },
-   "figures_v9/F5b_effectivity.png": {
+   "figures/F5b_effectivity.png": {
     "kind": "figure",
     "pixel_identical": true
    },
-   "figures_v9/F5c_online_time.png": {
+   "figures/F5c_online_time.png": {
     "kind": "figure",
     "pixel_identical": true
    },
-   "figures_v9/F6a_benchmark.png": {
+   "figures/F6a_benchmark.png": {
     "kind": "figure",
     "pixel_identical": true
    },
-   "figures_v9/F6b_refinement.png": {
+   "figures/F6b_refinement.png": {
     "kind": "figure",
     "pixel_identical": true
    },
-   "figures_v9/F7_ood.png": {
+   "figures/F7_ood.png": {
     "kind": "figure",
     "pixel_identical": true
    },
-   "figures_v9/F8_amortisation.png": {
+   "figures/F8_amortisation.png": {
     "kind": "figure",
     "pixel_identical": true
    }
