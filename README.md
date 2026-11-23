@@ -1,4 +1,4 @@
-# certified-CGMY-Galerkin, v9 reproducibility archive
+# certified-CGMY-Galerkin, reproducibility archive (manuscript v12, submitted to SISC)
 
 *Symbol-based residual certification of reduced and neural surrogates for tempered-fractional CGMY pricing.*
 Production configuration (`results/PRODUCTION_CONFIG.json`): N = 1024, N_T = 240, K = 100, eps_N = 1.18e-3.
@@ -16,7 +16,8 @@ results/          every number: *.json (self-describing, with provenance), DEVIA
 figures_v9/       F2-F8, PNG (dpi 200) and PDF (vector, fonts embedded)
 tables_v9/        LaTeX tables
 v8_frozen/        read-only v8 reference material (only in the git repository, not in the zip)
-manuscript_v9/    the paper: SIAM main article + supplement (read-only here; only in the git repository)
+manuscript_v12/   the paper as submitted: SIAM main article + supplement + cover letter (only in the git repository)
+manuscript_v9/    the previous version of the paper (read-only)
 data/, checkpoints/   NOT in the archive (27 GB): hashes, sizes and regeneration commands in results/MANIFEST.json -> excluded
 ```
 
@@ -51,10 +52,11 @@ pip install -r requirements.txt --extra-index-url https://download.pytorch.org/w
 
 ## Paper item -> result file -> script
 
-Numbering as in the compiled `manuscript_v9/main_v9.pdf` (SIAM main article) and `manuscript_v9/supplement_v9.pdf`
-(Supplementary Materials, numbers prefixed SM); SIAM numbers floats within each section. Table 1.1 (notation) and
-Fig. 3.1 (the online rule) have no result file; the parameter box and the query populations are prose
-(equation (2.10) and Section 5.1).
+Numbering as in the compiled `manuscript_v12/main.pdf` (SIAM main article, as submitted to SISC) and
+`manuscript_v12/supplement.pdf` (Supplementary Materials, numbers prefixed SM); SIAM numbers floats within each
+section. Table SM1.1 (notation), Appendix A (proofs) and the cost-model formulas of Section SM5 have no result file of
+their own (the measured constants of SM5 are in Table SM5.1); the parameter box and the query populations are prose
+(equation (2.9) and Section 5.1).
 
 | Paper item | Output | Result file | Compute script | Plot/table step (in `build_outputs.py`) |
 |---|---|---|---|---|
@@ -68,14 +70,14 @@ Fig. 3.1 (the online rule) have no result file; the parameter box and the query 
 | Fig. 5.3 (fig:ood) | `figures_v9/F7_ood` | `E3.json`, `E1.json` | `run_E3.py run summary` | `run_E3.do_fig` |
 | Fig. 5.4 (fig:online-time) | `figures_v9/F5c_online_time` | `E1.json` (timing); direct-solve line from `E2.json` (bench, cold + reusable medians) | `run_E1.py timing`, `run_E2.py` | `run_E1.do_figs` |
 | Fig. 5.5 (fig:amortisation; one float with Fig. 5.4) | `figures_v9/F8_amortisation` | `E4.json`, `E4_progress.json` | `run_E4.py run summary` | `run_E4.plot_f8` |
-| Table SM8.1 (tab:assembly-v9) | `tables_v9/tab_assembly_v9.tex` | `E0.json` (E0.1) | `run_E0.py E0.1` | `run_E0.plot_e01` |
-| Fig. SM8.1 (fig:spectral-bound) | `figures_v9/F2_spectral_bound` | `E0.json` (E0.2) | `run_E0.py E0.2` | `run_E0.plot_e02` |
-| Fig. SM8.2 (fig:theta) | `figures_v9/F3_theta_and_effectivity` | `E0.json` (E0.3) | `run_E0.py E0.3` | `run_E0.plot_e03` |
-| Table SM8.2 (tab:pcg-v9) | `tables_v9/tab_pcg_v9.tex` | `E0.json` (E0.4) | `run_E0.py E0.4` | `run_E0.plot_e04` |
-| SM9 (DeepONet, text only) | none | `deeponet_old_vs_new.json` | `run_deeponet_old.py` | none |
-| Table SM10.1 (tab:podnn) | `tables_v9/tab_podnn_v9.tex` | `E2_4_podnn_N1024.json` | `eval_podnn.py` (via `sweep_N1024.py`) | `make_tables_phase2.py` |
-| Table SM10.2 (tab:training) | `tables_v9/tab_training_v9.tex` | `training_log.json` | `train_podnn.py` (via `sweep_N1024.py`) | `make_tables_phase2.py` |
-| Table SM11.1 (tab:cost) | `tables_v9/tab_cost_v9.tex` | `cost_model.json` | `run_cost_model.py` | `run_cost_model.write_table` |
+| Table SM2.1 (tab:assembly-v9) | `tables_v9/tab_assembly_v9.tex` | `E0.json` (E0.1) | `run_E0.py E0.1` | `run_E0.plot_e01` |
+| Fig. SM2.1 (fig:spectral-bound) | `figures_v9/F2_spectral_bound` | `E0.json` (E0.2) | `run_E0.py E0.2` | `run_E0.plot_e02` |
+| Fig. SM2.2 (fig:theta) | `figures_v9/F3_theta_and_effectivity` | `E0.json` (E0.3) | `run_E0.py E0.3` | `run_E0.plot_e03` |
+| Table SM2.2 (tab:pcg-v9) | `tables_v9/tab_pcg_v9.tex` | `E0.json` (E0.4) | `run_E0.py E0.4` | `run_E0.plot_e04` |
+| SM3 (DeepONet, text only) | none | `deeponet_old_vs_new.json` | `run_deeponet_old.py` | none |
+| Table SM4.1 (tab:podnn) | `tables_v9/tab_podnn_v9.tex` | `E2_4_podnn_N1024.json` | `eval_podnn.py` (via `sweep_N1024.py`) | `make_tables_phase2.py` |
+| Table SM4.2 (tab:training) | `tables_v9/tab_training_v9.tex` | `training_log.json` | `train_podnn.py` (via `sweep_N1024.py`) | `make_tables_phase2.py` |
+| Table SM5.1 (tab:cost) | `tables_v9/tab_cost_v9.tex` | `cost_model.json` | `run_cost_model.py` | `run_cost_model.write_table` |
 | not in the paper | `figures_v9/F5b_effectivity` | `E1.json` | `run_E1.py eval` | `run_E1.do_figs` |
 
 Numbers in the text: `results/paper_claims.json` lists each one with its result file and path (written by

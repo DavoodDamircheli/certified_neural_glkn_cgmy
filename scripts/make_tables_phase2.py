@@ -46,7 +46,8 @@ lines = [r"\begin{table}[!htbp]", r"\centering\small",
  r"Standard output: $r\times N_T$ coefficients; space--time output: $r\times r_t$ coefficients of a temporal POD "
  r"($r_t=23$). Checkpoints selected by the validation median of the reduced certificate. The projection of the "
  r"reference trajectories onto the same basis and the POD--Galerkin solution are the attainable floor. "
- r"No candidate passes at $\varepsilon_N=1.18\times10^{-3}$; every POD-NN query is settled by the cheap rejection.}",
+ r"At $\varepsilon_N=1.18\times10^{-3}$ the certificate rejects every POD-NN query, each by the cheap rejection of "
+ r"the first stage.}",
  r"\label{tab:podnn}", r"\resizebox{\textwidth}{!}{%", r"\begin{tabular}{lrrrrr}", r"\toprule",
  r"candidate & error & $\eta^S_{\rm aug}$ & $\eta^X_{\rm aug}$ & $\eta^{\bar X}_{\rm aug}$ & eff.\ $\eta^S$\\", r"\midrule",
  row("podnn_N1024_r48_n800_lamR0_seed0", "800 traj., $\\lambda_R=0$"),

@@ -3,7 +3,7 @@
 
 Claims file results/paper_claims.json: {"claims": [{"id", "section", "text", "json", "path" | "expr", "transform"
 (optional), "value" (optional), "tol" (optional), "rel" (optional), "note" (optional)}]}.
-  * "text" must occur verbatim in manuscript_v9/main_v9.tex or manuscript_v9/theory/*.tex (whitespace-normalised);
+  * "text" must occur verbatim in manuscript_v12/main.tex, supplement.tex or theory/*.tex (whitespace-normalised);
   * "path" is a JSON path into results/<json>: keys separated by '/', list indices as integers, and the selectors
     "*" (all children, gives a list), "@min", "@max", "@median", "@len" applied to the list built so far (plain
     components are always keys, so a key named "median" is addressed as "median");
@@ -42,13 +42,13 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 RES = ROOT / "results"
-MS = ROOT / "manuscript_v9"
+MS = ROOT / "manuscript_v12"
 CLAIMS = RES / "paper_claims.json"
 OUT = RES / "NUMBER_CHECK.md"
 
 
 def tex_corpus():
-    files = [MS / "main_v9.tex", MS / "supplement_v9.tex"] + sorted((MS / "theory").glob("*.tex"))
+    files = [MS / "main.tex", MS / "supplement.tex"] + sorted((MS / "theory").glob("*.tex"))
     return {str(f.relative_to(ROOT)): re.sub(r"\s+", " ", f.read_text()) for f in files if f.exists()}
 
 
@@ -213,8 +213,8 @@ def kind_of_fail(c, stated, raw, got):
 def manuscript_commit():
     import subprocess
     run = lambda *a: subprocess.run(["git", *a], cwd=ROOT, capture_output=True, text=True).stdout.strip()
-    sha = run("log", "-1", "--format=%h", "--", "manuscript_v9")
-    dirty = run("status", "--porcelain", "--", "manuscript_v9")
+    sha = run("log", "-1", "--format=%h", "--", MS.name)
+    dirty = run("status", "--porcelain", "--", MS.name)
     return (sha or "unknown") + (" + uncommitted changes" if dirty else "")
 
 
@@ -268,7 +268,7 @@ def main():
              f"from result files, {sum(r['status'] == 'PASS' for r in sb)} source-backed); failed: {len(fails)} "
              f"({len(kinds['substantive'])} substantive, {len(kinds['no source'])} without a source, "
              f"{len(kinds['rounding'])} rounding-level, {len(kinds['text'])} text not found).", "",
-             f"Manuscript state checked: commit `{ms_commit}` (last commit touching `manuscript_v9/`).", "",
+             f"Manuscript state checked: commit `{ms_commit}` (last commit touching `{MS.name}/`).", "",
              "Manuscript files: " + ", ".join(f"`{k}`" for k in corpus), "",
              "A claim passes when the stated number agrees with the result file within its tolerance (`round` = half a unit "
              "of the last stated digit; `le`/`ge` = the text states a bound). Rounding-level = off by at most one unit of "

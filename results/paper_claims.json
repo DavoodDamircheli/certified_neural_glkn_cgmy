@@ -1,25 +1,16 @@
 {
- "description": "Numbers in manuscript_v9 (main_v9.tex, theory/*.tex) and the result files that support them; written by scripts/make_paper_claims.py, checked by scripts/check_numbers.py",
+ "description": "Numbers in manuscript_v12 (main.tex, supplement.tex, theory/*.tex) and the result files that support them; written by scripts/make_paper_claims.py, checked by scripts/check_numbers.py",
  "claims": [
   {
    "id": "abs_exact_1e-8",
    "section": "abstract",
-   "text": "the assembled system the exact Galerkin system to $10^{-8}$",
+   "text": "yields the exact Galerkin system to $10^{-8}$",
    "json": "E0.json",
    "expr": "max(r['K100'] for N in J['E0.1'] for r in J['E0.1'][N])",
    "value": "1e-8",
    "tol": "round",
    "rel": "le",
    "note": "observed relative operator-norm error at K = 100 over the E0.1 queries (N = 64-512; K100 is stored relative)"
-  },
-  {
-   "id": "abs_Q36",
-   "section": "abstract",
-   "text": "affine in about 36 terms",
-   "json": "N1024.json",
-   "path": "eimq/per_target/eps_N/Q_op",
-   "value": 36,
-   "tol": "abs:0"
   },
   {
    "id": "abs_cert_6pct",
@@ -33,7 +24,7 @@
   {
    "id": "abs_r80_3pct",
    "section": "abstract",
-   "text": "POD--Galerkin model of rank $80$ costs $3\\%$ of it",
+   "text": "POD--Galerkin model of rank $80$ costs $3\\%$ and settles",
    "json": "E2.json",
    "expr": "J['bench']['per_setup']['reusable']['summary']['podg80@0.001185']['ratio_to_direct']['geo_mean_ratio'] * 100",
    "value": "3",
@@ -49,19 +40,19 @@
    "tol": "round"
   },
   {
-   "id": "abs_150",
+   "id": "abs_414",
    "section": "abstract",
-   "text": "No false accept occurs on any query with a reference solution (150 in the parameter box, 264 outside it)",
+   "text": "No false accept occurs on any of the 414 queries with a reference solution, 264 of them outside the\nparameter box",
    "json": "E1.json",
-   "expr": "len(J['eval']['rows']['pod_galerkin_r64_n800']) + R('E2.json')['bench']['per_setup']['reusable']['summary']['direct']['ratio_to_direct']['n_queries']",
-   "value": 150,
+   "expr": "len(J['eval']['rows']['pod_galerkin_r64_n800']) + R('E2.json')['bench']['per_setup']['reusable']['summary']['direct']['ratio_to_direct']['n_queries'] + R('E3.json')['setup']['n_queries']",
+   "value": 414,
    "tol": "abs:0",
-   "note": "validation30 (E1.json) + bench120 (E2.json)"
+   "note": "validation30 (E1.json) + bench120 (E2.json) + 264 OOD (E3.json) = 150 + 264"
   },
   {
    "id": "abs_264",
    "section": "abstract",
-   "text": "No false accept occurs on any query with a reference solution (150 in the parameter box, 264 outside it)",
+   "text": "No false accept occurs on any of the 414 queries with a reference solution, 264 of them outside the\nparameter box",
    "json": "E3.json",
    "path": "setup/n_queries",
    "value": 264,
@@ -70,7 +61,7 @@
   {
    "id": "abs_fa_E1",
    "section": "abstract",
-   "text": "No false accept occurs on any query with a reference solution (150 in the parameter box, 264 outside it)",
+   "text": "No false accept occurs on any of the 414 queries with a reference solution, 264 of them outside the\nparameter box",
    "json": "E1.json",
    "expr": "sum(sum(v[c]['false_accepts'].values()) for v in J['eval']['summary'].values() for c in ('reduced', 'banded', 'exact'))",
    "value": 0,
@@ -80,7 +71,7 @@
   {
    "id": "abs_fa_E2",
    "section": "abstract",
-   "text": "No false accept occurs on any query with a reference solution (150 in the parameter box, 264 outside it)",
+   "text": "No false accept occurs on any of the 414 queries with a reference solution, 264 of them outside the\nparameter box",
    "json": "E2.json",
    "expr": "sum(v.get('false_accepts', 0) for s in J['bench']['per_setup'].values() for v in s['summary'].values())",
    "value": 0,
@@ -90,7 +81,7 @@
   {
    "id": "abs_fa_E3",
    "section": "abstract",
-   "text": "No false accept occurs on any query with a reference solution (150 in the parameter box, 264 outside it)",
+   "text": "No false accept occurs on any of the 414 queries with a reference solution, 264 of them outside the\nparameter box",
    "json": "E3.json",
    "expr": "sum(sum(v[c]['false_accepts'].values()) for v in J['summary']['per_candidate'].values() for c in ('reduced', 'banded', 'exact')) + sum(sum(v['three_stage_false_accepts'].values()) for v in J['summary']['per_candidate'].values())",
    "value": 0,
@@ -100,7 +91,7 @@
   {
    "id": "abs_193",
    "section": "abstract",
-   "text": "outside the box the certificate accepts 193 of the 210\nqueries on which the reduced model is still within one cent",
+   "text": "the certificate accepts 193 of the 210\nqueries on which the reduced model remains within one cent",
    "json": "E3.json",
    "expr": "J['breakdown']['per_candidate']['podg80']['all']['exact_accepts']",
    "value": 193,
@@ -109,22 +100,11 @@
   {
    "id": "abs_210",
    "section": "abstract",
-   "text": "outside the box the certificate accepts 193 of the 210\nqueries on which the reduced model is still within one cent",
+   "text": "the certificate accepts 193 of the 210\nqueries on which the reduced model remains within one cent",
    "json": "E3.json",
    "expr": "J['breakdown']['per_candidate']['podg80']['all']['n_true_err_le_eps_N']",
    "value": 210,
    "tol": "abs:0"
-  },
-  {
-   "id": "abs_factor46",
-   "section": "abstract",
-   "text": "fail the one-cent tolerance by a factor of at least $46$",
-   "json": "E2_4_podnn_N1024.json",
-   "expr": "min(J['results'][k]['summary']['exact_AI']['median'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)]) / R('PRODUCTION_CONFIG.json')['eps_N']",
-   "value": "46",
-   "tol": "round",
-   "rel": "ge",
-   "note": "median exact bound / eps_N of the three space-time seeds: 49.1, 47.2, 46.0 (45.98 rounds to 46); the introduction repeats the sentence"
   },
   {
    "id": "s25_alias_exp46",
@@ -153,7 +133,7 @@
   {
    "id": "s25_pp_lo",
    "section": "2.5",
-   "text": "operator-norm error is $0.31$--$0.41$ at every resolution",
+   "text": "has a relative operator-norm error of $0.31$--$0.41$ at every resolution",
    "json": "E0.json",
    "expr": "min(r['pp'] for N in J['E0.1'] for r in J['E0.1'][N])",
    "value": "0.31",
@@ -163,7 +143,7 @@
   {
    "id": "s25_pp_hi",
    "section": "2.5",
-   "text": "operator-norm error is $0.31$--$0.41$ at every resolution",
+   "text": "has a relative operator-norm error of $0.31$--$0.41$ at every resolution",
    "json": "E0.json",
    "expr": "max(r['pp'] for N in J['E0.1'] for r in J['E0.1'][N])",
    "value": "0.41",
@@ -246,7 +226,7 @@
   {
    "id": "s41_grid16",
    "section": "4.1",
-   "text": "$16\\times16\\times16$ training grid",
+   "text": "on a $16^3$ training grid",
    "json": "eim.json",
    "expr": "int(J['meta']['training_grid'].split('(')[1].split(',')[0])",
    "value": 16,
@@ -382,9 +362,19 @@
    "rel": "le"
   },
   {
+   "id": "s41_Q36",
+   "section": "4.1",
+   "text": "$Q=36$ at $\\varepsilon_N$ and $Q=37$ at $\\varepsilon_N/10$",
+   "json": "N1024.json",
+   "path": "eimq/per_target/eps_N/Q_op",
+   "value": 36,
+   "tol": "abs:0",
+   "note": "was abs_Q36 (no longer in the abstract)"
+  },
+  {
    "id": "s41_tenth",
    "section": "4.1",
-   "text": "which the choice of $Q$ below keeps under a tenth of the target tolerance",
+   "text": "\\le\\varepsilon/10$ of Theorem~\\ref{thm:eim-cert}",
    "json": "N1024.json",
    "expr": "float(re.search(r'<= eps/(\\d+)', J['eimq']['rule']).group(1))",
    "value": 10,
@@ -451,7 +441,7 @@
   {
    "id": "s43_deeponet_rejected",
    "section": "4.3",
-   "text": "it is rejected at every tolerance of the sweep",
+   "text": "The certificate rejects it at every tolerance of the sweep",
    "json": "deeponet_old_vs_new.json",
    "expr": "min(v.get('reject_cheap', 0) for v in J['summary']['status_counts_two_stage'].values())",
    "value": 120,
@@ -557,7 +547,7 @@
   {
    "id": "s44_cell_1.87",
    "section": "4.4",
-   "text": "the cell norm costs a factor $1.87$ (median)",
+   "text": "The cell norm is within a factor $1.87$ (median) of the query's own $X_I$",
    "json": "N1024.json",
    "path": "cells/effectivity/median_over_etaX",
    "value": "1.87",
@@ -566,7 +556,7 @@
   {
    "id": "s44_cell_4",
    "section": "4.4",
-   "text": "about $4$ against $\\eta^S$",
+   "text": "and about $4$ of $\\eta^S$",
    "json": "N1024.json",
    "path": "cells/effectivity/median_over_etaS",
    "value": "4",
@@ -575,62 +565,22 @@
   {
    "id": "s44_cert_ms_r8",
    "section": "4.4",
-   "text": "$2.9$, $3.9$, $4.6$, $5.6$, $6.8$, $8.3$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
+   "text": "the complete online certificate takes $2.9$--$8.3$~ms for $r=8$--$128$",
    "json": "E1.json",
    "path": "timing/per_rank/8/reduced_certificate",
    "value": "2.9",
    "tol": "round",
-   "note": "E1.json timing (Phase 3 idle rerun), the same numbers as Section 5.7 and Figure 6"
-  },
-  {
-   "id": "s44_cert_ms_r48",
-   "section": "4.4",
-   "text": "$2.9$, $3.9$, $4.6$, $5.6$, $6.8$, $8.3$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
-   "json": "E1.json",
-   "path": "timing/per_rank/48/reduced_certificate",
-   "value": "3.9",
-   "tol": "round",
-   "note": "E1.json timing (Phase 3 idle rerun), the same numbers as Section 5.7 and Figure 6"
-  },
-  {
-   "id": "s44_cert_ms_r64",
-   "section": "4.4",
-   "text": "$2.9$, $3.9$, $4.6$, $5.6$, $6.8$, $8.3$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
-   "json": "E1.json",
-   "path": "timing/per_rank/64/reduced_certificate",
-   "value": "4.6",
-   "tol": "round",
-   "note": "E1.json timing (Phase 3 idle rerun), the same numbers as Section 5.7 and Figure 6"
-  },
-  {
-   "id": "s44_cert_ms_r80",
-   "section": "4.4",
-   "text": "$2.9$, $3.9$, $4.6$, $5.6$, $6.8$, $8.3$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
-   "json": "E1.json",
-   "path": "timing/per_rank/80/reduced_certificate",
-   "value": "5.6",
-   "tol": "round",
-   "note": "E1.json timing (Phase 3 idle rerun), the same numbers as Section 5.7 and Figure 6"
-  },
-  {
-   "id": "s44_cert_ms_r96",
-   "section": "4.4",
-   "text": "$2.9$, $3.9$, $4.6$, $5.6$, $6.8$, $8.3$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
-   "json": "E1.json",
-   "path": "timing/per_rank/96/reduced_certificate",
-   "value": "6.8",
-   "tol": "round",
-   "note": "E1.json timing (Phase 3 idle rerun), the same numbers as Section 5.7 and Figure 6"
+   "note": "E1.json timing (Phase 3 idle rerun); the intermediate ranks (3.9, 4.6, 5.6, 6.8 ms at r = 48-96) are shown only in Figure fig:online-time"
   },
   {
    "id": "s44_cert_ms_r128",
    "section": "4.4",
-   "text": "$2.9$, $3.9$, $4.6$, $5.6$, $6.8$, $8.3$~ms at $r=8$, $48$, $64$, $80$, $96$, $128$",
+   "text": "the complete online certificate takes $2.9$--$8.3$~ms for $r=8$--$128$",
    "json": "E1.json",
    "path": "timing/per_rank/128/reduced_certificate",
    "value": "8.3",
    "tol": "round",
-   "note": "E1.json timing (Phase 3 idle rerun), the same numbers as Section 5.7 and Figure 6"
+   "note": "E1.json timing (Phase 3 idle rerun); the intermediate ranks (3.9, 4.6, 5.6, 6.8 ms at r = 48-96) are shown only in Figure fig:online-time"
   },
   {
    "id": "s44_rank_indep_2.7",
@@ -645,7 +595,7 @@
   {
    "id": "s44_solve_lo",
    "section": "4.4",
-   "text": "rank-independent; the reduced solve takes $0.7$--$2.0$~ms",
+   "text": "the reduced solve takes $0.7$--$2.0$~ms and the reduced certificate",
    "json": "E1.json",
    "path": "timing/per_rank/8/reduced_solve",
    "value": "0.7",
@@ -654,7 +604,7 @@
   {
    "id": "s44_solve_hi",
    "section": "4.4",
-   "text": "rank-independent; the reduced solve takes $0.7$--$2.0$~ms",
+   "text": "the reduced solve takes $0.7$--$2.0$~ms and the reduced certificate",
    "json": "E1.json",
    "path": "timing/per_rank/128/reduced_solve",
    "value": "2.0",
@@ -663,7 +613,7 @@
   {
    "id": "s44_MB_r8",
    "section": "4.4",
-   "text": "occupy $9$~MB ($r=8$) to $688$~MB ($r=128$)",
+   "text": "the offline tensors occupy $9$--$688$~MB for the 18 cells",
    "json": "E1.json",
    "path": "tensors/files_MB/redcert_N1024_r8_n800_CYm_3x3x2_Q36c_b128.npz",
    "value": "9",
@@ -672,7 +622,7 @@
   {
    "id": "s44_MB_r128",
    "section": "4.4",
-   "text": "occupy $9$~MB ($r=8$) to $688$~MB ($r=128$)",
+   "text": "the offline tensors occupy $9$--$688$~MB for the 18 cells",
    "json": "E1.json",
    "path": "tensors/files_MB/redcert_N1024_r128_n800_CYm_3x3x2_Q36c_b128.npz",
    "value": "688",
@@ -784,7 +734,7 @@
   {
    "id": "s51_audit48",
    "section": "5.1",
-   "text": "48\naudit queries of the earlier version with perturbed initial vectors",
+   "text": "on 48 exact-dynamics queries with perturbed initial vectors",
    "json": "E0.json",
    "expr": "len(J['E0.3']['effectivity']['64'])",
    "value": 48,
@@ -933,7 +883,7 @@
   {
    "id": "s52_sum_ratio_lo",
    "section": "5.2",
-   "text": "(query, $N$) pairs, with\n$\\lambda_{\\min}(S_I)/\\smin(\\mu)\\in[1.003,17.8]$",
+   "text": "the ratios satisfy\n$\\lambda_{\\min}(S_I)/\\smin(\\mu)\\in[1.003,17.8]$",
    "json": "E0.json",
    "expr": "min(J['E0.2'][N]['ratio_symbol'][0] for N in J['E0.2'])",
    "value": "1.003",
@@ -943,7 +893,7 @@
   {
    "id": "s52_sum_ratio_hi",
    "section": "5.2",
-   "text": "(query, $N$) pairs, with\n$\\lambda_{\\min}(S_I)/\\smin(\\mu)\\in[1.003,17.8]$",
+   "text": "the ratios satisfy\n$\\lambda_{\\min}(S_I)/\\smin(\\mu)\\in[1.003,17.8]$",
    "json": "E0.json",
    "attention": "17.745 rounds to 17.7, not 17.8 (an upper end that encloses the data, so checked as an upper bound)",
    "expr": "max(J['E0.2'][N]['ratio_symbol'][2] for N in J['E0.2'])",
@@ -1253,7 +1203,7 @@
   {
    "id": "s55_under",
    "section": "5.5",
-   "text": "residual-only estimators underestimate the error in every case",
+   "text": "the residual-only estimators (without $\\beta_0$) underestimate the error in every case",
    "json": "E0.json",
    "expr": "float(np.mean([q['cands']['perturbed_z0']['etaX'] < q['cands']['perturbed_z0']['err'] and q['cands']['perturbed_z0']['etaS'] < q['cands']['perturbed_z0']['err'] for N in J['E0.3']['effectivity'] for q in J['E0.3']['effectivity'][N]]))",
    "value": 1,
@@ -1456,7 +1406,7 @@
   {
    "id": "s57_sv10_r48",
    "section": "5.7",
-   "text": "(singular values within $10\\%$ up to $r=48$, within a factor $1.5$ up to $r=128$)",
+   "text": "leaves the singular values within $10\\%$ up to $r=48$ and within a factor $1.5$ up to $r=128$",
    "json": "N1024.json",
    "expr": "max(abs(J['podext']['4000']['sv_ratio'][r] / J['podext']['800']['sv_ratio'][r] - 1) for r in J['podext']['800']['sv_ratio'] if int(r) <= 48) * 100",
    "value": "10",
@@ -1467,7 +1417,7 @@
   {
    "id": "s57_sv_factor1.5",
    "section": "5.7",
-   "text": "(singular values within $10\\%$ up to $r=48$, within a factor $1.5$ up to $r=128$)",
+   "text": "leaves the singular values within $10\\%$ up to $r=48$ and within a factor $1.5$ up to $r=128$",
    "json": "N1024.json",
    "expr": "max(max(J['podext']['4000']['sv_ratio'][r] / J['podext']['800']['sv_ratio'][r], 1 / (J['podext']['4000']['sv_ratio'][r] / J['podext']['800']['sv_ratio'][r])) for r in J['podext']['800']['sv_ratio'])",
    "value": "1.5",
@@ -1580,7 +1530,7 @@
   {
    "id": "s57_band_lo",
    "section": "5.7",
-   "text": "the full-order stages are reached only in the band $r=56$--$64$",
+   "text": "the full-order stages are needed only in the band $r=56$--$64$",
    "json": "E1.json",
    "expr": "min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if sum(J['eval']['summary']['pod_galerkin_r' + r + '_n800']['three_stage']['0.001185'][k] for k in ('banded_accept', 'reject_banded', 'exact_accept', 'exact_reject')) > 0)",
    "value": 56,
@@ -1589,7 +1539,7 @@
   {
    "id": "s57_band_hi",
    "section": "5.7",
-   "text": "the full-order stages are reached only in the band $r=56$--$64$",
+   "text": "the full-order stages are needed only in the band $r=56$--$64$",
    "json": "E1.json",
    "expr": "max(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if sum(J['eval']['summary']['pod_galerkin_r' + r + '_n800']['three_stage']['0.001185'][k] for k in ('banded_accept', 'reject_banded', 'exact_accept', 'exact_reject')) > 0)",
    "value": 64,
@@ -1633,15 +1583,6 @@
    "expr": "max(J['eval']['summary']['pod_galerkin_r' + r + '_n800']['reduced']['median_effectivity'] for r in ['96', '128'])",
    "value": "420",
    "tol": "abs:5"
-  },
-  {
-   "id": "s57_none_pass",
-   "section": "5.7",
-   "text": "None passes at $\\varepsilon_N$, nor\nat $10^{-3}$",
-   "json": "E2_4_podnn_N1024.json",
-   "expr": "sum(any(v.values()) for v in J['done_when']['per_checkpoint'].values())",
-   "value": 0,
-   "tol": "abs:0"
   },
   {
    "id": "s57_best_err",
@@ -1734,7 +1675,7 @@
   {
    "id": "s57_gap_46",
    "section": "5.7",
-   "text": "longer training cannot close a gap of\n$46$--$1000$",
+   "text": "is the lever for closing a gap of\n$46$--$1000$",
    "json": "E2_4_podnn_N1024.json",
    "expr": "min(J['results'][k]['summary']['exact_AI']['median'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)]) / R('PRODUCTION_CONFIG.json')['eps_N']",
    "value": "46",
@@ -1745,7 +1686,7 @@
   {
    "id": "s57_gap_1000",
    "section": "5.7",
-   "text": "longer training cannot close a gap of\n$46$--$1000$",
+   "text": "is the lever for closing a gap of\n$46$--$1000$",
    "json": "E1.json",
    "expr": "J['selection']['per_setting']['podnn|n4000']['bound_selected']['median_exact'] / R('PRODUCTION_CONFIG.json')['eps_N']",
    "value": "1e3",
@@ -1800,7 +1741,7 @@
   {
    "id": "s57_proj_3.2e-3",
    "section": "5.7",
-   "text": "certified at\n$3.2\\times10^{-3}$, shows that the basis is not the obstacle",
+   "text": "certified at\n$3.2\\times10^{-3}$, shows that the basis is adequate",
    "json": "E2_4_podnn_N1024.json",
    "expr": "J['results']['projection|n4000']['summary']['exact_AI']['median']",
    "value": "3.2e-3",
@@ -2015,7 +1956,7 @@
   {
    "id": "s58_fine_478",
    "section": "5.8",
-   "text": "would instead cost $478$~ms",
+   "text": "the fine verification grid of Section~\\ref{ssec:e0-spectral} costs $478$~ms",
    "json": "cost_model.json",
    "path": "remarks/spectral_data_ms/fine",
    "value": "478",
@@ -2174,7 +2115,7 @@
   {
    "id": "s58_nn_1.07",
    "section": "5.8",
-   "text": "the neural candidate costs $1.07$ times the direct solve",
+   "text": "for a total of $1.07$ times the direct solve at every tolerance",
    "json": "E2.json",
    "expr": "max(v['ratio_to_direct']['geo_mean_ratio'] for k, v in J['bench']['per_setup']['reusable']['summary'].items() if k.startswith('podnn_st@'))",
    "value": "1.07",
@@ -2284,7 +2225,7 @@
   {
    "id": "s59_17",
    "section": "5.9",
-   "text": "with 17 false rejects",
+   "text": "the other 17 are conservative rejections",
    "json": "E3.json",
    "expr": "J['breakdown']['per_candidate']['podg80']['exact_certificate']['fp']",
    "value": 17,
@@ -2293,7 +2234,7 @@
   {
    "id": "s59_eff_6.3",
    "section": "5.9",
-   "text": "from the effectivity of the exact certificate (median $6.3$)",
+   "text": "(median effectivity $6.3$)",
    "json": "E3.json",
    "expr": "float(np.median([r['cands']['podg80']['bounds']['exact'] / r['cands']['podg80']['true_err'] for r in J['rows']]))",
    "value": "6.3",
@@ -2591,7 +2532,7 @@
   {
    "id": "srep_tests67",
    "section": "5.10 reproducibility",
-   "text": "its test suite (67 tests,",
+   "text": "contains the package and its 67 tests",
    "json": "ARCHIVE_CHECK.json",
    "expr": "sum(int(n) for n in re.findall(r'(\\d+) (?:passed|skipped|failed|xfailed|xpassed)', J['steps']['pytest_quick']['tail'].splitlines()[-1]))",
    "value": 67,
@@ -2601,7 +2542,7 @@
   {
    "id": "srep_459",
    "section": "5.10 reproducibility",
-   "text": "the 459-coordinate\nregression against the earlier implementation",
+   "text": "a 459-coordinate regression suite",
    "json": null,
    "file": "tests/fixtures/queries.json",
    "kind": "source-backed",
@@ -2613,7 +2554,7 @@
   {
    "id": "srep_27GB",
    "section": "5.10 reproducibility",
-   "text": "network checkpoints; 27~GB)",
+   "text": "of the 27~GB of trajectories, bases, tensors and checkpoints too large to archive",
    "json": "MANIFEST.json",
    "expr": "J['excluded']['total_bytes'] / 2 ** 30",
    "value": "27",
@@ -2633,7 +2574,7 @@
   {
    "id": "srep_figures_identical",
    "section": "5.10 reproducibility",
-   "text": "and every figure\npixel-identically from the result files",
+   "text": "and every figure pixel-identically and reruns the verification studies",
    "json": "ARCHIVE_CHECK.json",
    "expr": "float(J['all_figures_pixel_identical'] and J['recheck']['all_figures_pixel_identical'] and J['build_only_check']['all_figures_pixel_identical'])",
    "value": 1,
@@ -2648,18 +2589,6 @@
    "value": "32",
    "tol": "round",
    "note": "run_E0.py --nproc 1 in the clean clone: 1930 s"
-  },
-  {
-   "id": "s6_audit459",
-   "section": "6",
-   "text": "an audit of 459 parameter points",
-   "json": null,
-   "file": "tests/fixtures/queries.json",
-   "kind": "source-backed",
-   "path": "populations/audit459/@len",
-   "value": 459,
-   "tol": "abs:0",
-   "note": "the v8 audit population (query fixture)"
   },
   {
    "id": "s6_frac_lo",
@@ -2701,41 +2630,22 @@
   {
    "id": "s6_factor46",
    "section": "6",
-   "text": "comes within a factor $46$ of the tolerance",
+   "text": "the networks remain at least a factor $46$ above the tolerance",
    "json": "E2_4_podnn_N1024.json",
    "expr": "min(J['results'][k]['summary']['exact_AI']['median'] for k in ['podnn_N1024_r48_n4000_lamR1_seed%d_spacetime' % s for s in range(3)]) / R('PRODUCTION_CONFIG.json')['eps_N']",
    "value": "46",
    "tol": "round",
    "rel": "ge",
-   "note": "as in the abstract: the smallest network bound is 45.98 eps_N (space-time seed 2)"
+   "note": "the smallest network bound is 45.98 eps_N (space-time seed 2)"
   },
   {
    "id": "s6_basis_3e-3",
    "section": "6",
-   "text": "the basis it predicts in certifies at $3\\times10^{-3}$",
+   "text": "on a basis that certifies at $3\\times10^{-3}$",
    "json": "E2_4_podnn_N1024.json",
    "expr": "J['results']['projection|n4000']['summary']['exact_AI']['median']",
    "value": "3e-3",
    "tol": "round"
-  },
-  {
-   "id": "s6_rank56",
-   "section": "6",
-   "text": "passes at rank $56$--$64$",
-   "json": "E1.json",
-   "expr": "min(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if J['eval']['summary']['pod_galerkin_r' + r + '_n800']['exact']['accepted']['0.001185'] > 0)",
-   "value": 56,
-   "tol": "abs:0"
-  },
-  {
-   "id": "s6_rank64",
-   "section": "6",
-   "text": "passes at rank $56$--$64$",
-   "json": "E1.json",
-   "expr": "max(int(r) for r in ['8','16','24','32','40','48','56','62','64','80','96','128'] if min(J['eval']['summary']['pod_galerkin_r' + r + '_n800'][c]['accepted']['0.001185'] for c in ('reduced', 'banded', 'exact')) < 30)",
-   "value": 64,
-   "tol": "abs:0",
-   "note": "read as the band from the first acceptance (r = 56, exact) to the last rank with a rejection (r = 64, reduced 26/30)"
   },
   {
    "id": "s6_150",
@@ -2769,7 +2679,7 @@
   {
    "id": "s6_92",
    "section": "6",
-   "text": "the same certificate accepts $92\\%$ ($193$ of $210$) of the queries on which the reduced\nmodel still delivers one cent",
+   "text": "outside the training box it accepts $92\\%$ ($193$ of $210$) of the queries on which the reduced\nmodel still delivers one cent",
    "json": "E3.json",
    "expr": "J['breakdown']['per_candidate']['podg80']['all']['exact_accepts'] / J['breakdown']['per_candidate']['podg80']['all']['n_true_err_le_eps_N'] * 100",
    "value": "92",
@@ -2778,7 +2688,7 @@
   {
    "id": "s6_193",
    "section": "6",
-   "text": "the same certificate accepts $92\\%$ ($193$ of $210$) of the queries on which the reduced\nmodel still delivers one cent",
+   "text": "outside the training box it accepts $92\\%$ ($193$ of $210$) of the queries on which the reduced\nmodel still delivers one cent",
    "json": "E3.json",
    "expr": "J['breakdown']['per_candidate']['podg80']['all']['exact_accepts']",
    "value": 193,
@@ -2787,7 +2697,7 @@
   {
    "id": "s6_210",
    "section": "6",
-   "text": "the same certificate accepts $92\\%$ ($193$ of $210$) of the queries on which the reduced\nmodel still delivers one cent",
+   "text": "outside the training box it accepts $92\\%$ ($193$ of $210$) of the queries on which the reduced\nmodel still delivers one cent",
    "json": "E3.json",
    "expr": "J['breakdown']['per_candidate']['podg80']['all']['n_true_err_le_eps_N']",
    "value": 210,
@@ -2806,7 +2716,7 @@
   {
    "id": "th_c1_explicit",
    "section": "theory",
-   "text": "the explicit constant $c_1=5.1\\times10^{-5}$",
+   "text": "gives $c_1=5.1\\times10^{-5}$ in \\eqref{eq:c1-explicit}",
    "json": "coercivity_c1_provable.json",
    "path": "c1_provable",
    "value": "5.1e-5",
@@ -2816,7 +2726,7 @@
   {
    "id": "th_c1_v8",
    "section": "theory",
-   "text": "$1.6\\times10^{-8}$ for the earlier high-frequency argument",
+   "text": "the $1.6\\times10^{-8}$ that a direct high-frequency argument yields",
    "json": "coercivity_c1.json",
    "path": "v8_c1",
    "value": "1.6e-8",
@@ -2825,7 +2735,7 @@
   {
    "id": "th_c1_opt",
    "section": "theory",
-   "text": "is $r_{\\min}/(1+M_{\\max}^{Y_{\\max}}+G_{\\max}^{Y_{\\max}})=1.40\\times10^{-4}$",
+   "text": "of the optimal constant $r_{\\min}/(1+M_{\\max}^{Y_{\\max}}+G_{\\max}^{Y_{\\max}})=1.40\\times10^{-4}$",
    "json": "coercivity_c1.json",
    "path": "c1_analytic_remark33",
    "value": "1.40e-4",

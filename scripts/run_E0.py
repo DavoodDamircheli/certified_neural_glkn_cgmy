@@ -323,8 +323,8 @@ def plot_e01(res):
     lines = [r"\begin{table}[!htbp]", r"\centering\small",
              r"\caption{Assembly verification against the exact Galerkin matrix (40-digit real-line "
              r"fixture): relative operator-norm error of the free matrix $A_I$, median / max over the "
-             r"ten cost-study queries ($N\le256$; three at $N=512$). The principal-period rule of the earlier "
-             r"version is the alias sum with $K=0$; $\varepsilon_K/\|A_I\|_2$ is the bound of Lemma~\ref{lem:tail}.}",
+             r"ten cost-study queries ($N\le256$; three at $N=512$). The principal-period rule is "
+             r"the alias sum with $K=0$; $\varepsilon_K/\|A_I\|_2$ is the bound of Lemma~\ref{lem:tail}.}",
              r"\label{tab:assembly-v9}", r"\resizebox{\textwidth}{!}{%", r"\begin{tabular}{rrrrrrr}", r"\toprule",
              r"$N$ & queries & principal period & $K=5$ & $K=20$ & $K=100$ & $\varepsilon_{100}/\|A_I\|_2$ (max)\\", r"\midrule"]
     for N in sorted(rows):
