@@ -10,6 +10,14 @@ authors:
 license: MIT
 repository-code: "https://github.com/DavoodDamircheli/certified_neural_glkn_cgmy"
 version: v1.0-sisc
+doi: 10.5281/zenodo.24451955
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.24451955
+    description: Concept DOI (all versions)
+  - type: doi
+    value: 10.5281/zenodo.24451956
+    description: Version v1.0-sisc
 keywords:
   - CGMY
   - tempered fractional

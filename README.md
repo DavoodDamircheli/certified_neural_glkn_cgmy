@@ -3,8 +3,12 @@
 Code and results for the article by **Davood Damircheli** (Louisiana State University),
 [arXiv:2611.03463](https://arxiv.org/abs/2611.03463), submitted to the SIAM Journal on Scientific Computing.
 
-- Software (this repository, archived on Zenodo): DOI-SOFTWARE
-- Large data files (Zenodo): DOI-DATA
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24451955.svg)](https://doi.org/10.5281/zenodo.24451955)
+
+- Software (this repository, archived on Zenodo): version v1.0-sisc
+  [10.5281/zenodo.24451956](https://doi.org/10.5281/zenodo.24451956); all versions
+  [10.5281/zenodo.24451955](https://doi.org/10.5281/zenodo.24451955)
+- Large data files (Zenodo): DOI-DATA (record in preparation)
 
 ## What this repository contains
 
@@ -161,7 +165,7 @@ data/, checkpoints/   large files, not in git (Zenodo record DOI-DATA)
   year      = {2026},
   publisher = {Zenodo},
   version   = {v1.0-sisc},
-  doi       = {DOI-SOFTWARE}
+  doi       = {10.5281/zenodo.24451956}
 }
 
 @dataset{Damircheli2026cgmydata,
