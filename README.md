@@ -181,4 +181,4 @@ Citation metadata for GitHub and Zenodo: `CITATION.cff`, `.zenodo.json`.
 Code: MIT License (`LICENSE`). Result files, tables, figures and the large data files: Creative Commons Attribution 4.0
 International, CC BY 4.0 (`LICENSE-DATA`).
 
-Davood Damircheli, Louisiana State University.
+Davood Damircheli, Louisiana State University, ddamircheli@lsu.edu.
