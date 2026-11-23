@@ -1,0 +1,12 @@
+{
+  "sandbox": {
+    "data": {
+      "deposition_id": 647467,
+      "bucket": "https://sandbox.zenodo.org/api/files/3a2e823a-d07b-4ccd-81d7-0c1325aa7e40",
+      "reserved_doi": "10.5281/zenodo.647467",
+      "html": "https://sandbox.zenodo.org/deposit/647467",
+      "created": "2026-11-23T00:26:02.744076+00:00",
+      "discarded": "2026-11-22: sandbox test draft deleted (DELETE -> 204, GET -> 404); flow tested: create with reserved DOI, upload pod_bases.tar, MD5 match, metadata PUT"
+    }
+  }
+}

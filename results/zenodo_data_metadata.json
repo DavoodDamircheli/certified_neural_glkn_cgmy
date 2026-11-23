@@ -1,0 +1,13 @@
+{
+  "upload_type": "dataset",
+  "title": "Data for 'Symbol-based residual certification of reduced and neural surrogates for tempered-fractional CGMY pricing'",
+  "creators": [
+    {"name": "Damircheli, Davood", "affiliation": "Louisiana State University", "orcid": "0000-0003-3099-6382"}
+  ],
+  "description": "<p>Large data files of the reproducibility archive for the article <em>Symbol-based residual certification of reduced and neural surrogates for tempered-fractional CGMY pricing</em> (arXiv:2611.03463): full-order Galerkin reference trajectories, POD bases, offline tensors of the reduced residual certificate and the EIM of the symbol, POD-NN training data, and POD-NN network checkpoints (116 files, 29.0 GB, in five uncompressed tar archives). Each archive unpacks into the layout of the code repository (<code>data/</code>, <code>checkpoints/</code>); README_DATA.md describes the contents, the producing and consuming scripts, and the unpacking, and MANIFEST_DATA.sha256 lists the SHA-256 of each archive. Per-file hashes and regeneration commands are in results/MANIFEST.json of the code repository.</p>",
+  "license": "cc-by-4.0",
+  "keywords": ["CGMY", "tempered fractional", "option pricing", "a posteriori error estimation", "residual certification", "reduced basis", "POD", "neural surrogates", "Galerkin"],
+  "related_identifiers": [
+    {"identifier": "arXiv:2611.03463", "relation": "isSupplementTo", "scheme": "arxiv", "resource_type": "publication-preprint"}
+  ]
+}

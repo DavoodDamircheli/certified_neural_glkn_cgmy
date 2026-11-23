@@ -382,3 +382,6 @@ CLAUDE.local.md
 # to take effect; gitignore evaluates patterns in file order).
 **/__pycache__/
 **/*.py[cod]
+
+# Phase 5: archives for the Zenodo data record (not in git)
+zenodo_data/
